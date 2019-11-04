@@ -15,7 +15,6 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 
 	{
 		auto entity = ECS::CreateEntity();
-		EntityIdentifier::MainCamera(entity);
 
 		ECS::AttachComponent<Camera>(entity);
 
@@ -38,12 +37,10 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 		std::string filename = "filename";
 		ECS::GetComponent<Sprite>(entity).LoadSprite(filename, sizex, sizey);
 
-		ECS::GetComponent<Transform>(entity).SetPosition(vec3(x, y, z));
+		ECS::GetComponent<Transform>(entity).SetPosition(vec3(x.f, y.f, z.f));
 
 		unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit();
 		ECS::SetUpIdentifier(entity, bitHolder, "name");
 	}
 	*/
-
-
 }

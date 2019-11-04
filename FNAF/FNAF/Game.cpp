@@ -62,10 +62,10 @@ bool Game::Run()
 		//Draws ImGUI
 		if (m_guiActive)
 			GUI();
-		
+
 		//Flips the windows
 		m_window->Flip();
-		
+
 		//Polls events and then checks them
 		BackEnd::PollEvents(m_register, &m_close, &m_motion, &m_click, &m_wheel);
 		CheckEvents();
