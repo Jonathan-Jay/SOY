@@ -28,8 +28,8 @@ Game::~Game()
 void Game::InitGame()
 {
 	//Scene names and clear colors
-	m_name = "Hello World";
-	m_clearColor = vec4(0.15f, 0.33f, 0.58f, 1.f);
+	m_name = "Main Scene";
+	m_clearColor = vec4(0.1f, 0.1f, 0.1f, 0.1f);
 
 	//Initializes the backend
 	BackEnd::InitBackEnd(m_name);
@@ -37,12 +37,12 @@ void Game::InitGame()
 	//Grabs the initialized window
 	m_window = BackEnd::GetWindow();
 
-	m_scenes.push_back(new FNAF("Scene Name"));
+	m_scenes.push_back(new FNAF("Main Scene"));
 
 	m_activeScene = m_scenes[0];
 
 	m_activeScene->InitScene(float(BackEnd::GetWindowWidth()), float(BackEnd::GetWindowHeight()));
-	//*m_activeScene = File::LoadJSON("Scene Name.json");			//if we want to load a JSON
+	//*m_activeScene = File::LoadJSON("Main Scene.json");			//if we want to load a JSON
 
 	m_register = m_activeScene->GetScene();
 }
