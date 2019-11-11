@@ -63,3 +63,12 @@ void ECS::SetIsMainPlayer(unsigned entity, bool mainPlayer)
 	//Sets whether this entity is the main player
 	id.SetIsMainPlayer(mainPlayer);
 }
+
+void ECS::SetIsButton(unsigned entity, bool mainPlayer, int choice)
+{
+	auto& id = GetComponent<EntityIdentifier>(entity);
+
+	EntityIdentifier::Button(entity, choice);
+
+	id.SetIsButton(mainPlayer, choice);
+}
