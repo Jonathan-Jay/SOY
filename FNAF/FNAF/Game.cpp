@@ -180,6 +180,23 @@ void Game::MouseClick(SDL_MouseButtonEvent evnt)
 		ImGui::GetIO().MouseDown[2] = (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_MIDDLE));
 	}
 
+	float windowWidth = BackEnd::GetWindowWidth();
+	float windowHeight = BackEnd::GetWindowHeight();
+	if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT)) {
+		vec3(click) = vec3(evnt.x / windowWidth * windowHeight / 3.5f - 100.f, -evnt.y / 3.5f + 100.f, 0.f);
+
+		for (int x(0); x < 2; x++) {
+			vec3(Pos) = click - m_register->get<Transform>(EntityIdentifier::Button(x)).GetPosition();
+
+			if (Pos.x <= m_register->get<Sprite>(EntityIdentifier::Button(x)).GetWidth() / 2.f && 
+				Pos.x >= -m_register->get<Sprite>(EntityIdentifier::Button(x)).GetWidth() / 2.f && 
+				Pos.y <= m_register->get<Sprite>(EntityIdentifier::Button(x)).GetHeight() / 2.f &&
+				Pos.y >= -m_register->get<Sprite>(EntityIdentifier::Button(x)).GetHeight() / 2.f)
+				std::cout << x << "\n";
+		}
+
+	}
+
 	//Resets the enabled flag
 	m_click = false;
 }

@@ -41,6 +41,36 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 
 		unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit();
 		ECS::SetUpIdentifier(entity, bitHolder, "name");
-	}
 	*/
+	{
+		auto entity = ECS::CreateEntity();
+
+		ECS::AttachComponent<Sprite>(entity);
+		ECS::AttachComponent<Transform>(entity);
+
+		std::string filename = "face 1.png";
+		ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 104, 103);
+
+		ECS::GetComponent<Transform>(entity).SetPosition(vec3(-50.f, 0.f, 0.f));
+
+		unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit();
+		ECS::SetUpIdentifier(entity, bitHolder, "f1");
+		ECS::SetIsButton(entity, true, 0);
+	}
+
+	{
+		auto entity = ECS::CreateEntity();
+
+		ECS::AttachComponent<Sprite>(entity);
+		ECS::AttachComponent<Transform>(entity);
+
+		std::string filename = "face 2.png";
+		ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 102, 102);
+
+		ECS::GetComponent<Transform>(entity).SetPosition(vec3(50.f, 0.f, 0.f));
+
+		unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit();
+		ECS::SetUpIdentifier(entity, bitHolder, "f2");
+		ECS::SetIsButton(entity, true, 1);
+	}
 }
