@@ -169,7 +169,7 @@ void Game::MovementMath(int mainplayer)
 	vec3(tracker) = m_register->get<Transform>(EntityIdentifier::Button(0)).GetPosition();
 	vec2(distance) = vec2(tracker.x - CurrentPos.x, tracker.y - CurrentPos.y);
 
-	movement = distance.Normalize() * 40.f;
+	//movement = distance.Normalize() * 40.f;
 	
 	CurrentPos = CurrentPos + vec3(movement.x, movement.y, 0.f) * Timer::deltaTime;
 
@@ -184,7 +184,7 @@ void Game::MovementMath(int mainplayer)
 	if (CurrentPos.y < -85)	CurrentPos.y = -85;
 
 	m_register->get<Transform>(mainplayer).SetPosition(CurrentPos);
-	//movement = vec2(0.f, 0.f);
+	movement = vec2(0.f, 0.f);
 }
 
 void Game::MouseMotion(SDL_MouseMotionEvent evnt)
