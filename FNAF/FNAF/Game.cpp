@@ -165,11 +165,12 @@ void Game::KeyboardUp()
 
 void Game::MovementMath(int mainplayer)
 {
+	int tracker = EntityIdentifier::Button(0);
 	vec3(CurrentPos) = m_register->get<Transform>(mainplayer).GetPosition();
-	vec3(tracker) = m_register->get<Transform>(EntityIdentifier::Button(0)).GetPosition();
-	vec2(distance) = vec2(tracker.x - CurrentPos.x, tracker.y - CurrentPos.y);
+	vec3(TrackerPos) = m_register->get<Transform>(tracker).GetPosition();
+	vec2(distance) = vec2(TrackerPos.x - CurrentPos.x, TrackerPos.y - CurrentPos.y);
 
-	//movement = distance.Normalize() * 40.f;
+	if (distance.GetMagnitude() > 1.f)	movement = distance.Normalize() * 100.f;
 	
 	CurrentPos = CurrentPos + vec3(movement.x, movement.y, 0.f) * Timer::deltaTime;
 
@@ -181,7 +182,7 @@ void Game::MovementMath(int mainplayer)
 	if (CurrentPos.x > 43)	CurrentPos.x = 43;
 	if (CurrentPos.x < -43)	CurrentPos.x = -43;
 	if (CurrentPos.y > -40)	CurrentPos.y = -40;
-	if (CurrentPos.y < -85)	CurrentPos.y = -85;
+	if (CurrentPos.y < -93)	CurrentPos.y = -93;
 
 	m_register->get<Transform>(mainplayer).SetPosition(CurrentPos);
 	movement = vec2(0.f, 0.f);
@@ -216,7 +217,10 @@ void Game::MouseClick(SDL_MouseButtonEvent evnt)
 	float windowWidth = BackEnd::GetWindowWidth();
 	float windowHeight = BackEnd::GetWindowHeight();
 	if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT)) {
-		vec3(click) = vec3(evnt.x / windowWidth * windowHeight / 3.5f - 100.f, -evnt.y / 3.5f + 100.f, 0.f);
+		vec3(click) = vec3(
+			evnt.x / windowHeight * 200.f - 100.f * windowWidth / windowHeight,
+			-evnt.y / windowHeight * 200.f + 100.f,
+			0.f);
 		m_register->get<Transform>(EntityIdentifier::Button(0)).SetPosition(click);
 
 		/*for (int x(0); x < 2; x++) {
