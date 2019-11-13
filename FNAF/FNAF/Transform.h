@@ -2,8 +2,6 @@
 #define __TRANSFORM_H__
 #include <math.h>
 
-#pragma comment(lib, "Matrix.lib")
-
 #include "Matrix.h"
 #include "JSON.h"
 

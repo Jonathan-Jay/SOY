@@ -1,7 +1,7 @@
 #ifndef __POSTEFFECT_H__
 #define __POSTEFFECT_H__
 
-#include <vector>
+#include <Vector>
 
 #include "Framebuffer.h"
 #include "Shader.h"

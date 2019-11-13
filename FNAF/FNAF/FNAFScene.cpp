@@ -48,14 +48,13 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 		ECS::AttachComponent<Sprite>(entity);
 		ECS::AttachComponent<Transform>(entity);
 
-		std::string filename = "face 1.png";
-		ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 104, 103);
+		std::string filename = "room.png";
+		ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 200, 200);
 
-		ECS::GetComponent<Transform>(entity).SetPosition(vec3(-50.f, 0.f, 0.f));
+		ECS::GetComponent<Transform>(entity).SetPosition(vec3(00.f, 0.f, -50.f));
 
 		unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit();
-		ECS::SetUpIdentifier(entity, bitHolder, "f1");
-		ECS::SetIsButton(entity, true, 0);
+		ECS::SetUpIdentifier(entity, bitHolder, "room");
 	}
 
 	{
@@ -64,13 +63,25 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 		ECS::AttachComponent<Sprite>(entity);
 		ECS::AttachComponent<Transform>(entity);
 
-		std::string filename = "face 2.png";
-		ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 102, 102);
+		std::string filename = "player.png";
+		ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 25, 15);
 
-		ECS::GetComponent<Transform>(entity).SetPosition(vec3(50.f, 0.f, 0.f));
+		ECS::GetComponent<Transform>(entity).SetPosition(vec3(0.f, -50.f, 0.f));
 
 		unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit();
-		ECS::SetUpIdentifier(entity, bitHolder, "f2");
-		ECS::SetIsButton(entity, true, 1);
+		ECS::SetUpIdentifier(entity, bitHolder, "player");
+		ECS::SetIsMainPlayer(entity, true);
+	}
+
+	{
+		auto entity = ECS::CreateEntity();
+
+		ECS::AttachComponent<Transform>(entity);
+
+		ECS::GetComponent<Transform>(entity).SetPosition(vec3(0.f, -50.f, 0.f));
+
+		unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit();
+		ECS::SetUpIdentifier(entity, bitHolder, "tracker");
+		ECS::SetIsButton(entity, true, 0);
 	}
 }

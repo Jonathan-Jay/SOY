@@ -1,6 +1,6 @@
 #ifndef __TEXTUREMANAGER_H__
 #define __TEXTUREMANAGER_H__
-#include <vector>
+#include <Vector>
 
 #include "Texture.h"
 #include "Vector.h"
