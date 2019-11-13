@@ -2,6 +2,8 @@
 #define __TRANSFORM_H__
 #include <math.h>
 
+#define TESTING 9001.f
+
 #include "Matrix.h"
 #include "JSON.h"
 

@@ -169,14 +169,12 @@ void Game::MovementMath(int mainplayer)
 	vec3(tracker) = m_register->get<Transform>(EntityIdentifier::Button(0)).GetPosition();
 	vec2(distance) = vec2(tracker.x - CurrentPos.x, tracker.y - CurrentPos.y);
 
-	//movement = distance / distance.GetMagnitude();
+	movement = distance.Normalize() * 40.f;
 	
 	CurrentPos = CurrentPos + vec3(movement.x, movement.y, 0.f) * Timer::deltaTime;
 
-	float angle = acos(movement.y / movement.GetMagnitude());
-
-	if (movement.x > 0)		m_register->get<Transform>(mainplayer).SetRotationAngleZ(PI - angle);
-	else if(movement.x < 0)	m_register->get<Transform>(mainplayer).SetRotationAngleZ(PI + angle);
+	if (movement.x > 0)		m_register->get<Transform>(mainplayer).SetRotationAngleZ(PI - movement.GetAngle(vec2(0.f, 1.f)));
+	else if(movement.x < 0)	m_register->get<Transform>(mainplayer).SetRotationAngleZ(PI + movement.GetAngle(vec2(0.f, 1.f)));
 	else if(movement.y < 0)	m_register->get<Transform>(mainplayer).SetRotationAngleZ(0);
 	else m_register->get<Transform>(mainplayer).SetRotationAngleZ(PI);
 
