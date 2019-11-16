@@ -207,6 +207,7 @@
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="JSON.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="PixelateEffect.cpp" />
     <ClCompile Include="PostEffect.cpp" />
     <ClCompile Include="RenderingSystem.cpp" />
@@ -222,6 +223,7 @@
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="UI.cpp" />
+    <ClCompile Include="Vector.cpp" />
     <ClCompile Include="VertexManager.cpp" />
     <ClCompile Include="VignetteEffect.cpp" />
     <ClCompile Include="Window.cpp" />

@@ -53,6 +53,8 @@ public:
 	void KeyboardDown();
 	void KeyboardUp();
 
+	void MovementMath(int mainplayer);
+
 	//Mouse input
 	void MouseMotion(SDL_MouseMotionEvent evnt);
 	void MouseClick(SDL_MouseButtonEvent evnt);
