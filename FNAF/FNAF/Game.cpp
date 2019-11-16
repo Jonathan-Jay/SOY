@@ -2,6 +2,8 @@
 
 #include <random>
 
+vec2(movement) = vec2(0.f, 0.f);
+
 
 Game::~Game()
 {
@@ -122,11 +124,14 @@ void Game::CheckEvents()
 
 void Game::AcceptInput()
 {
+	int mainplayer = EntityIdentifier::MainPlayer();
+	
 	//Just calls all the other input functions 
 	KeyboardHold();
 	KeyboardDown();
 	KeyboardUp();
 
+	MovementMath(mainplayer);
 	//Resets the key flags
 	//Must be done once per frame for input to work
 	Input::ResetKeys();
@@ -135,6 +140,10 @@ void Game::AcceptInput()
 void Game::KeyboardHold()
 {
 	//Keyboard button held
+	if (Input::GetKey(Key::W) || Input::GetKey(Key::UpArrow))		movement.y += 100.f;
+	if (Input::GetKey(Key::A) || Input::GetKey(Key::LeftArrow))		movement.x -= 100.f;
+	if (Input::GetKey(Key::S) || Input::GetKey(Key::DownArrow))		movement.y -= 100.f;
+	if (Input::GetKey(Key::D) || Input::GetKey(Key::RightArrow))	movement.x += 100.f;
 }
 
 void Game::KeyboardDown()
@@ -152,6 +161,31 @@ void Game::KeyboardUp()
 		}
 		m_guiActive = !m_guiActive;
 	}
+}
+
+void Game::MovementMath(int mainplayer)
+{
+	int tracker = EntityIdentifier::Button(0);
+	vec3(CurrentPos) = m_register->get<Transform>(mainplayer).GetPosition();
+	vec3(TrackerPos) = m_register->get<Transform>(tracker).GetPosition();
+	vec2(distance) = vec2(TrackerPos.x - CurrentPos.x, TrackerPos.y - CurrentPos.y);
+
+	if (distance.GetMagnitude() > 1.f)	movement = distance.Normalize() * 100.f;
+	
+	CurrentPos = CurrentPos + vec3(movement.x, movement.y, 0.f) * Timer::deltaTime;
+
+	if (movement.x > 0)		m_register->get<Transform>(mainplayer).SetRotationAngleZ(PI - movement.GetAngle(vec2(0.f, 1.f)));
+	else if(movement.x < 0)	m_register->get<Transform>(mainplayer).SetRotationAngleZ(PI + movement.GetAngle(vec2(0.f, 1.f)));
+	else if(movement.y < 0)	m_register->get<Transform>(mainplayer).SetRotationAngleZ(0);
+	else m_register->get<Transform>(mainplayer).SetRotationAngleZ(PI);
+
+	if (CurrentPos.x > 43)	CurrentPos.x = 43;
+	if (CurrentPos.x < -43)	CurrentPos.x = -43;
+	if (CurrentPos.y > -40)	CurrentPos.y = -40;
+	if (CurrentPos.y < -93)	CurrentPos.y = -93;
+
+	m_register->get<Transform>(mainplayer).SetPosition(CurrentPos);
+	movement = vec2(0.f, 0.f);
 }
 
 void Game::MouseMotion(SDL_MouseMotionEvent evnt)
@@ -183,9 +217,13 @@ void Game::MouseClick(SDL_MouseButtonEvent evnt)
 	float windowWidth = BackEnd::GetWindowWidth();
 	float windowHeight = BackEnd::GetWindowHeight();
 	if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT)) {
-		vec3(click) = vec3(evnt.x / windowWidth * windowHeight / 3.5f - 100.f, -evnt.y / 3.5f + 100.f, 0.f);
+		vec3(click) = vec3(
+			evnt.x / windowHeight * 200.f - 100.f * windowWidth / windowHeight,
+			-evnt.y / windowHeight * 200.f + 100.f,
+			0.f);
+		m_register->get<Transform>(EntityIdentifier::Button(0)).SetPosition(click);
 
-		for (int x(0); x < 2; x++) {
+		/*for (int x(0); x < 2; x++) {
 			vec3(Pos) = click - m_register->get<Transform>(EntityIdentifier::Button(x)).GetPosition();
 
 			if (Pos.x <= m_register->get<Sprite>(EntityIdentifier::Button(x)).GetWidth() / 2.f && 
@@ -193,7 +231,7 @@ void Game::MouseClick(SDL_MouseButtonEvent evnt)
 				Pos.y <= m_register->get<Sprite>(EntityIdentifier::Button(x)).GetHeight() / 2.f &&
 				Pos.y >= -m_register->get<Sprite>(EntityIdentifier::Button(x)).GetHeight() / 2.f)
 				std::cout << x << "\n";
-		}
+		}*/
 
 	}
 
