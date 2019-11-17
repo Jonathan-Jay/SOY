@@ -168,7 +168,7 @@ void Game::MovementMath(int mainplayer)
 	vec3(TrackerPos) = m_register->get<Transform>(tracker).GetPosition();
 	vec2(distance) = vec2(TrackerPos.x - CurrentPos.x, TrackerPos.y - CurrentPos.y);
 
-	if (distance.GetMagnitude() > 1.f)	movement = distance.Normalize() * 100.f;
+	if (distance.GetMagnitude() > 0.5f)	movement = distance.Normalize() * 100.f;
 	
 	CurrentPos = CurrentPos + vec3(movement.x, movement.y, 0.f) * Timer::deltaTime;
 
@@ -189,10 +189,10 @@ void Game::MovementMath(int mainplayer)
 void Game::SetScene()
 {
 	if (onCamera && change) {
-		Set::SetUpSet(CameraChoice);
+		Set::SetUpSet(OldCameraChoice, CameraChoice);
 	}
 	else if (change) {
-		Set::UndoSet();
+		Set::UndoSet(CameraChoice);
 	}
 	change = false;
 }
@@ -245,9 +245,10 @@ void Game::MouseClick(SDL_MouseButtonEvent evnt)
 			0.f);
 		if (!onCamera)	m_register->get<Transform>(EntityIdentifier::Button(0)).SetPosition(click);
 
-		for (int x(1); x < 3; x++) {
+		for (int x(1); x <= 8; x++) {
 			if (Set::positionTesting(EntityIdentifier::Button(x), click)) {
-				std::cout << x << '\n';
+				printf("%i\n", x);
+				OldCameraChoice = CameraChoice;
 				CameraChoice = x;
 				change = true;
 			}

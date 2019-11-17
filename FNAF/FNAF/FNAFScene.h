@@ -12,8 +12,8 @@ class Set {
 public:
 	static void GetRegister(entt::registry* m_register);
 	static bool positionTesting(int entity, vec3(otherposition));
-	static void SetUpSet(int CamerChoice);
-	static void UndoSet();
+	static void SetUpSet(int OldCameraChoice, int CameraChoice);
+	static void UndoSet(int CameraChoice);
 
 private:
 	static entt::registry* m_register;
