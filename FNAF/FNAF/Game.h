@@ -55,6 +55,7 @@ public:
 	void KeyboardUp();
 
 	void MovementMath(int mainplayer);
+	void SetScene();
 
 	//Mouse input
 	void MouseMotion(SDL_MouseMotionEvent evnt);
@@ -84,6 +85,14 @@ private:
 	bool m_motion = false;
 	bool m_click = false;
 	bool m_wheel = false;
+	
+	//our stuff
+	bool onCamera = false;
+	bool change = false;
+	int CameraChoice = 1;
+	int OldCameraChoice = 1;
+	vec2(movement) = vec2(0.f, 0.f);
+	vec2(oldposition) = vec2(0.f, 0.f);
 };
 
 
