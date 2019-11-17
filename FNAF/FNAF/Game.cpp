@@ -89,6 +89,7 @@ void Game::Update()
 	Timer::Update();
 	//Update the backend
 	BackEnd::Update(m_register);
+	//characterMove();
 }
 
 void Game::GUI()

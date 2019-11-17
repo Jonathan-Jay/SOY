@@ -13,14 +13,14 @@ bool doMove(Animatronic AnimatronicName)
 	return false;
 }
 
-int positionChange(Animatronic& AnimatronicName) 
+int positionChange(Animatronic AnimatronicName)
 {
 	//if they the animatronic move position
 	//POSITION == CAMERA THAT THEY SHOULD BE ON
 
 	//DEV NOTES REMOVE BEFORE SUBMISSION(OR PATCH): Fairly certain there is a chance that no movement happens with the random
 	bool move = doMove(AnimatronicName);
-	if (move) 
+	if (move)
 	{
 		switch (AnimatronicName.position)
 		{
@@ -87,7 +87,7 @@ int positionChange(Animatronic& AnimatronicName)
 			{
 				AnimatronicName.position = 5;
 			}
-			else if (rng == 3) 
+			else if (rng == 3)
 			{
 				AnimatronicName.position = 2;
 			}
@@ -99,7 +99,6 @@ int positionChange(Animatronic& AnimatronicName)
 			break;
 		}
 	}
-
 
 	return 0;
 }

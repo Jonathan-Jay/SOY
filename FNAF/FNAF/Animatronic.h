@@ -14,9 +14,9 @@ private:
 
 };
 
-auto timeAtStart = std::chrono::system_clock::now();
+std::time_t timeAtStart = std::time(0);
 
-auto timeElapsed = std::chrono::system_clock::now() - timeAtStart;
+std::time_t timeElapsed;
 
 bool doMove(Animatronic AnimatronicName);
 
