@@ -2,8 +2,6 @@
 
 #include <random>
 
-vec2(movement) = vec2(0.f, 0.f);
-
 
 Game::~Game()
 {
@@ -47,6 +45,8 @@ void Game::InitGame()
 	//*m_activeScene = File::LoadJSON("Main Scene.json");			//if we want to load a JSON
 
 	m_register = m_activeScene->GetScene();
+
+	Set::GetRegister(m_register);
 }
 
 bool Game::Run()
@@ -78,6 +78,8 @@ bool Game::Run()
 			//Accept all input
 			AcceptInput();
 		}
+
+		SetScene();
 	}
 
 	return true;
@@ -140,10 +142,6 @@ void Game::AcceptInput()
 void Game::KeyboardHold()
 {
 	//Keyboard button held
-	if (Input::GetKey(Key::W) || Input::GetKey(Key::UpArrow))		movement.y += 100.f;
-	if (Input::GetKey(Key::A) || Input::GetKey(Key::LeftArrow))		movement.x -= 100.f;
-	if (Input::GetKey(Key::S) || Input::GetKey(Key::DownArrow))		movement.y -= 100.f;
-	if (Input::GetKey(Key::D) || Input::GetKey(Key::RightArrow))	movement.x += 100.f;
 }
 
 void Game::KeyboardDown()
@@ -188,6 +186,17 @@ void Game::MovementMath(int mainplayer)
 	movement = vec2(0.f, 0.f);
 }
 
+void Game::SetScene()
+{
+	if (onCamera && change) {
+		Set::SetUpSet(CameraChoice);
+	}
+	else if (change) {
+		Set::UndoSet();
+	}
+	change = false;
+}
+
 void Game::MouseMotion(SDL_MouseMotionEvent evnt)
 {
 	if (m_guiActive)
@@ -199,6 +208,19 @@ void Game::MouseMotion(SDL_MouseMotionEvent evnt)
 
 		}
 	}
+
+	vec3(playerPos) = m_register->get<Transform>(EntityIdentifier::MainPlayer()).GetPosition();
+
+	if (oldposition.y - 10 <= evnt.y && evnt.y >= BackEnd::GetWindowHeight() - 4 &&
+		playerPos.y >= -41 && playerPos.x < 20 && playerPos.x > -20 && !onCamera)
+	{
+		printf("Camera On!\n");
+		m_register->get<Transform>(EntityIdentifier::Button(0)).SetPosition(playerPos);
+		change = true;
+		onCamera = true;
+	}
+
+	oldposition = vec2(float(evnt.x), float(evnt.y));
 
 	//Resets the enabled flag
 	m_motion = false;
@@ -221,18 +243,22 @@ void Game::MouseClick(SDL_MouseButtonEvent evnt)
 			evnt.x / windowHeight * 200.f - 100.f * windowWidth / windowHeight,
 			-evnt.y / windowHeight * 200.f + 100.f,
 			0.f);
-		m_register->get<Transform>(EntityIdentifier::Button(0)).SetPosition(click);
+		if (!onCamera)	m_register->get<Transform>(EntityIdentifier::Button(0)).SetPosition(click);
 
-		/*for (int x(0); x < 2; x++) {
-			vec3(Pos) = click - m_register->get<Transform>(EntityIdentifier::Button(x)).GetPosition();
+		for (int x(1); x < 3; x++) {
+			if (Set::positionTesting(EntityIdentifier::Button(x), click)) {
+				std::cout << x << '\n';
+				CameraChoice = x;
+				change = true;
+			}
+		}
 
-			if (Pos.x <= m_register->get<Sprite>(EntityIdentifier::Button(x)).GetWidth() / 2.f && 
-				Pos.x >= -m_register->get<Sprite>(EntityIdentifier::Button(x)).GetWidth() / 2.f && 
-				Pos.y <= m_register->get<Sprite>(EntityIdentifier::Button(x)).GetHeight() / 2.f &&
-				Pos.y >= -m_register->get<Sprite>(EntityIdentifier::Button(x)).GetHeight() / 2.f)
-				std::cout << x << "\n";
-		}*/
+	}
 
+	if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_RIGHT)) {
+		printf("Camera Off!\n");
+		onCamera = false;
+		change = true;
 	}
 
 	//Resets the enabled flag

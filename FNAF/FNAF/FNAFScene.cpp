@@ -1,5 +1,7 @@
 #include "FNAFScene.h"
 
+entt::registry* Set::m_register = nullptr;
+
 FNAF::FNAF(std::string name)
 	: Scene(name)
 {
@@ -55,6 +57,7 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 
 		unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit();
 		ECS::SetUpIdentifier(entity, bitHolder, "room");
+		ECS::SetIsButton(entity, true, 2);
 	}
 
 	{
@@ -71,6 +74,7 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 		unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit();
 		ECS::SetUpIdentifier(entity, bitHolder, "player");
 		ECS::SetIsMainPlayer(entity, true);
+		ECS::SetIsButton(entity, true, 1);
 	}
 
 	{
@@ -84,4 +88,32 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 		ECS::SetUpIdentifier(entity, bitHolder, "tracker");
 		ECS::SetIsButton(entity, true, 0);
 	}
+}
+
+bool Set::positionTesting(int entity, vec3(otherposition))
+{
+	vec3(Pos) = otherposition - m_register->get<Transform>(entity).GetPosition();
+
+	if (Pos.x <= m_register->get<Sprite>(entity).GetWidth() / 2.f &&
+		Pos.x >= -m_register->get<Sprite>(entity).GetWidth() / 2.f &&
+		Pos.y <= m_register->get<Sprite>(entity).GetHeight() / 2.f &&
+		Pos.y >= -m_register->get<Sprite>(entity).GetHeight() / 2.f)
+	{
+		return true;
+	}
+	
+	return false;
+}
+
+void Set::SetUpSet(int CamerChoice)
+{
+}
+
+void Set::UndoSet()
+{
+}
+
+void Set::GetRegister(entt::registry* m_reg)
+{
+	m_register = m_reg;
 }
