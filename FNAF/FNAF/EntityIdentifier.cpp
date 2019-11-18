@@ -2,7 +2,7 @@
 
 unsigned int EntityIdentifier::m_mainCamera = 0;
 unsigned int EntityIdentifier::m_mainPlayer = 0;
-unsigned int EntityIdentifier::m_button[20] = {};
+unsigned int EntityIdentifier::m_button[70] = {};
 
 unsigned int EntityIdentifier::m_cameraBit			= 0x1;
 unsigned int EntityIdentifier::m_spriteBit			= 0x10;

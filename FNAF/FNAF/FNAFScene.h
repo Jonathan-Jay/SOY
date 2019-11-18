@@ -18,4 +18,5 @@ public:
 
 private:
 	static entt::registry* m_register;
+	static bool settingup;
 };
