@@ -91,8 +91,11 @@ private:
 	bool leftButton[2] = {};
 	bool isAnimatronicInRoom[4] = {};
 	bool isButtonPressed[4] = {};
+
 	int CameraChoice = 1;
 	int OldCameraChoice = 1;
+	float counter = 0;
+	float wait = 5;
 	vec2(movement) = vec2(0.f, 0.f);
 	vec2(oldposition) = vec2(0.f, 0.f);
 };

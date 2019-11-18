@@ -187,7 +187,6 @@ void Game::MovementMath(int mainplayer)
 	m_register->get<Transform>(mainplayer).SetPosition(CurrentPos);
 
 	//Button testing
-
 	for (int x(1); x <= 4; x++) {
 		if (Set::positionTesting(EntityIdentifier::Button(10 * x), CurrentPos, true)) {
 			if (x > 2 && leftButton[x - 3]) {
@@ -224,11 +223,19 @@ void Game::SetScene()
 		Set::UndoSet(CameraChoice);
 	}
 
-	//decide what to do here
-	if (isButtonPressed[0])	printf("left\n");
-	if (isButtonPressed[1])	printf("right\n");
-	if (isButtonPressed[2])	printf("door left\n");
-	if (isButtonPressed[3])	printf("door right\n");
+	//changes animation for buttons
+	for (int x(0); x < 2; x++) {
+		m_register->get<AnimationController>(EntityIdentifier::Button(10 * (x + 1) )).SetActiveAnim(isButtonPressed[x]);
+		if (counter > wait) {
+			m_register->get<AnimationController>(EntityIdentifier::Button(19 + 10 * x)).SetActiveAnim(0);
+			counter = 0;
+			wait = rand() % 10 / 10.f + 0.1f;
+		}
+		else m_register->get<AnimationController>(EntityIdentifier::Button(19 + 10 * x)).SetActiveAnim(isButtonPressed[x]);
+		m_register->get<AnimationController>(EntityIdentifier::Button(30 * (x + 1) )).SetActiveAnim(isButtonPressed[x + 2]);
+		m_register->get<AnimationController>(EntityIdentifier::Button(50 + 10 * x)).SetActiveAnim(isButtonPressed[x + 2]);
+		counter += Timer::deltaTime;
+	}
 
 	change = false;
 }

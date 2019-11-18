@@ -16,6 +16,7 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 
 	float aspectRatio = windowWidth / windowHeight;
 
+#pragma region camera
 	{
 		auto entity = ECS::CreateEntity();
 
@@ -29,22 +30,9 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 		ECS::SetUpIdentifier(entity, bitHolder, "Camera");
 		ECS::SetIsMainCamera(entity, true);
 	}
+#pragma endregion
 
-	/*
-	{
-		auto entity = ECS::CreateEntity();
-
-		ECS::AttachComponent<Sprite>(entity);
-		ECS::AttachComponent<Transform>(entity);
-
-		std::string filename = "filename";
-		ECS::GetComponent<Sprite>(entity).LoadSprite(filename, sizex, sizey);
-
-		ECS::GetComponent<Transform>(entity).SetPosition(vec3(x.f, y.f, z.f));
-
-		unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit();
-		ECS::SetUpIdentifier(entity, bitHolder, "name");
-	*/
+#pragma region office
 	{
 		auto entity = ECS::CreateEntity();
 
@@ -59,7 +47,9 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 		unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit();
 		ECS::SetUpIdentifier(entity, bitHolder, "room");
 	}
+#pragma endregion
 
+#pragma region player
 	{
 		auto entity = ECS::CreateEntity();
 
@@ -75,7 +65,9 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 		ECS::SetUpIdentifier(entity, bitHolder, "player");
 		ECS::SetIsMainPlayer(entity, true);
 	}
+#pragma endregion
 
+#pragma region tracker
 	{
 		auto entity = ECS::CreateEntity();
 
@@ -87,7 +79,9 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 		ECS::SetUpIdentifier(entity, bitHolder, "tracker");
 		ECS::SetIsButton(entity, true, 0);
 	}
+#pragma endregion
 
+#pragma region map
 	{
 		auto entity = ECS::CreateEntity();
 
@@ -103,33 +97,125 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 		ECS::SetUpIdentifier(entity, bitHolder, "map");
 		ECS::SetIsButton(entity, true, 9);
 	}
+#pragma endregion
 
+	//so that we can mass spawn without filling the cpp
 	for (int x(1); x <= 8; x++) {
-		if (x <= 4)
+		
+#pragma region wall buttons doors & lights
+		if (x <= 6)		//wall buttons and doors (10 - 60)
 		{
 			auto entity = ECS::CreateEntity();
 
 			ECS::AttachComponent<Sprite>(entity);
 			ECS::AttachComponent<Transform>(entity);
+			ECS::AttachComponent<AnimationController>(entity);
 
-			std::string filename = "button.png";
-			ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 4, 8);
+			std::string filename;
+			if (x <= 2)			filename = "light button.png";
+			else if (x <= 4)	filename = "door button.png";
+			else				filename = "door.png";
 
-			unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit();
+			auto& animController = ECS::GetComponent<AnimationController>(entity);
+			animController.InitUVs(filename);
+
+			animController.AddAnimation(Animation());
+			animController.AddAnimation(Animation());
+
+			animController.SetActiveAnim(0);
+
+			auto& anim = animController.GetAnimation(0);
+			if (x <= 4)		anim.AddFrame(vec2(0, 2), vec2(0, 0));
+			else			anim.AddFrame(vec2(5, 12), vec2(8, 0));
+
+			anim.SetRepeating(false);
+			anim.SetSecPerFrame(0.1f);
+
+			auto& anim2 = animController.GetAnimation(1);
+			if (x <= 4)		anim2.AddFrame(vec2(1, 2), vec2(1, 0));
+			else			anim2.AddFrame(vec2(0, 12), vec2(4, 0));
+
+			anim2.SetRepeating(false);
+			anim2.SetSecPerFrame(0.1f);
+
+			if (x <= 4)
+				ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 4, 8, true, &animController);
+			else
+				ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 13, 25, true, &animController);
+
+
+			unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit() | EntityIdentifier::AnimationBit();
+
 			switch (x) {
 			case 1:		ECS::SetUpIdentifier(entity, bitHolder, "light button left");
-						ECS::GetComponent<Transform>(entity).SetPosition(vec3(-48.5f, -44.f, 0.f));	break;
+						ECS::GetComponent<Transform>(entity).SetPosition(vec3(-48.2f, -47.f, 0.f));
+						break;
 			case 2:		ECS::SetUpIdentifier(entity, bitHolder, "light button right");
-						ECS::GetComponent<Transform>(entity).SetPosition(vec3(48.5f, -44.f, 0.f)); break;
+						ECS::GetComponent<Transform>(entity).SetPosition(vec3(48.2f, -47.f, 0.f));
+						break;
 			case 3:		ECS::SetUpIdentifier(entity, bitHolder, "door button left");
-				ECS::GetComponent<Transform>(entity).SetPosition(vec3(-48.5f, -92.f, 0.f)); break;
+						ECS::GetComponent<Transform>(entity).SetPosition(vec3(-48.2f, -90.f, 0.f));
+						break;
 			case 4:		ECS::SetUpIdentifier(entity, bitHolder, "door button right");
-				ECS::GetComponent<Transform>(entity).SetPosition(vec3(48.5f, -92.f, 0.f)); break;
+						ECS::GetComponent<Transform>(entity).SetPosition(vec3(48.2f, -90.f, 0.f));
+						break;
+			case 5:		ECS::SetUpIdentifier(entity, bitHolder, "door left");
+						ECS::GetComponent<Transform>(entity).SetPosition(vec3(-57.f, -68.5f, 0.f));
+						break;
+			case 6:		ECS::SetUpIdentifier(entity, bitHolder, "door right");
+						ECS::GetComponent<Transform>(entity).SetPosition(vec3(57.f, -68.5f, 0.f));
+						break;
 			default:	break;
 			}
+
 			ECS::SetIsButton(entity, true, 10 * x);
 		}
-		
+		else	//lights (19, 29)
+		{
+			auto entity = ECS::CreateEntity();
+
+			ECS::AttachComponent<Sprite>(entity);
+			ECS::AttachComponent<Transform>(entity);
+			ECS::AttachComponent<AnimationController>(entity);
+
+			std::string filename = "light.png";
+
+			auto& animController = ECS::GetComponent<AnimationController>(entity);
+			animController.InitUVs(filename);
+
+			animController.AddAnimation(Animation());
+			animController.AddAnimation(Animation());
+
+			animController.SetActiveAnim(0);
+
+			auto& anim = animController.GetAnimation(0);
+			anim.AddFrame(vec2(0, 1), vec2(0, 0));
+
+			anim.SetRepeating(false);
+			anim.SetSecPerFrame(0.1f);
+
+			auto& anim2 = animController.GetAnimation(1);
+			anim2.AddFrame(vec2(1, 1), vec2(1, 0));
+
+			anim2.SetRepeating(false);
+			anim2.SetSecPerFrame(0.1f);
+
+			ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 36, 200, true, &animController);
+			unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit() | EntityIdentifier::AnimationBit();
+			if (x == 7) {
+				ECS::SetUpIdentifier(entity, bitHolder, "light left");
+				ECS::GetComponent<Transform>(entity).SetPosition(vec3(-82.f, 0.f, 0.f));
+				ECS::SetIsButton(entity, true, 19);
+			}
+			else {
+				ECS::SetUpIdentifier(entity, bitHolder, "light right");
+				ECS::GetComponent<Transform>(entity).SetPosition(vec3(82.f, 0.f, 0.f));
+				ECS::SetIsButton(entity, true, 29);
+			}
+		}
+#pragma endregion
+
+#pragma region camera buttons
 		{
 			auto entity = ECS::CreateEntity();
 
@@ -178,7 +264,9 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 			ECS::SetUpIdentifier(entity, bitHolder, "button " + std::to_string(x));
 			ECS::SetIsButton(entity, true, x);
 		}
-		
+#pragma endregion
+
+#pragma region camera rooms
 		{
 			auto entity = ECS::CreateEntity();
 
@@ -195,7 +283,9 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 			ECS::SetUpIdentifier(entity, bitHolder, "room " + std::to_string(x));
 			ECS::SetIsButton(entity, true, x + 10);
 		}
+#pragma endregion
 
+		//animatronic summoning
 		/*{
 			auto entity = ECS::CreateEntity();
 
@@ -206,7 +296,7 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 			
 			ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 200, 200);
 
-			ECS::GetComponent<Transform>(entity).SetPosition(vec3(0.f, 500.f, 25.f));
+			ECS::GetComponent<Transform>(entity).SetPosition(vec3(0.f, 500.f, 30.f));
 
 			unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit();
 			ECS::SetUpIdentifier(entity, bitHolder, "bonnie room " + std::to_string(x));
@@ -223,7 +313,7 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 			
 			ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 200, 200);
 
-			ECS::GetComponent<Transform>(entity).SetPosition(vec3(0.f, 500.f, 25.f));
+			ECS::GetComponent<Transform>(entity).SetPosition(vec3(0.f, 500.f, 31.f));
 
 			unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit();
 			ECS::SetUpIdentifier(entity, bitHolder, "freddy room " + std::to_string(x));
@@ -240,10 +330,27 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 			
 			ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 200, 200);
 
-			ECS::GetComponent<Transform>(entity).SetPosition(vec3(0.f, 500.f, 25.f));
+			ECS::GetComponent<Transform>(entity).SetPosition(vec3(0.f, 500.f, 32.f));
 
 			unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit();
 			ECS::SetUpIdentifier(entity, bitHolder, "chica room " + std::to_string(x));
+			ECS::SetIsButton(entity, true, x + 40);
+		}
+
+		{
+			auto entity = ECS::CreateEntity();
+
+			ECS::AttachComponent<Sprite>(entity);
+			ECS::AttachComponent<Transform>(entity);
+
+			std::string filename = "/rooms/foxy/" + std::to_string(x) + ".png";
+			
+			ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 200, 200);
+
+			ECS::GetComponent<Transform>(entity).SetPosition(vec3(0.f, 500.f, 32.f));
+
+			unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit();
+			ECS::SetUpIdentifier(entity, bitHolder, "foxy room " + std::to_string(x));
 			ECS::SetIsButton(entity, true, x + 40);
 		}*/
 	}
@@ -257,8 +364,8 @@ bool Set::positionTesting(int entity, vec3(otherposition), bool isPlayer)
 	if (isPlayer) {
 		if (Pos.x <= 5 + m_register->get<Sprite>(entity).GetWidth() / 2.f &&
 			Pos.x >= -(5 + m_register->get<Sprite>(entity).GetWidth() / 2.f) &&
-			Pos.y <= +m_register->get<Sprite>(entity).GetHeight() / 2.f &&
-			Pos.y >= -m_register->get<Sprite>(entity).GetHeight() / 2.f)
+			Pos.y <= 1 + m_register->get<Sprite>(entity).GetHeight() / 2.f &&
+			Pos.y >= -(1 + m_register->get<Sprite>(entity).GetHeight() / 2.f) )
 		{
 			return true;
 		}
@@ -286,7 +393,7 @@ void Set::SetUpSet(int OldCameraChoice, int CameraChoice, bool isAnim[4])
 	m_register->get<Transform>(EntityIdentifier::Button(OldCameraChoice + 10)).SetPosition(vec3(0, 500, 25));
 	m_register->get<Transform>(EntityIdentifier::Button(CameraChoice + 10)).SetPosition(vec3(0, 0, 25));
 
-	//Animatronics
+	//Animatronics are numbered 20 - 60 + room number
 	//0 is for 
 	//1 is for 
 	//2 is for 
