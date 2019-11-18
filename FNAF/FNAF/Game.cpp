@@ -199,6 +199,8 @@ void Game::SetScene()
 	change = false;
 	//runing whether to move the characters or not
 	Animatronic::changePosition();
+	//Uh this is because there is no void Start() Like in unity
+	initializeAnimatronics();
 }
 
 void Game::MouseMotion(SDL_MouseMotionEvent evnt)

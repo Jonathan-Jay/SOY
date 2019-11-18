@@ -5,6 +5,29 @@ Animatronic Bonnie;
 Animatronic Foxy;
 int timeStart = time(0);
 int timeAfter;
+bool isRun = true;
+
+void initializeAnimatronics() //To initialize all of the animatronics things
+{
+	if (isRun)
+	{
+		isRun = false;
+		//Initializing the number
+		Freddy.animatronicNB = 0;
+		Chica.animatronicNB = 1;
+		Bonnie.animatronicNB = 2;
+		Foxy.animatronicNB = 3;
+		//foxy's position is different than the rest of the animatronic
+		Foxy.position = 1;
+		//difficulty
+		Freddy.difficulty = 10;
+		Chica.difficulty = 10;
+		Bonnie.difficulty = 10;
+		Foxy.difficulty = 10;
+
+	}
+
+}
 
 //Return true if the animatronic is ok to move, else false -> don't move.
 bool doMove(Animatronic& AnimatronicName)
@@ -49,7 +72,7 @@ int positionChange(Animatronic& AnimatronicName)
 				AnimatronicName.position = 6;
 			}
 			break;
-	
+
 		case 3:
 			AnimatronicName.position = 8;
 			break;
@@ -110,18 +133,17 @@ int positionChange(Animatronic& AnimatronicName)
 	return 0;
 }
 
-	void Animatronic::changePosition()
+void Animatronic::changePosition()
+{
+	timeAfter = std::time(0) - timeStart;
+	int timeBetween = 5; //Five seconds for an example
+	if (timeAfter >= timeBetween)
 	{
-		timeAfter = std::time(0) - timeStart;
-		int timeBetween = 5; //Five seconds for an example
-		if (timeAfter >= timeBetween)
-		{
-			positionChange(Freddy);
-			positionChange(Chica);
-			positionChange(Bonnie);
-			timeAfter = std::time(0);
-		}
-		//Foxy is a special case
-		//Same with golden freddy
+		positionChange(Freddy);
+		positionChange(Chica);
+		positionChange(Bonnie);
+		timeAfter = std::time(0);
 	}
-	
+	//Foxy is a special case
+	//Same with golden freddy
+}
