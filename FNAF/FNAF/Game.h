@@ -3,7 +3,6 @@
 
 #include "BackEnd.h"
 #include "FNAFScene.h"
-#include "AnimatronicMove.h"
 
 //Our main class for running our game
 class Game

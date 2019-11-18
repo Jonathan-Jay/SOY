@@ -1,7 +1,13 @@
 #include "Animatronic.h"
+Animatronic Freddy;
+Animatronic Chica;
+Animatronic Bonnie;
+Animatronic Foxy;
+int timeStart = time(0);
+int timeAfter;
 
 //Return true if the animatronic is ok to move, else false -> don't move.
-bool doMove(Animatronic AnimatronicName)
+bool doMove(Animatronic& AnimatronicName)
 {
 	srand(time(NULL));
 	int random = rand();
@@ -13,13 +19,14 @@ bool doMove(Animatronic AnimatronicName)
 	return false;
 }
 
-int positionChange(Animatronic AnimatronicName)
+int positionChange(Animatronic& AnimatronicName)
 {
 	//if they the animatronic move position
 	//POSITION == CAMERA THAT THEY SHOULD BE ON
 
 	//DEV NOTES REMOVE BEFORE SUBMISSION(OR PATCH): Fairly certain there is a chance that no movement happens with the random
 	bool move = doMove(AnimatronicName);
+	int rng;
 	if (move)
 	{
 		switch (AnimatronicName.position)
@@ -28,7 +35,7 @@ int positionChange(Animatronic AnimatronicName)
 			AnimatronicName.position = 8;
 			break;
 		case 2:
-			int rng = rand() % 3;
+			rng = rand() % 3;
 			if (rng == 1)
 			{
 				AnimatronicName.position = 8;
@@ -42,7 +49,7 @@ int positionChange(Animatronic AnimatronicName)
 				AnimatronicName.position = 6;
 			}
 			break;
-
+	
 		case 3:
 			AnimatronicName.position = 8;
 			break;
@@ -50,7 +57,7 @@ int positionChange(Animatronic AnimatronicName)
 			AnimatronicName.position = 2;
 			break;
 		case 5:
-			int rng = rand() % 2;
+			rng = rand() % 2;
 			if (rng == 1)
 			{
 				AnimatronicName.position = 8;
@@ -61,7 +68,7 @@ int positionChange(Animatronic AnimatronicName)
 			}
 			break;
 		case 6:
-			int rng = rand() % 3;
+			rng = rand() % 3;
 			if (rng == 1)
 			{
 				AnimatronicName.position = 2;
@@ -78,7 +85,7 @@ int positionChange(Animatronic AnimatronicName)
 		case 7:
 			break;
 		case 8:
-			int rng = rand() % 3;
+			rng = rand() % 3;
 			if (rng == 1)
 			{
 				AnimatronicName.position = 1;
@@ -102,3 +109,19 @@ int positionChange(Animatronic AnimatronicName)
 
 	return 0;
 }
+
+	void Animatronic::changePosition()
+	{
+		timeAfter = std::time(0) - timeStart;
+		int timeBetween = 5; //Five seconds for an example
+		if (timeAfter >= timeBetween)
+		{
+			positionChange(Freddy);
+			positionChange(Chica);
+			positionChange(Bonnie);
+			timeAfter = std::time(0);
+		}
+		//Foxy is a special case
+		//Same with golden freddy
+	}
+	

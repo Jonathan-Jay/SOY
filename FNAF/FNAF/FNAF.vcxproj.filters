@@ -153,9 +153,6 @@
     <ClInclude Include="Map.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AnimatronicMove.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AnimationController.cpp">
@@ -288,12 +285,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Animatronic.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Map.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="AnimatronicMove.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

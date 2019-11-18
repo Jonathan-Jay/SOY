@@ -1,4 +1,5 @@
 #pragma once
+#include "Animatronic.h"
 #include "Game.h"
 
 class FNAF : public Scene

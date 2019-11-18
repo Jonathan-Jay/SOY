@@ -1,4 +1,5 @@
 #include "Game.h"
+//#include "Animatronic.h"
 
 #include <random>
 
@@ -91,7 +92,7 @@ void Game::Update()
 	Timer::Update();
 	//Update the backend
 	BackEnd::Update(m_register);
-	//characterMove();
+	
 }
 
 void Game::GUI()
@@ -196,6 +197,8 @@ void Game::SetScene()
 		Set::UndoSet(CameraChoice);
 	}
 	change = false;
+	//runing whether to move the characters or not
+	Animatronic::changePosition();
 }
 
 void Game::MouseMotion(SDL_MouseMotionEvent evnt)
