@@ -69,7 +69,7 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 		std::string filename = "player.png";
 		ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 25, 15);
 
-		ECS::GetComponent<Transform>(entity).SetPosition(vec3(0.f, -50.f, 0.f));
+		ECS::GetComponent<Transform>(entity).SetPosition(vec3(0.f, -50.f, 10.f));
 
 		unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit();
 		ECS::SetUpIdentifier(entity, bitHolder, "player");
@@ -105,6 +105,31 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 	}
 
 	for (int x(1); x <= 8; x++) {
+		if (x <= 4)
+		{
+			auto entity = ECS::CreateEntity();
+
+			ECS::AttachComponent<Sprite>(entity);
+			ECS::AttachComponent<Transform>(entity);
+
+			std::string filename = "button.png";
+			ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 4, 8);
+
+			unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit();
+			switch (x) {
+			case 1:		ECS::SetUpIdentifier(entity, bitHolder, "light button left");
+						ECS::GetComponent<Transform>(entity).SetPosition(vec3(-48.5f, -44.f, 0.f));	break;
+			case 2:		ECS::SetUpIdentifier(entity, bitHolder, "light button right");
+						ECS::GetComponent<Transform>(entity).SetPosition(vec3(48.5f, -44.f, 0.f)); break;
+			case 3:		ECS::SetUpIdentifier(entity, bitHolder, "door button left");
+				ECS::GetComponent<Transform>(entity).SetPosition(vec3(-48.5f, -92.f, 0.f)); break;
+			case 4:		ECS::SetUpIdentifier(entity, bitHolder, "door button right");
+				ECS::GetComponent<Transform>(entity).SetPosition(vec3(48.5f, -92.f, 0.f)); break;
+			default:	break;
+			}
+			ECS::SetIsButton(entity, true, 10 * x);
+		}
+		
 		{
 			auto entity = ECS::CreateEntity();
 
@@ -226,14 +251,22 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 
 }
 
-bool Set::positionTesting(int entity, vec3(otherposition))
+bool Set::positionTesting(int entity, vec3(otherposition), bool isPlayer)
 {
 	vec3(Pos) = otherposition - m_register->get<Transform>(entity).GetPosition();
-
-	if (Pos.x <= m_register->get<Sprite>(entity).GetWidth() / 2.f &&
-		Pos.x >= -m_register->get<Sprite>(entity).GetWidth() / 2.f &&
-		Pos.y <= m_register->get<Sprite>(entity).GetHeight() / 2.f &&
-		Pos.y >= -m_register->get<Sprite>(entity).GetHeight() / 2.f)
+	if (isPlayer) {
+		if (Pos.x <= 5 + m_register->get<Sprite>(entity).GetWidth() / 2.f &&
+			Pos.x >= -(5 + m_register->get<Sprite>(entity).GetWidth() / 2.f) &&
+			Pos.y <= +m_register->get<Sprite>(entity).GetHeight() / 2.f &&
+			Pos.y >= -m_register->get<Sprite>(entity).GetHeight() / 2.f)
+		{
+			return true;
+		}
+	}
+	else if (Pos.x <= m_register->get<Sprite>(entity).GetWidth() / 2.f &&
+			Pos.x >= -m_register->get<Sprite>(entity).GetWidth() / 2.f &&
+			Pos.y <= m_register->get<Sprite>(entity).GetHeight() / 2.f &&
+			Pos.y >= -m_register->get<Sprite>(entity).GetHeight() / 2.f)
 	{
 		return true;
 	}
@@ -241,7 +274,7 @@ bool Set::positionTesting(int entity, vec3(otherposition))
 	return false;
 }
 
-void Set::SetUpSet(int OldCameraChoice, int CameraChoice)
+void Set::SetUpSet(int OldCameraChoice, int CameraChoice, bool isAnim[4])
 {
 	//button reseting
 	auto& temp = m_register->get<AnimationController>(EntityIdentifier::Button(OldCameraChoice));
@@ -252,6 +285,17 @@ void Set::SetUpSet(int OldCameraChoice, int CameraChoice)
 	//Scene organisation here (CameraChoice is current, OldCameraChoice is previous), add 10 for rooms
 	m_register->get<Transform>(EntityIdentifier::Button(OldCameraChoice + 10)).SetPosition(vec3(0, 500, 25));
 	m_register->get<Transform>(EntityIdentifier::Button(CameraChoice + 10)).SetPosition(vec3(0, 0, 25));
+
+	//Animatronics
+	//0 is for 
+	//1 is for 
+	//2 is for 
+	//3 is for 
+	/*for (int x(0); x < 4; x++) {
+		if (isAnim[x] == true) {
+			m_register->get<Transform>(EntityIdentifier::Button(CameraChoice + 10 * (x + 1))).SetPosition(vec3(0, 0, 30));
+		}
+	}*/
 
 	//map
 	m_register->get<Transform>(EntityIdentifier::Button(9)).SetPosition(vec3(50, -50, 40.f));
@@ -268,9 +312,14 @@ void Set::SetUpSet(int OldCameraChoice, int CameraChoice)
 
 void Set::UndoSet(int CameraChoice)
 {
-	for (int x(1); x <= 8; x++) {
-		vec3 temp = m_register->get<Transform>(EntityIdentifier::Button(x)).GetPosition();
-		m_register->get<Transform>(EntityIdentifier::Button(x)).SetPosition(vec3(temp.x, temp.y + 500, 50));
+	if (!settingup) {
+		for (int x(1); x <= 8; x++) {
+			vec3 temp = m_register->get<Transform>(EntityIdentifier::Button(x)).GetPosition();
+			m_register->get<Transform>(EntityIdentifier::Button(x)).SetPosition(vec3(temp.x, temp.y + 500, 50));
+			/*for (int y(2); y < 5; y++) {
+				m_register->get<Transform>(EntityIdentifier::Button(10 * y + x)).SetPosition(vec3(0, 500, 50));
+			}*/
+		}
 	}
 	m_register->get<Transform>(EntityIdentifier::Button(CameraChoice + 10)).SetPosition(vec3(0, 500, 25));
 	m_register->get<Transform>(EntityIdentifier::Button(9)).SetPosition(vec3(50, 500, 40));

@@ -88,6 +88,9 @@ private:
 	//our stuff
 	bool onCamera = false;
 	bool change = false;
+	bool leftButton[2] = {};
+	bool isAnimatronicInRoom[4] = {};
+	bool isButtonPressed[4] = {};
 	int CameraChoice = 1;
 	int OldCameraChoice = 1;
 	vec2(movement) = vec2(0.f, 0.f);

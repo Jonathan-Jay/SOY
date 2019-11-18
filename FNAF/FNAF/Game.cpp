@@ -170,7 +170,7 @@ void Game::MovementMath(int mainplayer)
 	vec3(TrackerPos) = m_register->get<Transform>(tracker).GetPosition();
 	vec2(distance) = vec2(TrackerPos.x - CurrentPos.x, TrackerPos.y - CurrentPos.y);
 
-	if (distance.GetMagnitude() > 0.5f)	movement = distance.Normalize() * 100.f;
+	if (distance.GetMagnitude() > 0.5f)	movement = distance.Normalize() * 150.f;
 	
 	CurrentPos = CurrentPos + vec3(movement.x, movement.y, 0.f) * Timer::deltaTime;
 
@@ -185,20 +185,52 @@ void Game::MovementMath(int mainplayer)
 	if (CurrentPos.y < -93)	CurrentPos.y = -93;
 
 	m_register->get<Transform>(mainplayer).SetPosition(CurrentPos);
+
+	//Button testing
+
+	for (int x(1); x <= 4; x++) {
+		if (Set::positionTesting(EntityIdentifier::Button(10 * x), CurrentPos, true)) {
+			if (x > 2 && leftButton[x - 3]) {
+				leftButton[x - 3] = false;
+				if (isButtonPressed[x - 1]) {
+					isButtonPressed[x - 1] = false;
+				}
+				else isButtonPressed[x - 1] = true;
+			}
+			else if (x < 3) {
+				isButtonPressed[x - 1] = true;
+			}
+		}
+		else if (x < 3) {
+			isButtonPressed[x - 1] = false;
+		}
+		else {
+			leftButton[x - 3] = true;
+		}
+	}
+
 	movement = vec2(0.f, 0.f);
 }
 
 void Game::SetScene()
 {
+	//runing whether to move the characters or not
+	Animatronic::changePosition();
+
 	if (onCamera && change) {
-		Set::SetUpSet(OldCameraChoice, CameraChoice);
+		Set::SetUpSet(OldCameraChoice, CameraChoice, isAnimatronicInRoom);
 	}
 	else if (change) {
 		Set::UndoSet(CameraChoice);
 	}
+
+	//decide what to do here
+	if (isButtonPressed[0])	printf("left\n");
+	if (isButtonPressed[1])	printf("right\n");
+	if (isButtonPressed[2])	printf("door left\n");
+	if (isButtonPressed[3])	printf("door right\n");
+
 	change = false;
-	//runing whether to move the characters or not
-	Animatronic::changePosition();
 }
 
 void Game::MouseMotion(SDL_MouseMotionEvent evnt)
