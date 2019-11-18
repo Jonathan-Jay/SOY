@@ -211,7 +211,7 @@ void Game::MouseMotion(SDL_MouseMotionEvent evnt)
 
 	vec3(playerPos) = m_register->get<Transform>(EntityIdentifier::MainPlayer()).GetPosition();
 
-	if (oldposition.y - 10 <= evnt.y && evnt.y >= BackEnd::GetWindowHeight() - 4 &&
+	if (oldposition.y + 10 <= evnt.y && evnt.y >= BackEnd::GetWindowHeight() - 4 &&
 		playerPos.y >= -41 && playerPos.x < 20 && playerPos.x > -20 && !onCamera)
 	{
 		printf("Camera On!\n");
@@ -256,7 +256,7 @@ void Game::MouseClick(SDL_MouseButtonEvent evnt)
 
 	}
 
-	if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_RIGHT)) {
+	if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_RIGHT) && onCamera) {
 		printf("Camera Off!\n");
 		onCamera = false;
 		change = true;

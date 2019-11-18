@@ -65,8 +65,8 @@ private:
 	static unsigned int m_mainCamera;
 	bool m_isMainCamera = false;
 	
-	static unsigned int m_button[20];
-	bool m_isButton[20] = {};
+	static unsigned int m_button[70];
+	bool m_isButton[70] = {};
 
 
 	//Stores the entity number
@@ -103,7 +103,7 @@ inline void to_json(nlohmann::json& j, const EntityIdentifier& id)
 	//Stores whether or not this is the main player
 	j["MainPlayer"] = id.GetIsMainPlayer();
 
-	for (int x(0); x < 20; x++) {
+	for (int x(0); x < 70; x++) {
 		j["Button" + std::to_string(x)] = id.GetIsButton(x);
 	}
 
@@ -123,7 +123,7 @@ inline void from_json(const nlohmann::json& j, EntityIdentifier& id)
 	//Grabs whether or not this is the main player
 	id.SetIsMainPlayer(j["MainPlayer"]);
 
-	for (int x(0); x < 20; x++) {
+	for (int x(0); x < 70; x++) {
 		id.SetIsButton(j["Button" + std::to_string(x)], x);
 	}
 
