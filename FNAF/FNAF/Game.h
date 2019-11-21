@@ -53,6 +53,9 @@ public:
 	void KeyboardDown();
 	void KeyboardUp();
 
+	void MovementMath(int mainplayer);
+	void SetScene();
+
 	//Mouse input
 	void MouseMotion(SDL_MouseMotionEvent evnt);
 	void MouseClick(SDL_MouseButtonEvent evnt);
@@ -81,6 +84,20 @@ private:
 	bool m_motion = false;
 	bool m_click = false;
 	bool m_wheel = false;
+	
+	//our stuff
+	bool onCamera = false;
+	bool change = false;
+	bool leftButton[2] = {};
+	bool isAnimatronicInRoom[4] = {};
+	bool isButtonPressed[4] = {};
+
+	int CameraChoice = 1;
+	int OldCameraChoice = 1;
+	float counter = 0;
+	float wait = 5;
+	vec2(movement) = vec2(0.f, 0.f);
+	vec2(oldposition) = vec2(0.f, 0.f);
 };
 
 

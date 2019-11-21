@@ -3,14 +3,12 @@
 
 #include <string>
 #include <utility>
-#include <vector>
+#include <Vector>
 #include <stdio.h>
 #include <iostream>
 #include <fstream>
 #include <GL/glew.h>
 #include "Camera.h"
-
-#pragma comment(lib, "Matrix.lib")
 
 #include "Matrix.h"
 
