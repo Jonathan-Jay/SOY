@@ -1,5 +1,4 @@
 #include "Game.h"
-//#include "Animatronic.h"
 
 #include <random>
 
@@ -38,12 +37,12 @@ void Game::InitGame()
 	//Grabs the initialized window
 	m_window = BackEnd::GetWindow();
 
-	m_scenes.push_back(new FNAF("Main Scene"));
+	m_scenes.push_back(new FNAF("Game Scene"));
+	m_scenes.push_back(new MainMenu("Main Menu"));
 
-	m_activeScene = m_scenes[0];
+	m_activeScene = m_scenes[1];
 
 	m_activeScene->InitScene(float(BackEnd::GetWindowWidth()), float(BackEnd::GetWindowHeight()));
-	//*m_activeScene = File::LoadJSON("Main Scene.json");			//if we want to load a JSON
 
 	m_register = m_activeScene->GetScene();
 
@@ -80,7 +79,9 @@ bool Game::Run()
 			AcceptInput();
 		}
 
-		SetScene();
+		if (m_activeScene == m_scenes[0]) {
+			SetScene();
+		}
 	}
 
 	return true;
@@ -92,7 +93,8 @@ void Game::Update()
 	Timer::Update();
 	//Update the backend
 	BackEnd::Update(m_register);
-	
+
+	m_activeScene->Update();
 }
 
 void Game::GUI()
@@ -116,29 +118,39 @@ void Game::CheckEvents()
 	if (m_close)
 		m_window->Close();
 
-	if (m_motion)
-		MouseMotion(BackEnd::GetMotionEvent());
+	if (m_activeScene == m_scenes[1]) {
+		MainMenuControls(BackEnd::GetClickEvent());
+	}
 
-	if (m_click)
-		MouseClick(BackEnd::GetClickEvent());
+	if (m_activeScene == m_scenes[0]) {
+		if (m_motion)
+			MouseMotion(BackEnd::GetMotionEvent());
 
-	if (m_wheel)
-		MouseWheel(BackEnd::GetWheelEvent());
+		if (m_click)
+			MouseClick(BackEnd::GetClickEvent());
+
+		if (m_wheel)
+			MouseWheel(BackEnd::GetWheelEvent());
+	}
 }
 
 void Game::AcceptInput()
 {
-	int mainplayer = EntityIdentifier::MainPlayer();
-	
-	//Just calls all the other input functions 
-	KeyboardHold();
-	KeyboardDown();
-	KeyboardUp();
+	//if (m_activeScene == m_scenes[1])
 
-	MovementMath(mainplayer);
-	//Resets the key flags
-	//Must be done once per frame for input to work
-	Input::ResetKeys();
+	if (m_activeScene == m_scenes[0]) {
+		int mainplayer = EntityIdentifier::MainPlayer();
+
+		//Just calls all the other input functions 
+		KeyboardHold();
+		KeyboardDown();
+		KeyboardUp();
+
+		MovementMath(mainplayer);
+		//Resets the key flags
+		//Must be done once per frame for input to work
+		Input::ResetKeys();
+	}
 }
 
 void Game::KeyboardHold()
@@ -170,7 +182,7 @@ void Game::MovementMath(int mainplayer)
 	vec3(TrackerPos) = m_register->get<Transform>(tracker).GetPosition();
 	vec2(distance) = vec2(TrackerPos.x - CurrentPos.x, TrackerPos.y - CurrentPos.y);
 
-	if (distance.GetMagnitude() > 0.5f)	movement = distance.Normalize() * 100.f;
+	if (distance.GetMagnitude() > 0.5f)	movement = distance.Normalize() * 150.f;
 	
 	CurrentPos = CurrentPos + vec3(movement.x, movement.y, 0.f) * Timer::deltaTime;
 
@@ -185,22 +197,111 @@ void Game::MovementMath(int mainplayer)
 	if (CurrentPos.y < -93)	CurrentPos.y = -93;
 
 	m_register->get<Transform>(mainplayer).SetPosition(CurrentPos);
+
+	//Button testing
+	for (int x(1); x <= 4; x++) {
+		if (Set::positionTesting(EntityIdentifier::Button(10 * x), CurrentPos, true)) {
+			if (x > 2 && leftButton[x - 3]) {
+				leftButton[x - 3] = false;
+				if (isButtonPressed[x - 1]) {
+					isButtonPressed[x - 1] = false;
+				}
+				else isButtonPressed[x - 1] = true;
+			}
+			else if (x < 3) {
+				isButtonPressed[x - 1] = true;
+			}
+		}
+		else if (x < 3) {
+			isButtonPressed[x - 1] = false;
+		}
+		else {
+			leftButton[x - 3] = true;
+		}
+	}
+
 	movement = vec2(0.f, 0.f);
 }
 
 void Game::SetScene()
 {
+	//runing whether to move the characters or not
+	Animatronic::changePosition();
+
 	if (onCamera && change) {
-		Set::SetUpSet(OldCameraChoice, CameraChoice);
+		Set::SetUpSet(OldCameraChoice, CameraChoice, isAnimatronicInRoom);
 	}
 	else if (change) {
 		Set::UndoSet(CameraChoice);
 	}
+
+	//changes animation for buttons
+	for (int x(0); x < 2; x++) {
+		m_register->get<AnimationController>(EntityIdentifier::Button(10 * (x + 1) )).SetActiveAnim(isButtonPressed[x]);
+		if (counter > wait) {
+			m_register->get<AnimationController>(EntityIdentifier::Button(19 + 10 * x)).SetActiveAnim(0);
+			counter = 0;
+			wait = rand() % 5 / 10.f + 0.1f;
+		}
+		else m_register->get<AnimationController>(EntityIdentifier::Button(19 + 10 * x)).SetActiveAnim(isButtonPressed[x]);
+		m_register->get<AnimationController>(EntityIdentifier::Button(30 + 10 * x)).SetActiveAnim(isButtonPressed[x + 2]);
+		m_register->get<AnimationController>(EntityIdentifier::Button(50 + 10 * x)).SetActiveAnim(isButtonPressed[x + 2]);
+		counter += Timer::deltaTime;
+	}
+
 	change = false;
 	//runing whether to move the characters or not
 	Animatronic::changePosition();
 	//Uh this is because there is no void Start() Like in unity
 	initializeAnimatronics();
+}
+
+void Game::MainMenuControls(SDL_MouseButtonEvent evnt)
+{
+	//Contols for main menu
+	float windowWidth = BackEnd::GetWindowWidth();
+	float windowHeight = BackEnd::GetWindowHeight();
+	for (int x(1); x <= 5; x++) {
+		if (rand() % 100 >= 97) {
+			m_register->get<AnimationController>(EntityIdentifier::Button(x)).SetActiveAnim(1);
+		}
+		else	m_register->get<AnimationController>(EntityIdentifier::Button(x)).SetActiveAnim(0);
+	}
+
+	if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT)) {
+		vec3(click) = vec3(
+			evnt.x / windowHeight * 200.f - 100.f * windowWidth / windowHeight,
+			-evnt.y / windowHeight * 200.f + 100.f,
+			0.f);
+		for (int x(1); x <= 5; x++) {
+
+			if (Set::positionTesting(EntityIdentifier::Button(x), click)) {
+				m_register->get<Transform>(EntityIdentifier::Button(0)).SetPositionY(0);
+				printf("%i\n", x);
+				switch (x) {
+				default:
+				case 1:		break;
+				case 2:		break;
+				case 3:		break;
+				case 4:		break;
+				case 5:		break;
+				}
+				change = true;
+			}
+		}
+	}
+	if (change) {
+		wait += Timer::deltaTime;
+		if (wait >= 6.f) {
+			m_activeScene = m_scenes[0];
+
+			m_activeScene->InitScene(float(BackEnd::GetWindowWidth()), float(BackEnd::GetWindowHeight()));
+
+			m_register = m_activeScene->GetScene();
+
+			Set::GetRegister(m_register);
+		}
+	}
 }
 
 void Game::MouseMotion(SDL_MouseMotionEvent evnt)
@@ -217,14 +318,16 @@ void Game::MouseMotion(SDL_MouseMotionEvent evnt)
 
 	vec3(playerPos) = m_register->get<Transform>(EntityIdentifier::MainPlayer()).GetPosition();
 
-	if (oldposition.y + 10 <= evnt.y && evnt.y >= BackEnd::GetWindowHeight() - 4 &&
-		playerPos.y >= -41 && playerPos.x < 20 && playerPos.x > -20 && !onCamera)
-	{
-		printf("Camera On!\n");
-		m_register->get<Transform>(EntityIdentifier::Button(0)).SetPosition(playerPos);
-		change = true;
-		onCamera = true;
+	if (playerPos.y >= -42 && playerPos.x < 20 && playerPos.x > -20) {
+		m_register->get<AnimationController>(EntityIdentifier::Button(39)).SetActiveAnim(1);
+		if (oldposition.y + 10 <= evnt.y && evnt.y >= BackEnd::GetWindowHeight() - 4 && !onCamera) {
+			printf("Camera On!\n");
+			m_register->get<Transform>(EntityIdentifier::Button(0)).SetPosition(playerPos);
+			change = true;
+			onCamera = true;
+		}
 	}
+	else	m_register->get<AnimationController>(EntityIdentifier::Button(39)).SetActiveAnim(0);
 
 	oldposition = vec2(float(evnt.x), float(evnt.y));
 
