@@ -12,6 +12,8 @@ public:
 	Scene(std::string name);
 	~Scene() { }
 
+	virtual void Update() { }
+
 	void Unload();
 
 	//Each scene will need to have a different
