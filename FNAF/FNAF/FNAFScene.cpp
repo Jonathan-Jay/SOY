@@ -283,7 +283,7 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 			anim2.SetRepeating(false);
 			anim2.SetSecPerFrame(0.1f);
 
-			ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 11, 5, true, &animController);
+			ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 16.5, 7.5, true, &animController);
 
 			switch (x) {
 			case 1:		ECS::GetComponent<Transform>(entity).SetPosition(vec3(23, 461.5f, 50.f));	break;
@@ -574,9 +574,9 @@ void MainMenu::InitScene(float windowWidth, float windowHeight)
 			anim2.SetRepeating(true);
 			anim2.SetSecPerFrame(0.1f);
 
-			ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 64, 12, true, &animController);
+			ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 48, 9, true, &animController);
 
-			ECS::GetComponent<Transform>(entity).SetPosition(vec3(-65, 75 - x * 20, 25.f));
+			ECS::GetComponent<Transform>(entity).SetPosition(vec3(-65, 30 - x * 15, 25.f));
 			
 			unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit() | EntityIdentifier::AnimationBit();
 			ECS::SetUpIdentifier(entity, bitHolder, "night button " + std::to_string(x));

@@ -270,10 +270,9 @@ void Game::MainMenuControls(SDL_MouseButtonEvent evnt)
 			-evnt.y / windowHeight * 200.f + 100.f,
 			0.f);
 		for (int x(1); x <= 5; x++) {
-
 			if (Set::positionTesting(EntityIdentifier::Button(x), click)) {
 				m_register->get<Transform>(EntityIdentifier::Button(0)).SetPositionY(0);
-				printf("%i\n", x);
+				printf("Night %i\n", x);
 				switch (x) {
 				default:
 				case 1:		break;
@@ -283,6 +282,9 @@ void Game::MainMenuControls(SDL_MouseButtonEvent evnt)
 				case 5:		break;
 				}
 				change = true;
+			}
+			if (change) {
+				m_register->get<Transform>(EntityIdentifier::Button(x)).SetPositionY(200);
 			}
 		}
 	}
