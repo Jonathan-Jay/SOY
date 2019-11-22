@@ -1,10 +1,12 @@
 #include "Animatronic.h"
+#include <iostream>
 Animatronic Freddy;
 Animatronic Chica;
 Animatronic Bonnie;
 Animatronic Foxy;
 int timeStart = time(0);
-int timeAfter;
+int timeAfter = std::time(0) - timeStart;
+int deltaTime = std::time(0);
 bool isRun = true;
 
 void initializeAnimatronics() //To initialize all of the animatronics things
@@ -76,6 +78,8 @@ int positionChange(Animatronic& AnimatronicName)
 			case 5:
 				AnimatronicName.position = 9; // on the left side
 				break;
+			case 4:
+				AnimatronicName.position = 2;
 			case 9: 
 				//if time passes, and there is no door, then jumpscare
 				break;
@@ -83,10 +87,10 @@ int positionChange(Animatronic& AnimatronicName)
 			default:
 				break;
 			}
+			std::cout << AnimatronicName.animatronicNB << ":" << AnimatronicName.position << "\n";
 		}
-
 		//Chica
-		if (AnimatronicName.animatronicNB == 1)
+		else if (AnimatronicName.animatronicNB == 1)
 		{
 			switch (AnimatronicName.position)
 			{
@@ -110,30 +114,35 @@ int positionChange(Animatronic& AnimatronicName)
 					AnimatronicName.position = 7;
 				}
 				break;
+			case 7:
+				AnimatronicName.position = 6;
+				break;
 			case 10:
 				//if time passes, and there is no door, then jumpscare
+				//but door is back closed then back at
 				break;
 
 			default:
 				break;
 			}
+			std::cout << AnimatronicName.animatronicNB << ":" << AnimatronicName.position << "\n";
 		}
 		
 	}
-
+	move = false;
 	return 0;
 }
 
 void Animatronic::changePosition()
 {
-	timeAfter = std::time(0) - timeStart;
+	timeAfter = std::time(0) - deltaTime;
 	int timeBetween = 5; //Five seconds for an example
 	if (timeAfter >= timeBetween)
 	{
 		positionChange(Freddy);
 		positionChange(Chica);
-		positionChange(Bonnie);
-		timeAfter = std::time(0);
+		positionChange(Bonnie);	
+		deltaTime = std::time(0);
 	}
 	//Foxy is a special case
 	//Same with golden freddy
