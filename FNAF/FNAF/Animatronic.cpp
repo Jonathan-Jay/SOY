@@ -47,87 +47,78 @@ int positionChange(Animatronic& AnimatronicName)
 	//if they the animatronic move position
 	//POSITION == CAMERA THAT THEY SHOULD BE ON
 
-	//DEV NOTES REMOVE BEFORE SUBMISSION(OR PATCH): Fairly certain there is a chance that no movement happens with the random
 	bool move = doMove(AnimatronicName);
 	int rng;
 	if (move)
 	{
-		switch (AnimatronicName.position)
+		//Bonnie
+		if (AnimatronicName.animatronicNB == 2)
 		{
-		case 1:
-			AnimatronicName.position = 8;
-			break;
-		case 2:
-			rng = rand() % 3;
-			if (rng == 1)
+			switch (AnimatronicName.position)
 			{
+			case 3: 
 				AnimatronicName.position = 8;
-			}
-			else if (rng == 2)
-			{
-				AnimatronicName.position = 4;
-			}
-			else if (rng == 3)
-			{
-				AnimatronicName.position = 6;
-			}
-			break;
+				break;
+			case 8:
+				AnimatronicName.position = 2;
+				break;
+			case 2:
+				rng = rand() % 2 + 1;
+				if (rng == 1)
+				{
+					AnimatronicName.position = 4;
+				}
+				else if (rng == 2)
+				{
+					AnimatronicName.position = 5;
+				}
+				break;
+			case 5:
+				AnimatronicName.position = 9; // on the left side
+				break;
+			case 9: 
+				//if time passes, and there is no door, then jumpscare
+				break;
 
-		case 3:
-			AnimatronicName.position = 8;
-			break;
-		case 4:
-			AnimatronicName.position = 2;
-			break;
-		case 5:
-			rng = rand() % 2;
-			if (rng == 1)
-			{
-				AnimatronicName.position = 8;
+			default:
+				break;
 			}
-			else if (rng == 2)
-			{
-				AnimatronicName.position = 9;
-			}
-			break;
-		case 6:
-			rng = rand() % 3;
-			if (rng == 1)
-			{
-				AnimatronicName.position = 2;
-			}
-			else if (rng == 2)
-			{
-				AnimatronicName.position = 7;
-			}
-			else if (rng == 3)
-			{
-				AnimatronicName.position = 9;
-			}
-			break;
-		case 7:
-			break;
-		case 8:
-			rng = rand() % 3;
-			if (rng == 1)
-			{
-				AnimatronicName.position = 1;
-			}
-			else if (rng == 2)
-			{
-				AnimatronicName.position = 5;
-			}
-			else if (rng == 3)
-			{
-				AnimatronicName.position = 2;
-			}
-			break;
-		case 9:
-			//JUMPSCARE!!!
-			break;
-		default:
-			break;
 		}
+
+		//Chica
+		if (AnimatronicName.animatronicNB == 1)
+		{
+			switch (AnimatronicName.position)
+			{
+			case 3:
+				AnimatronicName.position = 8;
+				break;
+			case 8:
+				AnimatronicName.position = 2;
+				break;
+			case 2:
+				AnimatronicName.position = 6;
+				break;
+			case 6:
+				rng = rand() % 2 + 1;
+				if (rng == 1)
+				{
+					AnimatronicName.position = 10; //blindspot on the left
+				}
+				else if (rng == 2)
+				{
+					AnimatronicName.position = 7;
+				}
+				break;
+			case 10:
+				//if time passes, and there is no door, then jumpscare
+				break;
+
+			default:
+				break;
+			}
+		}
+		
 	}
 
 	return 0;
