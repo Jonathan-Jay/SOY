@@ -258,7 +258,7 @@ void Game::MainMenuControls(SDL_MouseButtonEvent evnt)
 	float windowWidth = BackEnd::GetWindowWidth();
 	float windowHeight = BackEnd::GetWindowHeight();
 	for (int x(1); x <= 5; x++) {
-		if (rand() % 100 >= 97) {
+		if (rand() % 100 >= 99) {
 			m_register->get<AnimationController>(EntityIdentifier::Button(x)).SetActiveAnim(1);
 		}
 		else	m_register->get<AnimationController>(EntityIdentifier::Button(x)).SetActiveAnim(0);
@@ -290,7 +290,7 @@ void Game::MainMenuControls(SDL_MouseButtonEvent evnt)
 	}
 	if (change) {
 		wait += Timer::deltaTime;
-		if (wait >= 6.f) {
+		if (wait >= 7.f) {
 			m_activeScene = m_scenes[0];
 
 			m_activeScene->InitScene(float(BackEnd::GetWindowWidth()), float(BackEnd::GetWindowHeight()));
@@ -354,7 +354,7 @@ void Game::MouseClick(SDL_MouseButtonEvent evnt)
 
 		for (int x(1); x <= 8; x++) {
 			if (Set::positionTesting(EntityIdentifier::Button(x), click)) {
-				printf("%i\n", x);
+				printf("Camera %i selected\n", x);
 				OldCameraChoice = CameraChoice;
 				CameraChoice = x;
 				change = true;

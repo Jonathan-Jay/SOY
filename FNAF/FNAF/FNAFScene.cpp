@@ -541,6 +541,7 @@ void MainMenu::InitScene(float windowWidth, float windowHeight)
 	}
 #pragma endregion
 
+	srand(time(0));
 	for (int x(1); x <= 5; x++) {
 
 #pragma region Night Buttons
@@ -565,11 +566,12 @@ void MainMenu::InitScene(float windowWidth, float windowHeight)
 
 			anim.SetRepeating(false);
 			anim.SetSecPerFrame(0.1f);
+
 			auto& anim2 = animController.GetAnimation(1);
-			anim2.AddFrame(vec2(2.f, 36.f - (rand() % 3 - 1) * (rand() % 36)), vec2(66.f, 16.f * (x - 1) + 2.f));
-			anim2.AddFrame(vec2(2.f, 36.f - (rand() % 3 - 1) * (rand() % 36)), vec2(66.f, 16.f * (x - 1) + 2.f));
-			anim2.AddFrame(vec2(2.f, 14.f * x), vec2(66.f, 14.f * (x - 1) + 2.f));
-			anim2.AddFrame(vec2(2.f, 36.f - (rand() % 3 - 1) * (rand() % 36)), vec2(66.f, 16.f * (x - 1) + 2.f));
+			anim2.AddFrame(vec2(36.f - (rand() % 3 - 1) * (rand() % 36), 36.f - (rand() % 3 - 1) * (rand() % 36)), vec2(36.f - (rand() % 3 - 1) * (rand() % 36), 16.f * (x - 1) + 2.f));
+			anim2.AddFrame(vec2(36.f - (rand() % 3 - 1) * (rand() % 36), 36.f - (rand() % 3 - 1) * (rand() % 36)), vec2(36.f - (rand() % 3 - 1) * (rand() % 36), 16.f * (x - 1) + 2.f));
+			anim2.AddFrame(vec2(36.f - (rand() % 3 - 1) * (rand() % 36), 36.f - (rand() % 3 - 1) * (rand() % 36)), vec2(36.f - (rand() % 3 - 1) * (rand() % 36), 16.f * (x - 1) + 2.f));
+			anim2.AddFrame(vec2(36.f - (rand() % 3 - 1) * (rand() % 36), 36.f - (rand() % 3 - 1) * (rand() % 36)), vec2(36.f - (rand() % 3 - 1) * (rand() % 36), 16.f * (x - 1) + 2.f));
 
 			anim2.SetRepeating(true);
 			anim2.SetSecPerFrame(0.1f);
