@@ -16,6 +16,11 @@ public:
 	//Gets main camera entity
 	static unsigned int MainCamera();
 	bool GetIsMainCamera() const;
+
+	static unsigned int Button(int choice);
+	bool GetIsButton(int choice) const;
+
+
 	//Get entity number
 	unsigned int GetEntity() const;
 	//Get identifier bitfield
@@ -39,6 +44,10 @@ public:
 	//Sets main camera entity
 	static void MainCamera(unsigned int entity);
 	void SetIsMainCamera(bool main);
+
+	static void Button(unsigned int entity, int choice);
+	void SetIsButton(bool main, int choice);
+
 	//Set entity number
 	void SetEntity(unsigned int entity);
 	//Set identifier bitfield
@@ -55,6 +64,9 @@ private:
 	//Main camera
 	static unsigned int m_mainCamera;
 	bool m_isMainCamera = false;
+	
+	static unsigned int m_button[70];
+	bool m_isButton[70] = {};
 
 
 	//Stores the entity number
@@ -91,6 +103,10 @@ inline void to_json(nlohmann::json& j, const EntityIdentifier& id)
 	//Stores whether or not this is the main player
 	j["MainPlayer"] = id.GetIsMainPlayer();
 
+	for (int x(0); x < 70; x++) {
+		j["Button" + std::to_string(x)] = id.GetIsButton(x);
+	}
+
 	//Stores the name of this entity
 	j["Name"] = id.GetName();
 }
@@ -106,6 +122,10 @@ inline void from_json(const nlohmann::json& j, EntityIdentifier& id)
 
 	//Grabs whether or not this is the main player
 	id.SetIsMainPlayer(j["MainPlayer"]);
+
+	for (int x(0); x < 70; x++) {
+		id.SetIsButton(j["Button" + std::to_string(x)], x);
+	}
 
 	//Grabs the name of this entity
 	id.SetName(j["Name"]);

@@ -2,7 +2,7 @@
 #define __VERTEXMANAGER_H__
 
 #include "GL/glew.h"
-#include <vector>
+#include <Vector>
 
 //Basically just handles our Vertex Array/Buffer Objects
 class VertexManager abstract
