@@ -16,7 +16,7 @@ private:
 
 
 };	
-void initializeAnimatronics();
+void initializeAnimatronics(int);
 bool doMove(Animatronic& AnimatronicName);
 	
 	int positionChange(Animatronic& AnimatronicName, int onCamera);

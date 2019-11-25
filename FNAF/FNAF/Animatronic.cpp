@@ -13,7 +13,7 @@ float deltaOnCam = Timer::currentClock;
 
 bool isRun = true;
 
-void initializeAnimatronics() //To initialize all of the animatronics things
+void initializeAnimatronics(int difficulty) //To initialize all of the animatronics things
 {
 	if (isRun)
 	{
@@ -26,10 +26,10 @@ void initializeAnimatronics() //To initialize all of the animatronics things
 		//foxy's position is different than the rest of the animatronic
 		Foxy.position = 1;
 		//difficulty
-		Freddy.difficulty = 10;
-		Chica.difficulty = 10;
-		Bonnie.difficulty = 10;
-		Foxy.difficulty = 10;
+		Freddy.difficulty	= difficulty;
+		Chica.difficulty	= difficulty;
+		Bonnie.difficulty	= difficulty;
+		Foxy.difficulty		= difficulty;
 
 	}
 

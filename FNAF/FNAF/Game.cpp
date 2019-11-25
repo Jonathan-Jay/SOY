@@ -226,8 +226,6 @@ void Game::SetScene()
 
 	//runing whether to move the characters or not
 	Animatronic::changePosition(CameraChoice);
-	//Uh this is because there is no void Start() Like in unity
-	initializeAnimatronics();
 
 	int foxyPos(0);
 	bool isAnimatronicInRoom[3] = {};
@@ -324,11 +322,21 @@ void Game::MainMenuControls(SDL_MouseButtonEvent evnt)
 				printf("Night %i\n", x);
 				switch (x) {
 				default:
-				case 1:		break;
-				case 2:		break;
-				case 3:		break;
-				case 4:		break;
-				case 5:		break;
+				case 1:
+					initializeAnimatronics(10);
+					break;
+				case 2:
+					initializeAnimatronics(20);
+					break;
+				case 3:
+					initializeAnimatronics(30);
+					break;
+				case 4:
+					initializeAnimatronics(40);
+					break;
+				case 5:
+					initializeAnimatronics(50);
+					break;
 				}
 				change = true;
 			}
