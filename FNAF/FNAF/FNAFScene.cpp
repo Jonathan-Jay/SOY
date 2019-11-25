@@ -2,7 +2,10 @@
 
 entt::registry* Set::m_register = nullptr;
 bool Set::settingup = true;
+bool Set::hasStatic = false;
 bool Set::oldIsAnim[3] = {};
+float Set::wait = 0;
+int Set::oldCameraTrue = 0;
 
 FNAF::FNAF(std::string name)
 	: Scene(name)
@@ -422,8 +425,10 @@ bool Set::positionTesting(int entity, vec3(otherposition), bool isPlayer)
 	return false;
 }
 
-void Set::SetUpSet(int OldCameraChoice, int CameraChoice, bool isAnim[3], int foxyPos)
+void Set::SetUpSet(int OldCameraChoice, int CameraChoice, bool isAnim[3], int foxyPos, bool buttonPressed)
 {
+	wait = 0.25f;
+	hasStatic = true;
 	//button reseting
 	auto& temp = m_register->get<AnimationController>(EntityIdentifier::Button(OldCameraChoice));
 	temp.SetActiveAnim(0);
@@ -434,22 +439,27 @@ void Set::SetUpSet(int OldCameraChoice, int CameraChoice, bool isAnim[3], int fo
 	m_register->get<Transform>(EntityIdentifier::Button(OldCameraChoice + 10)).SetPosition(vec3(0, 500, 25));
 	m_register->get<Transform>(EntityIdentifier::Button(CameraChoice + 10)).SetPosition(vec3(0, 0, 25));
 
-	//Animatronics are numbered 20 - 40 + room number
+	//Animatronics are numbered 20 - 40 + room number, x is a multiplier
 	//0 is for fred
 	//1 is for bon
 	//2 is for goose
 	//rooms 51 - 54 are foxy
 	for (int x(0); x < 3; x++) {
-		if (oldIsAnim[x]) {
+		if (oldIsAnim[x] && (oldCameraTrue != OldCameraChoice || buttonPressed)) {
 			m_register->get<Transform>(EntityIdentifier::Button(OldCameraChoice + 10 * (x + 2))).SetPosition(vec3(0, 500, 30));
+		}
+		if (oldIsAnim[x] != isAnim[x] && !buttonPressed) {
+			m_register->get<Transform>(EntityIdentifier::Button(CameraChoice + 10 * (x + 2))).SetPosition(vec3(0, 500, 30));
 		}
 		if (isAnim[x]) {
 			m_register->get<Transform>(EntityIdentifier::Button(CameraChoice + 10 * (x + 2))).SetPosition(vec3(0, 0, 30));
 		}
 		oldIsAnim[x] = isAnim[x];
 	}
+	oldCameraTrue = OldCameraChoice;
+
 	if (OldCameraChoice == 1) {
-		for (int x(1); x <= 4; x++) {
+		for (int x(1); x <= 5; x++) {
 			m_register->get<Transform>(EntityIdentifier::Button(50 + x)).SetPosition(vec3(0, 500, 30));
 		}
 	}
@@ -488,6 +498,32 @@ void Set::UndoSet(int CameraChoice, bool isAnim[3], int foxyPos)
 	m_register->get<Transform>(EntityIdentifier::Button(CameraChoice + 10)).SetPosition(vec3(0, 500, 25));
 	m_register->get<Transform>(EntityIdentifier::Button(9)).SetPosition(vec3(50, 500, 40));
 	settingup = true;
+}
+
+void Set::Update()
+{
+	if (wait > 0) {
+		if (hasStatic) {
+			EffectManager::CreateEffect(Grain, BackEnd::GetWindowWidth(), BackEnd::GetWindowHeight());
+			GrainEffect* temp = (GrainEffect*)EffectManager::GetEffect(0);
+			temp->SetStrength(1000);
+			EffectManager::CreateEffect(Pixelate, BackEnd::GetWindowWidth(), BackEnd::GetWindowHeight());
+			PixelateEffect* temp2 = (PixelateEffect*)EffectManager::GetEffect(1);
+			temp2->SetPixelSize(10);
+			hasStatic = false;
+		}
+		wait -= Timer::deltaTime;
+		if (wait <= 0) {
+			hasStatic = true;
+		}
+	}
+	else {
+		if (hasStatic) {
+			EffectManager::RemoveEffect(0);
+			EffectManager::RemoveEffect(0);
+		}
+		hasStatic = false;
+	}
 }
 
 void Set::GetRegister(entt::registry* m_reg)
@@ -607,4 +643,5 @@ void MainMenu::InitScene(float windowWidth, float windowHeight)
 
 void MainMenu::Update()
 {
+
 }

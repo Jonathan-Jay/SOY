@@ -41,7 +41,6 @@ void Game::InitGame()
 	m_scenes.push_back(new MainMenu("Main Menu"));
 
 	m_activeScene = m_scenes[1];
-
 	m_activeScene->InitScene(float(BackEnd::GetWindowWidth()), float(BackEnd::GetWindowHeight()));
 
 	m_register = m_activeScene->GetScene();
@@ -81,6 +80,7 @@ bool Game::Run()
 
 		if (m_activeScene == m_scenes[0]) {
 			SetScene();
+			Set::Update();
 		}
 	}
 
@@ -229,13 +229,47 @@ void Game::SetScene()
 	int foxyPos(0);
 	bool isAnimatronicInRoom[3] = {};
 
-	if (CameraChoice == tempanimpos[0])	isAnimatronicInRoom[0] = true;
-	if (CameraChoice == tempanimpos[1])	isAnimatronicInRoom[1] = true;
-	if (CameraChoice == tempanimpos[2])	isAnimatronicInRoom[2] = true;
-	if (CameraChoice == 1)	foxyPos = tempanimpos[3];
+	//Animatronics according to number (in isAnimatronicInRoom)
+	//0 is freddy
+	//1 is bonnie
+	//2 is chica
+	if (CameraChoice == tempAnimPos[0]) {
+		isAnimatronicInRoom[0] = true;
+		if (oldAnimPos[0] != tempAnimPos[0]) {
+			change = true;
+			oldAnimPos[0] = tempAnimPos[0];
+		}
+	}
+	else if (oldAnimPos[0] == CameraChoice) {
+		change = true;
+		oldAnimPos[0] = tempAnimPos[0];
+	}
+	if (CameraChoice == tempAnimPos[1]) {
+		isAnimatronicInRoom[1] = true;
+		if (oldAnimPos[1] != tempAnimPos[1]) {
+			change = true;
+			oldAnimPos[1] = tempAnimPos[1];
+		}
+	}
+	else if (oldAnimPos[1] == CameraChoice) {
+		change = true;
+		oldAnimPos[1] = tempAnimPos[1];
+	}
+	if (CameraChoice == tempAnimPos[2]) {
+		isAnimatronicInRoom[2] = true;
+		if (oldAnimPos[2] != tempAnimPos[2]) {
+			change = true;
+			oldAnimPos[2] = tempAnimPos[2];
+		}
+	}
+	else if (oldAnimPos[2] == CameraChoice) {
+		change = true;
+		oldAnimPos[2] = tempAnimPos[2];
+	}
+	if (CameraChoice == 1)	foxyPos = tempAnimPos[3];
 
 	if (onCamera && change) {
-		Set::SetUpSet(OldCameraChoice, CameraChoice, isAnimatronicInRoom, foxyPos);
+		Set::SetUpSet(OldCameraChoice, CameraChoice, isAnimatronicInRoom, foxyPos, buttonPressed);
 	}
 	else if (change) {
 		Set::UndoSet(CameraChoice, isAnimatronicInRoom, foxyPos);
@@ -256,6 +290,7 @@ void Game::SetScene()
 	}
 
 	change = false;
+	buttonPressed = false;
 }
 
 void Game::MainMenuControls(SDL_MouseButtonEvent evnt)
@@ -302,6 +337,8 @@ void Game::MainMenuControls(SDL_MouseButtonEvent evnt)
 			m_activeScene->InitScene(float(BackEnd::GetWindowWidth()), float(BackEnd::GetWindowHeight()));
 
 			m_register = m_activeScene->GetScene();
+
+			//reset animatronic position here
 
 			Set::GetRegister(m_register);
 		}
@@ -361,17 +398,14 @@ void Game::MouseClick(SDL_MouseButtonEvent evnt)
 		for (int x(1); x <= 8; x++) {
 			if (Set::positionTesting(EntityIdentifier::Button(x), click)) {
 				printf("Camera %i selected\n", x);
-				OldCameraChoice = CameraChoice;
+				if (CameraChoice != x) {
+					OldCameraChoice = CameraChoice;
+					change = true;
+					buttonPressed = true;
+				}
 				CameraChoice = x;
-				change = true;
 			}
 		}
-
-		tempanimpos[0] = 3;
-		tempanimpos[1] = rand() % 4 + 2;
-		if (rand() & 30 > 20)	tempanimpos[1] = 8;
-		tempanimpos[2] = 2 + rand() % 2 + (rand() % 2) * 5 ;
-		tempanimpos[3] = rand() % 5 + 1;
 	}
 
 	if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_RIGHT) && onCamera) {
@@ -390,6 +424,15 @@ void Game::MouseWheel(SDL_MouseWheelEvent evnt)
 	{
 		ImGui::GetIO().MouseWheel = float(evnt.y);
 	}
+	
+	if (evnt.y < 0) {
+		tempAnimPos[0] = 3;
+		tempAnimPos[1] = rand() % 4 + 2;
+		if (rand() & 30 > 20)	tempAnimPos[1] = 8;
+		tempAnimPos[2] = 2 + rand() % 2 + (rand() % 2) * 5;
+		tempAnimPos[3] = rand() % 5 + 1;
+	}
+	
 	//Resets the enabled flag
 	m_wheel = false;
 }

@@ -139,10 +139,6 @@ int EffectManager::CreateEffect(EffectType type, unsigned width, unsigned height
 			m_effects[index]->Init(width, height);
 			m_pixelate = index;
 		}
-		else
-		{
-			printf("Already has a Pixelate effect");
-		}
 		break;
 	case SelectiveColor:
 		if (m_selectiveColor == -1)
