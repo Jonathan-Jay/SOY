@@ -41,7 +41,6 @@ void Game::InitGame()
 	m_scenes.push_back(new MainMenu("Main Menu"));
 
 	m_activeScene = m_scenes[1];
-
 	m_activeScene->InitScene(float(BackEnd::GetWindowWidth()), float(BackEnd::GetWindowHeight()));
 
 	m_register = m_activeScene->GetScene();
@@ -81,6 +80,7 @@ bool Game::Run()
 
 		if (m_activeScene == m_scenes[0]) {
 			SetScene();
+			Set::Update();
 		}
 	}
 
@@ -177,9 +177,7 @@ void Game::KeyboardUp()
 
 void Game::MovementMath(int mainplayer)
 {
-	int tracker = EntityIdentifier::Button(0);
 	vec3(CurrentPos) = m_register->get<Transform>(mainplayer).GetPosition();
-	vec3(TrackerPos) = m_register->get<Transform>(tracker).GetPosition();
 	vec2(distance) = vec2(TrackerPos.x - CurrentPos.x, TrackerPos.y - CurrentPos.y);
 
 	if (distance.GetMagnitude() > 0.5f)	movement = distance.Normalize() * 150.f;
@@ -226,11 +224,54 @@ void Game::MovementMath(int mainplayer)
 void Game::SetScene()
 {
 
+	int foxyPos(0);
+	bool isAnimatronicInRoom[3] = {};
+
+	//Animatronics according to number (in isAnimatronicInRoom)
+	//0 is freddy
+	//1 is bonnie
+	//2 is chica
+	if (CameraChoice == tempAnimPos[0]) {
+		isAnimatronicInRoom[0] = true;
+		if (oldAnimPos[0] != tempAnimPos[0]) {
+			change = true;
+			oldAnimPos[0] = tempAnimPos[0];
+		}
+	}
+	else if (oldAnimPos[0] == CameraChoice) {
+		change = true;
+		oldAnimPos[0] = tempAnimPos[0];
+	}
+	if (CameraChoice == tempAnimPos[1]) {
+		isAnimatronicInRoom[1] = true;
+		if (oldAnimPos[1] != tempAnimPos[1]) {
+			change = true;
+			oldAnimPos[1] = tempAnimPos[1];
+		}
+	}
+	else if (oldAnimPos[1] == CameraChoice) {
+		change = true;
+		oldAnimPos[1] = tempAnimPos[1];
+	}
+	if (CameraChoice == tempAnimPos[2]) {
+		isAnimatronicInRoom[2] = true;
+		if (oldAnimPos[2] != tempAnimPos[2]) {
+			change = true;
+			oldAnimPos[2] = tempAnimPos[2];
+		}
+	}
+	else if (oldAnimPos[2] == CameraChoice) {
+		change = true;
+		oldAnimPos[2] = tempAnimPos[2];
+	}
+	if (CameraChoice == 1)	foxyPos = tempAnimPos[3];
+
 	if (onCamera && change) {
-		Set::SetUpSet(OldCameraChoice, CameraChoice, isAnimatronicInRoom);
+		Set::SetUpSet(OldCameraChoice, CameraChoice, isAnimatronicInRoom,
+			foxyPos, buttonPressed, cameraflipped);
 	}
 	else if (change) {
-		Set::UndoSet(CameraChoice);
+		Set::UndoSet(CameraChoice, isAnimatronicInRoom, foxyPos);
 	}
 
 	//changes animation for buttons
@@ -248,10 +289,15 @@ void Game::SetScene()
 	}
 
 	change = false;
+<<<<<<< HEAD
 	//runing whether to move the characters or not
 	Animatronic::changePosition(CameraChoice);
 	//Uh this is because there is no void Start() Like in unity
 	initializeAnimatronics();
+=======
+	buttonPressed = false;
+	cameraflipped = false;
+>>>>>>> JonathanBranch
 }
 
 void Game::MainMenuControls(SDL_MouseButtonEvent evnt)
@@ -260,7 +306,7 @@ void Game::MainMenuControls(SDL_MouseButtonEvent evnt)
 	float windowWidth = BackEnd::GetWindowWidth();
 	float windowHeight = BackEnd::GetWindowHeight();
 	for (int x(1); x <= 5; x++) {
-		if (rand() % 100 >= 97) {
+		if (rand() % 100 >= 99) {
 			m_register->get<AnimationController>(EntityIdentifier::Button(x)).SetActiveAnim(1);
 		}
 		else	m_register->get<AnimationController>(EntityIdentifier::Button(x)).SetActiveAnim(0);
@@ -272,10 +318,9 @@ void Game::MainMenuControls(SDL_MouseButtonEvent evnt)
 			-evnt.y / windowHeight * 200.f + 100.f,
 			0.f);
 		for (int x(1); x <= 5; x++) {
-
 			if (Set::positionTesting(EntityIdentifier::Button(x), click)) {
 				m_register->get<Transform>(EntityIdentifier::Button(0)).SetPositionY(0);
-				printf("%i\n", x);
+				printf("Night %i\n", x);
 				switch (x) {
 				default:
 				case 1:		break;
@@ -286,16 +331,22 @@ void Game::MainMenuControls(SDL_MouseButtonEvent evnt)
 				}
 				change = true;
 			}
+			if (change) {
+				m_register->get<Transform>(EntityIdentifier::Button(x)).SetPositionY(200);
+			}
 		}
 	}
 	if (change) {
 		wait += Timer::deltaTime;
-		if (wait >= 6.f) {
+		if (wait >= 7.f) {
 			m_activeScene = m_scenes[0];
 
 			m_activeScene->InitScene(float(BackEnd::GetWindowWidth()), float(BackEnd::GetWindowHeight()));
 
 			m_register = m_activeScene->GetScene();
+
+			//reset animatronic position here
+			//initial positions would be 3, 3, 3, 1
 
 			Set::GetRegister(m_register);
 		}
@@ -320,9 +371,11 @@ void Game::MouseMotion(SDL_MouseMotionEvent evnt)
 		m_register->get<AnimationController>(EntityIdentifier::Button(39)).SetActiveAnim(1);
 		if (oldposition.y + 10 <= evnt.y && evnt.y >= BackEnd::GetWindowHeight() - 4 && !onCamera) {
 			printf("Camera On!\n");
-			m_register->get<Transform>(EntityIdentifier::Button(0)).SetPosition(playerPos);
+			TrackerPos = playerPos;
 			change = true;
+			buttonPressed = true;
 			onCamera = true;
+			cameraflipped = true;
 		}
 	}
 	else	m_register->get<AnimationController>(EntityIdentifier::Button(39)).SetActiveAnim(0);
@@ -350,17 +403,23 @@ void Game::MouseClick(SDL_MouseButtonEvent evnt)
 			evnt.x / windowHeight * 200.f - 100.f * windowWidth / windowHeight,
 			-evnt.y / windowHeight * 200.f + 100.f,
 			0.f);
-		if (!onCamera)	m_register->get<Transform>(EntityIdentifier::Button(0)).SetPosition(click);
+		if (!onCamera) {
+			TrackerPos = click;
+			if (Set::positionTesting(EntityIdentifier::Button(30), click, true))	leftButton[0] = true;
+			if (Set::positionTesting(EntityIdentifier::Button(40), click, true))	leftButton[1] = true;
+		}
 
 		for (int x(1); x <= 8; x++) {
 			if (Set::positionTesting(EntityIdentifier::Button(x), click)) {
-				printf("%i\n", x);
-				OldCameraChoice = CameraChoice;
-				CameraChoice = x;
-				change = true;
+				if (CameraChoice != x) {
+					printf("Camera %i selected\n", x);
+					OldCameraChoice = CameraChoice;
+					change = true;
+					buttonPressed = true;
+					CameraChoice = x;
+				}
 			}
 		}
-
 	}
 
 	if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_RIGHT) && onCamera) {
@@ -379,6 +438,14 @@ void Game::MouseWheel(SDL_MouseWheelEvent evnt)
 	{
 		ImGui::GetIO().MouseWheel = float(evnt.y);
 	}
+	
+	if (evnt.y < 0) {
+		tempAnimPos[0] = 3;
+		tempAnimPos[1] = rand() % 4 + 2;
+		if (rand() % 30 > 20)	tempAnimPos[1] = 8;
+		tempAnimPos[2] = rand() % 2 + (rand() % 2) * 5 + 2;
+	}
+
 	//Resets the enabled flag
 	m_wheel = false;
 }
