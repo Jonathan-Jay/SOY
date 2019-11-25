@@ -5,6 +5,10 @@ bool Set::settingup = true;
 bool Set::hasStatic = false;
 bool Set::oldIsAnim[3] = {};
 float Set::wait = 0;
+<<<<<<< HEAD
+=======
+int Set::oldCameraTrue = 0;
+>>>>>>> JonathanBranch
 
 FNAF::FNAF(std::string name)
 	: Scene(name)
@@ -429,6 +433,14 @@ void Set::SetUpSet(int OldCameraChoice, int CameraChoice, bool isAnim[3], int fo
 {
 	wait = 0.25f;
 	hasStatic = true;
+<<<<<<< HEAD
+=======
+	//button reseting
+	auto& temp = m_register->get<AnimationController>(EntityIdentifier::Button(OldCameraChoice));
+	temp.SetActiveAnim(0);
+	temp.GetAnimation(1).Reset();
+	m_register->get<AnimationController>(EntityIdentifier::Button(CameraChoice)).SetActiveAnim(1);
+>>>>>>> JonathanBranch
 
 	//button reseting
 	if (buttonPressed) {
@@ -448,7 +460,11 @@ void Set::SetUpSet(int OldCameraChoice, int CameraChoice, bool isAnim[3], int fo
 	//2 is for goose
 	//rooms 51 - 54 are foxy
 	for (int x(0); x < 3; x++) {
+<<<<<<< HEAD
 		if (oldIsAnim[x] && buttonPressed) {
+=======
+		if (oldIsAnim[x] && (oldCameraTrue != OldCameraChoice || buttonPressed)) {
+>>>>>>> JonathanBranch
 			m_register->get<Transform>(EntityIdentifier::Button(OldCameraChoice + 10 * (x + 2))).SetPosition(vec3(0, 500, 30));
 		}
 		if (oldIsAnim[x] != isAnim[x] && !buttonPressed) {
@@ -459,6 +475,10 @@ void Set::SetUpSet(int OldCameraChoice, int CameraChoice, bool isAnim[3], int fo
 		}
 		oldIsAnim[x] = isAnim[x];
 	}
+<<<<<<< HEAD
+=======
+	oldCameraTrue = OldCameraChoice;
+>>>>>>> JonathanBranch
 
 	if (OldCameraChoice == 1) {
 		for (int x(1); x <= 5; x++) {
@@ -645,4 +665,5 @@ void MainMenu::InitScene(float windowWidth, float windowHeight)
 
 void MainMenu::Update()
 {
+
 }

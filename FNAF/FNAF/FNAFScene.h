@@ -32,4 +32,8 @@ private:
 	static bool hasStatic;
 	static bool oldIsAnim[3];
 	static float wait;
+<<<<<<< HEAD
+=======
+	static int oldCameraTrue;
+>>>>>>> JonathanBranch
 };
