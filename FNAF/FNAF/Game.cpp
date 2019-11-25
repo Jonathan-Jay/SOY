@@ -225,8 +225,6 @@ void Game::MovementMath(int mainplayer)
 
 void Game::SetScene()
 {
-	//runing whether to move the characters or not
-	Animatronic::changePosition();
 
 	if (onCamera && change) {
 		Set::SetUpSet(OldCameraChoice, CameraChoice, isAnimatronicInRoom);
@@ -251,7 +249,7 @@ void Game::SetScene()
 
 	change = false;
 	//runing whether to move the characters or not
-	Animatronic::changePosition();
+	Animatronic::changePosition(CameraChoice);
 	//Uh this is because there is no void Start() Like in unity
 	initializeAnimatronics();
 }

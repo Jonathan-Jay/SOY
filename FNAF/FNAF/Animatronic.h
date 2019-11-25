@@ -10,7 +10,7 @@ public:
 	int animatronicNB; //Who is the animatronic. For the other cpps
 	int difficulty; //Out of 100 -> 100 Equals Hardest, 0 Is easiest.
 	int position = 3; //their position, this is more useful for other cpps
-	static void changePosition();
+	static void changePosition(int onCamera);
 
 private:
 
@@ -19,4 +19,4 @@ private:
 void initializeAnimatronics();
 bool doMove(Animatronic& AnimatronicName);
 	
-	int positionChange(Animatronic& AnimatronicName);
+	int positionChange(Animatronic& AnimatronicName, int onCamera);

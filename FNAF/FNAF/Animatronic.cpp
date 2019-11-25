@@ -44,7 +44,7 @@ bool doMove(Animatronic& AnimatronicName)
 	return false;
 }
 
-int positionChange(Animatronic& AnimatronicName)
+int positionChange(Animatronic& AnimatronicName, int onCamera)
 {
 	//if they the animatronic move position
 	//POSITION == CAMERA THAT THEY SHOULD BE ON
@@ -53,12 +53,35 @@ int positionChange(Animatronic& AnimatronicName)
 	int rng;
 	if (move)
 	{
-		//Bonnie
-		if (AnimatronicName.animatronicNB == 2)
+		//freddy
+		if ((AnimatronicName.animatronicNB == 0) && (AnimatronicName.position != onCamera))
 		{
 			switch (AnimatronicName.position)
 			{
-			case 3: 
+			case 3:
+				AnimatronicName.position = 8;
+				break;
+			case 8:
+				AnimatronicName.position = 2;
+				break;
+			case 2:
+				AnimatronicName.position = 6;
+				break;
+			case 6:
+				AnimatronicName.position = 10; //blindspot on the left
+				break;
+			case 10:
+				//if time passes, and there is no door, then jumpscare
+				//but door is back closed then back at
+				break;
+			}
+			std::cout << AnimatronicName.animatronicNB << ":" << AnimatronicName.position << "\n";
+		}//Bonnie
+		else if (AnimatronicName.animatronicNB == 2)
+		{
+			switch (AnimatronicName.position)
+			{
+			case 3:
 				AnimatronicName.position = 8;
 				break;
 			case 8:
@@ -80,7 +103,7 @@ int positionChange(Animatronic& AnimatronicName)
 				break;
 			case 4:
 				AnimatronicName.position = 2;
-			case 9: 
+			case 9:
 				//if time passes, and there is no door, then jumpscare
 				break;
 
@@ -127,21 +150,21 @@ int positionChange(Animatronic& AnimatronicName)
 			}
 			std::cout << AnimatronicName.animatronicNB << ":" << AnimatronicName.position << "\n";
 		}
-		
+
 	}
 	move = false;
 	return 0;
 }
 
-void Animatronic::changePosition()
+void Animatronic::changePosition(int onCamera)
 {
 	timeAfter = std::time(0) - deltaTime;
 	int timeBetween = 5; //Five seconds for an example
 	if (timeAfter >= timeBetween)
 	{
-		positionChange(Freddy);
-		positionChange(Chica);
-		positionChange(Bonnie);	
+		positionChange(Freddy, onCamera);
+		positionChange(Chica, onCamera);
+		positionChange(Bonnie, onCamera);
 		deltaTime = std::time(0);
 	}
 	//Foxy is a special case
