@@ -9,7 +9,7 @@ int timeAfter = std::time(0) - timeStart;
 int deltaTime = std::time(0);
 
 float onCamTime = 0.f;
-float deltaOnCam = time(0);
+float deltaOnCam = Timer::currentClock;
 
 bool isRun = true;
 
@@ -38,9 +38,8 @@ void initializeAnimatronics() //To initialize all of the animatronics things
 //Return true if the animatronic is ok to move, else false -> don't move.
 bool doMove(Animatronic& AnimatronicName)
 {
-	srand(time(NULL));
-	int random = rand();
-	random %= 100;
+	//srand(time(NULL));
+	int random = rand() % 100;
 	if (AnimatronicName.difficulty > random)
 	{
 		return true;
@@ -156,6 +155,14 @@ int positionChange(Animatronic& AnimatronicName, int onCamera)
 		}
 
 	}
+	
+	if ((AnimatronicName.animatronicNB == 3) && (onCamera != 1))
+	{
+		if (onCamTime >= 60000)
+		{
+			AnimatronicName.position++;
+		}
+	}
 	move = false;
 	return 0;
 }
@@ -163,7 +170,7 @@ int positionChange(Animatronic& AnimatronicName, int onCamera)
 void Animatronic::changePosition(int onCamera)
 {
 	timeAfter = std::time(0) - deltaTime;
-	int timeBetween = 5; //Five seconds for an example
+	int timeBetween = (std::rand() % 5) + 5; //Five seconds for an example
 	if (timeAfter >= timeBetween)
 	{
 		positionChange(Freddy, onCamera);
@@ -171,6 +178,7 @@ void Animatronic::changePosition(int onCamera)
 		positionChange(Bonnie, onCamera);
 		deltaTime = std::time(0);
 	}
+	positionChange(Foxy, onCamera);
 	//foxy camera things
 	if (onCamera == 1)
 	{
