@@ -95,6 +95,7 @@ private:
 	bool leftButton[2] = {};
 	bool isButtonPressed[4] = {};
 
+	int gameState = 0;
 	int CameraChoice = 3;
 	int OldCameraChoice = 3;
 	int oldAnimPos[3] = {3, 3, 3};
@@ -106,6 +107,9 @@ private:
 	vec3(TrackerPos) = vec3(0.f, -50.f, 0.f);
 
 	int tempAnimPos[4] = {3, 3, 3, 1};
+
+	float currenttime = 0;
+	float power = 0;
 };
 
 
