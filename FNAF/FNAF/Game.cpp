@@ -304,9 +304,9 @@ void Game::SetScene()
 	}
 
 	m_register->get<AnimationController>(EntityIdentifier::Button(0)).SetActiveAnim(floor(currenttime / 10));
-	m_register->get<AnimationController>(EntityIdentifier::Button(25)).SetActiveAnim(floor(power / 10));
-	m_register->get<AnimationController>(EntityIdentifier::Button(26)).SetActiveAnim(floor(power) - (floor(power / 10) * 10) );
-	m_register->get<AnimationController>(EntityIdentifier::Button(27)).SetActiveAnim(sum);
+	m_register->get<AnimationController>(EntityIdentifier::Button(21)).SetActiveAnim(floor(power / 10));
+	m_register->get<AnimationController>(EntityIdentifier::Button(31)).SetActiveAnim(floor(power) - (floor(power / 10) * 10) );
+	m_register->get<AnimationController>(EntityIdentifier::Button(41)).SetActiveAnim(sum);
 
 	change = false;
 	buttonPressed = false;

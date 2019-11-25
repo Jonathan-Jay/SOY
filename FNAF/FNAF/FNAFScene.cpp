@@ -146,7 +146,7 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 
 		unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit() | EntityIdentifier::AnimationBit();
 		ECS::SetUpIdentifier(entity, bitHolder, "power part " + std::to_string(x));
-		ECS::SetIsButton(entity, true, 25 + x);
+		ECS::SetIsButton(entity, true, 21 + x * 10);
 	}
 #pragma endregion
 
