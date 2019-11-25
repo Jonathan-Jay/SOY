@@ -222,7 +222,7 @@ void SceneEditor::CreateEditor(entt::registry * reg, Scene* scene)
 				ImGui::Text("Currently Attached");	
 				if (ImGui::Button("Play Soundeffect", ImVec2(100.f, 20.f)))
 					{
-						printf("Test Message");
+					PlaySingleSound("Jumpscare.mp3");
 					}
 				}
 				else
