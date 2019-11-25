@@ -70,6 +70,86 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 	}
 #pragma endregion
 
+#pragma region Time
+	{
+		auto entity = ECS::CreateEntity();
+
+		ECS::AttachComponent<Sprite>(entity);
+		ECS::AttachComponent<Transform>(entity);
+		ECS::AttachComponent<AnimationController>(entity);
+
+		std::string filename = "time.png";
+		auto& animController = ECS::GetComponent<AnimationController>(entity);
+		animController.InitUVs(filename);
+
+		for (int x(0); x < 7; x++) {
+			animController.AddAnimation(Animation());
+			auto& anim = animController.GetAnimation(x);
+			anim.AddFrame(vec2(1,11 * (x + 1) + x), vec2(23, x * 12));
+			anim.SetRepeating(false);
+			anim.SetSecPerFrame(0.1f);
+		}
+
+		animController.SetActiveAnim(0);
+
+		ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 22, 10, true, &animController);
+
+		ECS::GetComponent<Transform>(entity).SetPosition(vec3(82.f, 90.f, 50.f));
+
+		unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit() | EntityIdentifier::AnimationBit();
+		ECS::SetUpIdentifier(entity, bitHolder, "time");
+		ECS::SetIsButton(entity, true, 0);
+	}
+#pragma endregion
+
+#pragma region Power bottom
+	for (int x(0); x < 3; x++)
+	{
+		auto entity = ECS::CreateEntity();
+
+		ECS::AttachComponent<Sprite>(entity);
+		ECS::AttachComponent<Transform>(entity);
+		ECS::AttachComponent<AnimationController>(entity);
+
+		int temp(0);
+		std::string filename = "power";
+		if (x == 0) {
+			filename += "counter.png";
+			temp = 10;
+		}
+		else if (x == 1) {
+			filename += "digit.png";
+			temp = 10;
+		}
+		else if (x == 2) {
+			filename += "bar.png";
+			temp = 4;
+		}
+		auto& animController = ECS::GetComponent<AnimationController>(entity);
+		animController.InitUVs(filename);
+
+		for (int y(0); y < temp; y++) {
+			animController.AddAnimation(Animation());
+			auto& anim = animController.GetAnimation(y);
+			anim.AddFrame(vec2(1, 12 * (y + 1)), vec2(63, y * 12));
+			anim.SetRepeating(false);
+			anim.SetSecPerFrame(0.1f);
+		}
+
+		if (x == 2)
+			animController.SetActiveAnim(0);
+		else	animController.SetActiveAnim(9);
+
+		ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 62, 10, true, &animController);
+
+		ECS::GetComponent<Transform>(entity).SetPosition(vec3(-63.f, 90.f, 45.f + x));
+
+		unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit() | EntityIdentifier::AnimationBit();
+		ECS::SetUpIdentifier(entity, bitHolder, "power part " + std::to_string(x));
+		ECS::SetIsButton(entity, true, 25 + x);
+	}
+#pragma endregion
+
 #pragma region map
 	{
 		auto entity = ECS::CreateEntity();
