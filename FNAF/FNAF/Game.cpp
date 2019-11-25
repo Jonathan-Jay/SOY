@@ -79,7 +79,8 @@ bool Game::Run()
 		}
 
 		if (m_activeScene == m_scenes[0]) {
-			SetScene();
+			//gameState 0 is first loaded, 1 means game started, 2 means game over, 3 means win
+			if (gameState == 1) 	SetScene();
 			Set::Update();
 		}
 	}
@@ -290,6 +291,23 @@ void Game::SetScene()
 		m_register->get<AnimationController>(EntityIdentifier::Button(50 + 10 * x)).SetActiveAnim(isButtonPressed[x + 2]);
 		counter += Timer::deltaTime;
 	}
+	int sum = onCamera;
+	for (int x(0); x < 4; x++) {
+		sum += isButtonPressed[x];
+	}
+	power -= sum * 0.003f + 0.001f;
+	if (power <= 0) {
+		power = 99;
+	}
+	currenttime += Timer::deltaTime;
+	if (currenttime >= 70) {
+		currenttime = 0;
+	}
+
+	m_register->get<AnimationController>(EntityIdentifier::Button(0)).SetActiveAnim(floor(currenttime / 10));
+	m_register->get<AnimationController>(EntityIdentifier::Button(25)).SetActiveAnim(floor(power / 10));
+	m_register->get<AnimationController>(EntityIdentifier::Button(26)).SetActiveAnim(floor(power) - (floor(power / 10) * 10) );
+	m_register->get<AnimationController>(EntityIdentifier::Button(27)).SetActiveAnim(sum);
 
 	change = false;
 
@@ -358,6 +376,9 @@ void Game::MainMenuControls(SDL_MouseButtonEvent evnt)
 			//initial positions would be 3, 3, 3, 1
 
 			Set::GetRegister(m_register);
+			currenttime = 0;
+			power = 99;
+			gameState = 0;
 		}
 	}
 }
@@ -390,7 +411,7 @@ void Game::MouseMotion(SDL_MouseMotionEvent evnt)
 	else	m_register->get<AnimationController>(EntityIdentifier::Button(39)).SetActiveAnim(0);
 
 	oldposition = vec2(float(evnt.x), float(evnt.y));
-
+	
 	//Resets the enabled flag
 	m_motion = false;
 }
@@ -429,6 +450,8 @@ void Game::MouseClick(SDL_MouseButtonEvent evnt)
 				}
 			}
 		}
+
+		if (gameState == 0)	gameState = 1;
 	}
 
 	if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_RIGHT) && onCamera) {
