@@ -7,6 +7,10 @@ Animatronic Foxy;
 int timeStart = time(0);
 int timeAfter = std::time(0) - timeStart;
 int deltaTime = std::time(0);
+
+float onCamTime = 0.f;
+float deltaOnCam = time(0);
+
 bool isRun = true;
 
 void initializeAnimatronics() //To initialize all of the animatronics things
@@ -166,6 +170,15 @@ void Animatronic::changePosition(int onCamera)
 		positionChange(Chica, onCamera);
 		positionChange(Bonnie, onCamera);
 		deltaTime = std::time(0);
+	}
+	//foxy camera things
+	if (onCamera == 1)
+	{
+		onCamTime += Timer::currentClock - deltaOnCam;
+	}
+	else 
+	{
+		deltaOnCam = Timer::currentClock;
 	}
 	//Foxy is a special case
 	//Same with golden freddy
