@@ -7,6 +7,15 @@ class FNAF : public Scene
 public:
 	FNAF(std::string name);
 	void InitScene(float windowWidth, float windowHeight) override;
+	void Update() override;
+};
+
+class MainMenu : public Scene
+{
+public:
+	MainMenu(std::string name);
+	void InitScene(float windowWidth, float windowHeight) override;
+	void Update() override;
 };
 
 class Set {
