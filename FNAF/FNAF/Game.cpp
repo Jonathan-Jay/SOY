@@ -402,7 +402,6 @@ void Game::MouseClick(SDL_MouseButtonEvent evnt)
 
 		for (int x(1); x <= 8; x++) {
 			if (Set::positionTesting(EntityIdentifier::Button(x), click)) {
-<<<<<<< HEAD
 				if (CameraChoice != x) {
 					printf("Camera %i selected\n", x);
 					OldCameraChoice = CameraChoice;
@@ -410,15 +409,6 @@ void Game::MouseClick(SDL_MouseButtonEvent evnt)
 					buttonPressed = true;
 					CameraChoice = x;
 				}
-=======
-				printf("Camera %i selected\n", x);
-				if (CameraChoice != x) {
-					OldCameraChoice = CameraChoice;
-					change = true;
-					buttonPressed = true;
-				}
-				CameraChoice = x;
->>>>>>> JonathanBranch
 			}
 		}
 	}
@@ -443,15 +433,9 @@ void Game::MouseWheel(SDL_MouseWheelEvent evnt)
 	if (evnt.y < 0) {
 		tempAnimPos[0] = 3;
 		tempAnimPos[1] = rand() % 4 + 2;
-<<<<<<< HEAD
 		if (rand() % 30 > 20)	tempAnimPos[1] = 8;
-=======
-		if (rand() & 30 > 20)	tempAnimPos[1] = 8;
->>>>>>> JonathanBranch
-		tempAnimPos[2] = 2 + rand() % 2 + (rand() % 2) * 5;
-		tempAnimPos[3] = rand() % 5 + 1;
 	}
-	
+
 	//Resets the enabled flag
 	m_wheel = false;
 }
