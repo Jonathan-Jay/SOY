@@ -5,7 +5,9 @@ std::string Shader::ReadFile(const std::string & fileName) const
 	//Creates an in file stream
 	std::ifstream inStream(fileName);
 	//Gives start of message
-	std::cout << "Shader: " << fileName << " .";
+
+	//std::cout << "Shader: " << fileName << " .";
+
 	//If the stream isn't good
 		//Give error message and return empty string
 	if (!inStream.good())
@@ -14,7 +16,8 @@ std::string Shader::ReadFile(const std::string & fileName) const
 		return std::string();
 	}
 	//Give success message
-	std::cout << ".. loaded successfully!\n";
+	
+	//std::cout << ".. loaded successfully!\n";
 
 	//read the entire file into data
 	std::string data(std::istreambuf_iterator<char>(inStream), (std::istreambuf_iterator<char>()));
