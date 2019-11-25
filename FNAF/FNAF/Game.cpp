@@ -365,6 +365,7 @@ void Game::MouseMotion(SDL_MouseMotionEvent evnt)
 			printf("Camera On!\n");
 			TrackerPos = playerPos;
 			change = true;
+			buttonPressed = true;
 			onCamera = true;
 		}
 	}
@@ -393,17 +394,21 @@ void Game::MouseClick(SDL_MouseButtonEvent evnt)
 			evnt.x / windowHeight * 200.f - 100.f * windowWidth / windowHeight,
 			-evnt.y / windowHeight * 200.f + 100.f,
 			0.f);
-		if (!onCamera)	TrackerPos = click;
+		if (!onCamera) {
+			TrackerPos = click;
+			if (Set::positionTesting(EntityIdentifier::Button(30), click, true))	leftButton[0] = true;
+			if (Set::positionTesting(EntityIdentifier::Button(40), click, true))	leftButton[1] = true;
+		}
 
 		for (int x(1); x <= 8; x++) {
 			if (Set::positionTesting(EntityIdentifier::Button(x), click)) {
-				printf("Camera %i selected\n", x);
 				if (CameraChoice != x) {
+					printf("Camera %i selected\n", x);
 					OldCameraChoice = CameraChoice;
 					change = true;
 					buttonPressed = true;
+					CameraChoice = x;
 				}
-				CameraChoice = x;
 			}
 		}
 	}
@@ -428,7 +433,7 @@ void Game::MouseWheel(SDL_MouseWheelEvent evnt)
 	if (evnt.y < 0) {
 		tempAnimPos[0] = 3;
 		tempAnimPos[1] = rand() % 4 + 2;
-		if (rand() & 30 > 20)	tempAnimPos[1] = 8;
+		if (rand() % 30 > 20)	tempAnimPos[1] = 8;
 		tempAnimPos[2] = 2 + rand() % 2 + (rand() % 2) * 5;
 		tempAnimPos[3] = rand() % 5 + 1;
 	}

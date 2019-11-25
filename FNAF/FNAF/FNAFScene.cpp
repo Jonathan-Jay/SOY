@@ -5,7 +5,6 @@ bool Set::settingup = true;
 bool Set::hasStatic = false;
 bool Set::oldIsAnim[3] = {};
 float Set::wait = 0;
-int Set::oldCameraTrue = 0;
 
 FNAF::FNAF(std::string name)
 	: Scene(name)
@@ -79,7 +78,7 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 		ECS::AttachComponent<Transform>(entity);
 
 		std::string filename = "map.png";
-		ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 91.5, 81);
+		ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 92, 81);
 
 		ECS::GetComponent<Transform>(entity).SetPosition(vec3(50.f, 500.f, 40.f));
 
@@ -267,27 +266,30 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 
 			auto& anim2 = animController.GetAnimation(1);
 			anim2.AddFrame(vec2(48.f, (22.f * x) - 1.f), vec2(91.f, 22.f * (x - 1) + 2.f));
+			anim2.AddFrame(vec2(48.f, (22.f * x) - 1.f), vec2(91.f, 22.f * (x - 1) + 2.f));
+			anim2.AddFrame(vec2(48.f, (22.f * x) - 1.f), vec2(91.f, 22.f * (x - 1) + 2.f));
 			anim2.AddFrame(vec2(94.f, (22.f * x) - 1.f), vec2(137.f, 22.f * (x - 1) + 2.f));
 			anim2.AddFrame(vec2(140.f, (22.f * x) - 1.f), vec2(183.f, 22.f * (x - 1) + 2.f));
 
 			anim2.SetRepeating(false);
-			anim2.SetSecPerFrame(0.1f);
+			anim2.SetSecPerFrame(0.2f);
 
-			ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 16.5, 7.5, true, &animController);
+			ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 17, 8, true, &animController);
 
 			switch (x) {
-			case 1:		ECS::GetComponent<Transform>(entity).SetPosition(vec3(23, 461.5f, 50.f));	break;
-			case 2:		ECS::GetComponent<Transform>(entity).SetPosition(vec3(54, 464.f, 50.f));	break;
-			case 3:		ECS::GetComponent<Transform>(entity).SetPosition(vec3(43, 485.5f, 50.f));	break;
-			case 4:		ECS::GetComponent<Transform>(entity).SetPosition(vec3(87.5, 460.5f, 50.f));	break;
-			case 5:		ECS::GetComponent<Transform>(entity).SetPosition(vec3(29, 445.f, 50.f));	break;
-			case 6:		ECS::GetComponent<Transform>(entity).SetPosition(vec3(74.5, 414.f, 50.f));	break;
-			case 7:		ECS::GetComponent<Transform>(entity).SetPosition(vec3(87.8, 423.4f, 50.f));	break;
-			case 8:		ECS::GetComponent<Transform>(entity).SetPosition(vec3(29.5, 475.f, 50.f));	break;
+			case 1:		ECS::GetComponent<Transform>(entity).SetPosition(vec3(23.f, 461.5f, 50.f));	break;
+			case 2:		ECS::GetComponent<Transform>(entity).SetPosition(vec3(54.f, 464.f, 50.f));	break;
+			case 3:		ECS::GetComponent<Transform>(entity).SetPosition(vec3(43.f, 485.5f, 50.f));	break;
+			case 4:		ECS::GetComponent<Transform>(entity).SetPosition(vec3(87.5f, 460.5f, 50.f));	break;
+			case 5:		ECS::GetComponent<Transform>(entity).SetPosition(vec3(29.f, 445.f, 50.f));	break;
+			case 6:		ECS::GetComponent<Transform>(entity).SetPosition(vec3(74.5f, 414.f, 50.f));	break;
+			case 7:		ECS::GetComponent<Transform>(entity).SetPosition(vec3(87.8f, 423.4f, 50.f));	break;
+			case 8:		ECS::GetComponent<Transform>(entity).SetPosition(vec3(29.5f, 475.f, 50.f));	break;
 			default: break;
 			}
 
-			unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit() | EntityIdentifier::AnimationBit();
+			unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit()
+				| EntityIdentifier::AnimationBit();
 			ECS::SetUpIdentifier(entity, bitHolder, "button " + std::to_string(x));
 			ECS::SetIsButton(entity, true, x);
 		}
@@ -311,9 +313,7 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 			ECS::SetIsButton(entity, true, x + 10);
 		}
 #pragma endregion
-
-		//animatronic summoning
-
+		
 #pragma region Freddy
 		if (x == 3)
 		{
@@ -393,7 +393,7 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 			ECS::SetIsButton(entity, true, x + 50);
 		}
 #pragma endregion
-	
+		
 	}
 
 }
@@ -429,15 +429,18 @@ void Set::SetUpSet(int OldCameraChoice, int CameraChoice, bool isAnim[3], int fo
 {
 	wait = 0.25f;
 	hasStatic = true;
-	//button reseting
-	auto& temp = m_register->get<AnimationController>(EntityIdentifier::Button(OldCameraChoice));
-	temp.SetActiveAnim(0);
-	temp.GetAnimation(1).Reset();
-	m_register->get<AnimationController>(EntityIdentifier::Button(CameraChoice)).SetActiveAnim(1);
 
-	//Scene organisation here (CameraChoice is current, OldCameraChoice is previous), add 10 for rooms
-	m_register->get<Transform>(EntityIdentifier::Button(OldCameraChoice + 10)).SetPosition(vec3(0, 500, 25));
-	m_register->get<Transform>(EntityIdentifier::Button(CameraChoice + 10)).SetPosition(vec3(0, 0, 25));
+	//button reseting
+	if (buttonPressed) {
+		auto& temp = m_register->get<AnimationController>(EntityIdentifier::Button(OldCameraChoice));
+		temp.SetActiveAnim(0);
+		temp.GetAnimation(1).Reset();
+		m_register->get<AnimationController>(EntityIdentifier::Button(CameraChoice)).SetActiveAnim(1);
+
+		//Scene organisation here (CameraChoice is current, OldCameraChoice is previous), add 10 for rooms
+		m_register->get<Transform>(EntityIdentifier::Button(OldCameraChoice + 10)).SetPosition(vec3(0, 500, 25));
+		m_register->get<Transform>(EntityIdentifier::Button(CameraChoice + 10)).SetPosition(vec3(0, 0, 25));
+	}
 
 	//Animatronics are numbered 20 - 40 + room number, x is a multiplier
 	//0 is for fred
@@ -445,7 +448,7 @@ void Set::SetUpSet(int OldCameraChoice, int CameraChoice, bool isAnim[3], int fo
 	//2 is for goose
 	//rooms 51 - 54 are foxy
 	for (int x(0); x < 3; x++) {
-		if (oldIsAnim[x] && (oldCameraTrue != OldCameraChoice || buttonPressed)) {
+		if (oldIsAnim[x] && buttonPressed) {
 			m_register->get<Transform>(EntityIdentifier::Button(OldCameraChoice + 10 * (x + 2))).SetPosition(vec3(0, 500, 30));
 		}
 		if (oldIsAnim[x] != isAnim[x] && !buttonPressed) {
@@ -456,7 +459,6 @@ void Set::SetUpSet(int OldCameraChoice, int CameraChoice, bool isAnim[3], int fo
 		}
 		oldIsAnim[x] = isAnim[x];
 	}
-	oldCameraTrue = OldCameraChoice;
 
 	if (OldCameraChoice == 1) {
 		for (int x(1); x <= 5; x++) {
@@ -643,5 +645,4 @@ void MainMenu::InitScene(float windowWidth, float windowHeight)
 
 void MainMenu::Update()
 {
-
 }
