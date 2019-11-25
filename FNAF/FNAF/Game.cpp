@@ -269,7 +269,8 @@ void Game::SetScene()
 	if (CameraChoice == 1)	foxyPos = tempAnimPos[3];
 
 	if (onCamera && change) {
-		Set::SetUpSet(OldCameraChoice, CameraChoice, isAnimatronicInRoom, foxyPos, buttonPressed);
+		Set::SetUpSet(OldCameraChoice, CameraChoice, isAnimatronicInRoom,
+			foxyPos, buttonPressed, cameraflipped);
 	}
 	else if (change) {
 		Set::UndoSet(CameraChoice, isAnimatronicInRoom, foxyPos);
@@ -291,6 +292,7 @@ void Game::SetScene()
 
 	change = false;
 	buttonPressed = false;
+	cameraflipped = false;
 }
 
 void Game::MainMenuControls(SDL_MouseButtonEvent evnt)
@@ -339,6 +341,7 @@ void Game::MainMenuControls(SDL_MouseButtonEvent evnt)
 			m_register = m_activeScene->GetScene();
 
 			//reset animatronic position here
+			//initial positions would be 3, 3, 3, 1
 
 			Set::GetRegister(m_register);
 		}
@@ -367,6 +370,7 @@ void Game::MouseMotion(SDL_MouseMotionEvent evnt)
 			change = true;
 			buttonPressed = true;
 			onCamera = true;
+			cameraflipped = true;
 		}
 	}
 	else	m_register->get<AnimationController>(EntityIdentifier::Button(39)).SetActiveAnim(0);
@@ -434,6 +438,7 @@ void Game::MouseWheel(SDL_MouseWheelEvent evnt)
 		tempAnimPos[0] = 3;
 		tempAnimPos[1] = rand() % 4 + 2;
 		if (rand() % 30 > 20)	tempAnimPos[1] = 8;
+		tempAnimPos[2] = rand() % 2 + (rand() % 2) * 5 + 2;
 	}
 
 	//Resets the enabled flag

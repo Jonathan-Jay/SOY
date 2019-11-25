@@ -91,6 +91,7 @@ private:
 	bool onCamera = false;
 	bool change = false;
 	bool buttonPressed = false;
+	bool cameraflipped = false;
 	bool leftButton[2] = {};
 	bool isButtonPressed[4] = {};
 

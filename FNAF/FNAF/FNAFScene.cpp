@@ -425,7 +425,8 @@ bool Set::positionTesting(int entity, vec3(otherposition), bool isPlayer)
 	return false;
 }
 
-void Set::SetUpSet(int OldCameraChoice, int CameraChoice, bool isAnim[3], int foxyPos, bool buttonPressed)
+void Set::SetUpSet(int OldCameraChoice, int CameraChoice, bool isAnim[3],
+	int foxyPos, bool buttonPressed, bool flipped)
 {
 	wait = 0.25f;
 	hasStatic = true;
@@ -448,7 +449,7 @@ void Set::SetUpSet(int OldCameraChoice, int CameraChoice, bool isAnim[3], int fo
 	//2 is for goose
 	//rooms 51 - 54 are foxy
 	for (int x(0); x < 3; x++) {
-		if (oldIsAnim[x] && buttonPressed) {
+		if (oldIsAnim[x] && buttonPressed && !flipped) {
 			m_register->get<Transform>(EntityIdentifier::Button(OldCameraChoice + 10 * (x + 2))).SetPosition(vec3(0, 500, 30));
 		}
 		if (oldIsAnim[x] != isAnim[x] && !buttonPressed) {
@@ -508,7 +509,7 @@ void Set::Update()
 		if (hasStatic) {
 			EffectManager::CreateEffect(Grain, BackEnd::GetWindowWidth(), BackEnd::GetWindowHeight());
 			GrainEffect* temp = (GrainEffect*)EffectManager::GetEffect(0);
-			temp->SetStrength(1000);
+			temp->SetStrength(500);
 			EffectManager::CreateEffect(Pixelate, BackEnd::GetWindowWidth(), BackEnd::GetWindowHeight());
 			PixelateEffect* temp2 = (PixelateEffect*)EffectManager::GetEffect(1);
 			temp2->SetPixelSize(10);
@@ -531,6 +532,12 @@ void Set::Update()
 void Set::GetRegister(entt::registry* m_reg)
 {
 	m_register = m_reg;
+	settingup = true;
+	hasStatic = false;
+	for (int x(0); x < 3; x++) {
+		oldIsAnim[x] = false;
+	}
+	wait = 0;
 }
 
 MainMenu::MainMenu(std::string name)
