@@ -85,7 +85,7 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 		for (int x(0); x < 7; x++) {
 			animController.AddAnimation(Animation());
 			auto& anim = animController.GetAnimation(x);
-			anim.AddFrame(vec2(1,11 * (x + 1) + x), vec2(23, x * 12));
+			anim.AddFrame(vec2(1,24 * (x + 1)), vec2(47, x * 24));
 			anim.SetRepeating(false);
 			anim.SetSecPerFrame(0.1f);
 		}
@@ -131,7 +131,7 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 		for (int y(0); y < temp; y++) {
 			animController.AddAnimation(Animation());
 			auto& anim = animController.GetAnimation(y);
-			anim.AddFrame(vec2(1, 12 * (y + 1)), vec2(63, y * 12));
+			anim.AddFrame(vec2(1, 24 * (y + 1)), vec2(127, y * 24));
 			anim.SetRepeating(false);
 			anim.SetSecPerFrame(0.1f);
 		}
@@ -186,12 +186,12 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 		animController.SetActiveAnim(0);
 
 		auto& anim = animController.GetAnimation(0);
-		anim.AddFrame(vec2(0, 20), vec2(75, 11));
+		anim.AddFrame(vec2(0, 40), vec2(150, 22));
 		anim.SetRepeating(false);
 		anim.SetSecPerFrame(0.1f);
 
 		auto& anim2 = animController.GetAnimation(1);
-		anim2.AddFrame(vec2(0, 10), vec2(75, 0));
+		anim2.AddFrame(vec2(0, 20), vec2(150, 0));
 		anim2.SetRepeating(false);
 		anim2.SetSecPerFrame(0.1f);
 
