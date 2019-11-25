@@ -177,9 +177,7 @@ void Game::KeyboardUp()
 
 void Game::MovementMath(int mainplayer)
 {
-	int tracker = EntityIdentifier::Button(0);
 	vec3(CurrentPos) = m_register->get<Transform>(mainplayer).GetPosition();
-	vec3(TrackerPos) = m_register->get<Transform>(tracker).GetPosition();
 	vec2(distance) = vec2(TrackerPos.x - CurrentPos.x, TrackerPos.y - CurrentPos.y);
 
 	if (distance.GetMagnitude() > 0.5f)	movement = distance.Normalize() * 150.f;
@@ -320,7 +318,7 @@ void Game::MouseMotion(SDL_MouseMotionEvent evnt)
 		m_register->get<AnimationController>(EntityIdentifier::Button(39)).SetActiveAnim(1);
 		if (oldposition.y + 10 <= evnt.y && evnt.y >= BackEnd::GetWindowHeight() - 4 && !onCamera) {
 			printf("Camera On!\n");
-			m_register->get<Transform>(EntityIdentifier::Button(0)).SetPosition(playerPos);
+			TrackerPos = playerPos;
 			change = true;
 			onCamera = true;
 		}
@@ -350,7 +348,7 @@ void Game::MouseClick(SDL_MouseButtonEvent evnt)
 			evnt.x / windowHeight * 200.f - 100.f * windowWidth / windowHeight,
 			-evnt.y / windowHeight * 200.f + 100.f,
 			0.f);
-		if (!onCamera)	m_register->get<Transform>(EntityIdentifier::Button(0)).SetPosition(click);
+		if (!onCamera)	TrackerPos = click;
 
 		for (int x(1); x <= 8; x++) {
 			if (Set::positionTesting(EntityIdentifier::Button(x), click)) {

@@ -67,20 +67,6 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 	}
 #pragma endregion
 
-#pragma region tracker
-	{
-		auto entity = ECS::CreateEntity();
-
-		ECS::AttachComponent<Transform>(entity);
-
-		ECS::GetComponent<Transform>(entity).SetPosition(vec3(0.f, -50.f, 0.f));
-
-		unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit();
-		ECS::SetUpIdentifier(entity, bitHolder, "tracker");
-		ECS::SetIsButton(entity, true, 0);
-	}
-#pragma endregion
-
 #pragma region map
 	{
 		auto entity = ECS::CreateEntity();
