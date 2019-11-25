@@ -22,10 +22,11 @@ class Set {
 public:
 	static void GetRegister(entt::registry* m_register);
 	static bool positionTesting(int entity, vec3(otherposition), bool isPlayer = false);
-	static void SetUpSet(int OldCameraChoice, int CameraChoice, bool isAnimatronicPresent[4]);
-	static void UndoSet(int CameraChoice);
+	static void SetUpSet(int OldCameraChoice, int CameraChoice, bool isAnimatronicPresent[3], int foxyPos);
+	static void UndoSet(int CameraChoice, bool isAnim[3], int foxyPos);
 
 private:
 	static entt::registry* m_register;
 	static bool settingup;
+	static bool oldIsAnim[3];
 };

@@ -226,11 +226,19 @@ void Game::SetScene()
 	//runing whether to move the characters or not
 	Animatronic::changePosition();
 
+	int foxyPos(0);
+	bool isAnimatronicInRoom[3] = {};
+
+	if (CameraChoice == tempanimpos[0])	isAnimatronicInRoom[0] = true;
+	if (CameraChoice == tempanimpos[1])	isAnimatronicInRoom[1] = true;
+	if (CameraChoice == tempanimpos[2])	isAnimatronicInRoom[2] = true;
+	if (CameraChoice == 1)	foxyPos = tempanimpos[3];
+
 	if (onCamera && change) {
-		Set::SetUpSet(OldCameraChoice, CameraChoice, isAnimatronicInRoom);
+		Set::SetUpSet(OldCameraChoice, CameraChoice, isAnimatronicInRoom, foxyPos);
 	}
 	else if (change) {
-		Set::UndoSet(CameraChoice);
+		Set::UndoSet(CameraChoice, isAnimatronicInRoom, foxyPos);
 	}
 
 	//changes animation for buttons
@@ -359,6 +367,11 @@ void Game::MouseClick(SDL_MouseButtonEvent evnt)
 			}
 		}
 
+		tempanimpos[0] = 3;
+		tempanimpos[1] = rand() % 4 + 2;
+		if (rand() & 30 > 20)	tempanimpos[1] = 8;
+		tempanimpos[2] = 2 + rand() % 2 + (rand() % 2) * 5 ;
+		tempanimpos[3] = rand() % 5 + 1;
 	}
 
 	if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_RIGHT) && onCamera) {
