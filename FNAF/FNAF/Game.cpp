@@ -224,13 +224,18 @@ void Game::MovementMath(int mainplayer)
 void Game::SetScene()
 {
 
+	//runing whether to move the characters or not
+	Animatronic::changePosition(CameraChoice);
+	//Uh this is because there is no void Start() Like in unity
+	initializeAnimatronics();
+
 	int foxyPos(0);
 	bool isAnimatronicInRoom[3] = {};
 
 	//Animatronics according to number (in isAnimatronicInRoom)
 	//0 is freddy
-	//1 is bonnie
-	//2 is chica
+	//1 is chica
+	//2 is bonnie
 	if (CameraChoice == tempAnimPos[0]) {
 		isAnimatronicInRoom[0] = true;
 		if (oldAnimPos[0] != tempAnimPos[0]) {
@@ -289,15 +294,11 @@ void Game::SetScene()
 	}
 
 	change = false;
-<<<<<<< HEAD
-	//runing whether to move the characters or not
-	Animatronic::changePosition(CameraChoice);
-	//Uh this is because there is no void Start() Like in unity
-	initializeAnimatronics();
-=======
+
+
 	buttonPressed = false;
 	cameraflipped = false;
->>>>>>> JonathanBranch
+
 }
 
 void Game::MainMenuControls(SDL_MouseButtonEvent evnt)
