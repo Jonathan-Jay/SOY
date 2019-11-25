@@ -56,6 +56,8 @@ public:
 	void MovementMath(int mainplayer);
 	void SetScene();
 
+	void MainMenuControls(SDL_MouseButtonEvent evnt);
+
 	//Mouse input
 	void MouseMotion(SDL_MouseMotionEvent evnt);
 	void MouseClick(SDL_MouseButtonEvent evnt);

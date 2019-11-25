@@ -99,6 +99,43 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 	}
 #pragma endregion
 
+#pragma region bar
+	{
+		auto entity = ECS::CreateEntity();
+
+		ECS::AttachComponent<Sprite>(entity);
+		ECS::AttachComponent<Transform>(entity);
+		ECS::AttachComponent<AnimationController>(entity);
+
+		std::string filename = "bar.png";
+		auto& animController = ECS::GetComponent<AnimationController>(entity);
+		animController.InitUVs(filename);
+
+		animController.AddAnimation(Animation());
+		animController.AddAnimation(Animation());
+
+		animController.SetActiveAnim(0);
+
+		auto& anim = animController.GetAnimation(0);
+		anim.AddFrame(vec2(0, 20), vec2(75, 11));
+		anim.SetRepeating(false);
+		anim.SetSecPerFrame(0.1f);
+
+		auto& anim2 = animController.GetAnimation(1);
+		anim2.AddFrame(vec2(0, 10), vec2(75, 0));
+		anim2.SetRepeating(false);
+		anim2.SetSecPerFrame(0.1f);
+
+		ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 75, 10, true, &animController);
+
+		ECS::GetComponent<Transform>(entity).SetPosition(vec3(0.f, -90.f, 10.f));
+
+		unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit() | EntityIdentifier::AnimationBit();
+		ECS::SetUpIdentifier(entity, bitHolder, "bar");
+		ECS::SetIsButton(entity, true, 39);
+	}
+#pragma endregion
+
 	//so that we can mass spawn without filling the cpp
 	for (int x(1); x <= 8; x++) {
 		
@@ -246,7 +283,7 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 			anim2.SetRepeating(false);
 			anim2.SetSecPerFrame(0.1f);
 
-			ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 11, 5, true, &animController);
+			ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 16.5, 7.5, true, &animController);
 
 			switch (x) {
 			case 1:		ECS::GetComponent<Transform>(entity).SetPosition(vec3(23, 461.5f, 50.f));	break;
@@ -358,6 +395,10 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 
 }
 
+void FNAF::Update()
+{
+}
+
 bool Set::positionTesting(int entity, vec3(otherposition), bool isPlayer)
 {
 	vec3(Pos) = otherposition - m_register->get<Transform>(entity).GetPosition();
@@ -436,4 +477,118 @@ void Set::UndoSet(int CameraChoice)
 void Set::GetRegister(entt::registry* m_reg)
 {
 	m_register = m_reg;
+}
+
+MainMenu::MainMenu(std::string name)
+	: Scene(name)
+{
+}
+
+void MainMenu::InitScene(float windowWidth, float windowHeight)
+{
+	m_sceneReg = new entt::registry;
+
+	ECS::AttachRegister(m_sceneReg);
+
+	float aspectRatio = windowWidth / windowHeight;
+
+#pragma region camera
+	{
+		auto entity = ECS::CreateEntity();
+
+		ECS::AttachComponent<Camera>(entity);
+
+		vec4 temp = ECS::GetComponent<Camera>(entity).GetOrthoSize();
+		ECS::GetComponent<Camera>(entity).SetWindowSize(vec2(float(windowWidth), float(windowHeight)));
+		ECS::GetComponent<Camera>(entity).Orthographic(aspectRatio, temp.x, temp.y, temp.z, temp.w, -100.f, 100.f);
+
+		unsigned int bitHolder = EntityIdentifier::CameraBit();
+		ECS::SetUpIdentifier(entity, bitHolder, "Camera");
+		ECS::SetIsMainCamera(entity, true);
+	}
+#pragma endregion
+
+#pragma region Loading Screen
+	{
+		auto entity = ECS::CreateEntity();
+
+		ECS::AttachComponent<Sprite>(entity);
+		ECS::AttachComponent<Transform>(entity);
+		ECS::AttachComponent<AnimationController>(entity);
+
+		std::string filename = "loading.png";
+		auto& animController = ECS::GetComponent<AnimationController>(entity);
+		animController.InitUVs(filename);
+
+		animController.AddAnimation(Animation());
+
+		animController.SetActiveAnim(0);
+
+		auto& anim = animController.GetAnimation(0);
+		anim.AddFrame(vec2(0.f, 199.f), vec2(199.f, 0.f));
+		anim.AddFrame(vec2(0.f, 399.f), vec2(199.f, 200.f));
+
+		anim.SetRepeating(true);
+		anim.SetSecPerFrame(0.5f);
+
+		ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 200, 200, true, &animController);
+
+		ECS::GetComponent<Transform>(entity).SetPosition(vec3(0.f, 200, 50.f));
+
+		unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit() | EntityIdentifier::AnimationBit();
+		ECS::SetUpIdentifier(entity, bitHolder, "loading screen");
+		ECS::SetIsButton(entity, true, 0);
+	}
+#pragma endregion
+
+	srand(time(0));
+	for (int x(1); x <= 5; x++) {
+
+#pragma region Night Buttons
+		{
+			auto entity = ECS::CreateEntity();
+
+			ECS::AttachComponent<Sprite>(entity);
+			ECS::AttachComponent<Transform>(entity);
+			ECS::AttachComponent<AnimationController>(entity);
+
+			std::string filename = "night buttons.png";
+			auto& animController = ECS::GetComponent<AnimationController>(entity);
+			animController.InitUVs(filename);
+
+			animController.AddAnimation(Animation());
+			animController.AddAnimation(Animation());
+
+			animController.SetActiveAnim(0);
+
+			auto& anim = animController.GetAnimation(0);
+			anim.AddFrame(vec2(2.f, 14.f * x), vec2(66.f, 14.f * (x - 1) + 2.f));
+
+			anim.SetRepeating(false);
+			anim.SetSecPerFrame(0.1f);
+
+			auto& anim2 = animController.GetAnimation(1);
+			anim2.AddFrame(vec2(36.f - (rand() % 3 - 1) * (rand() % 36), 36.f - (rand() % 3 - 1) * (rand() % 36)), vec2(36.f - (rand() % 3 - 1) * (rand() % 36), 16.f * (x - 1) + 2.f));
+			anim2.AddFrame(vec2(36.f - (rand() % 3 - 1) * (rand() % 36), 36.f - (rand() % 3 - 1) * (rand() % 36)), vec2(36.f - (rand() % 3 - 1) * (rand() % 36), 16.f * (x - 1) + 2.f));
+			anim2.AddFrame(vec2(36.f - (rand() % 3 - 1) * (rand() % 36), 36.f - (rand() % 3 - 1) * (rand() % 36)), vec2(36.f - (rand() % 3 - 1) * (rand() % 36), 16.f * (x - 1) + 2.f));
+			anim2.AddFrame(vec2(36.f - (rand() % 3 - 1) * (rand() % 36), 36.f - (rand() % 3 - 1) * (rand() % 36)), vec2(36.f - (rand() % 3 - 1) * (rand() % 36), 16.f * (x - 1) + 2.f));
+
+			anim2.SetRepeating(true);
+			anim2.SetSecPerFrame(0.1f);
+
+			ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 48, 9, true, &animController);
+
+			ECS::GetComponent<Transform>(entity).SetPosition(vec3(-65, 30 - x * 15, 25.f));
+			
+			unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit() | EntityIdentifier::AnimationBit();
+			ECS::SetUpIdentifier(entity, bitHolder, "night button " + std::to_string(x));
+			ECS::SetIsButton(entity, true, x);
+		}
+#pragma endregion
+
+	}
+}
+
+void MainMenu::Update()
+{
 }
