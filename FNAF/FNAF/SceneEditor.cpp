@@ -220,11 +220,19 @@ void SceneEditor::CreateEditor(entt::registry * reg, Scene* scene)
 			if (true)
 			{
 				ImGui::Text("Currently Attached");	
-				if (ImGui::Button("Play Soundeffect", ImVec2(100.f, 20.f)))
-					{
-					PlaySingleSound("Jumpscare.mp3");
-					}
+				if (ImGui::Button("Play Sound", ImVec2(100.f, 20.f)))
+				{
+					Soundfunctions().PlaySingleSound("Camera_Switch_Static.mp3");
 				}
+				if (ImGui::Button("Stop Sound", ImVec2(100.f, 20.f)))
+				{
+					Soundfunctions().PauseSound("Camera_Switch_Static.mp3");
+				}
+				if (ImGui::Button("Loop Sound", ImVec2(100.f, 20.f)))
+				{
+					Soundfunctions().LoopSound("Camera_Switch_Static.mp3");
+				}
+			}
 				else
 				{
 					ImGui::Text("None Attached");
