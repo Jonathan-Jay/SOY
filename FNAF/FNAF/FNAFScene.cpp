@@ -60,7 +60,7 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 		ECS::AttachComponent<Transform>(entity);
 
 		std::string filename = "player.png";
-		ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 25, 15);
+		ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 25, 14);
 
 		ECS::GetComponent<Transform>(entity).SetPosition(vec3(0.f, -50.f, 10.f));
 
@@ -387,7 +387,7 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 
 			std::string filename = "/rooms/" + std::to_string(x) + ".png";
 			
-			ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 200, 200);
+			ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 240, 200);
 
 			ECS::GetComponent<Transform>(entity).SetPosition(vec3(0.f, 500.f, 25.f));
 
@@ -407,7 +407,7 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 
 			std::string filename = "/rooms/freddy/" + std::to_string(x) + ".png";
 			
-			ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 200, 200);
+			ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 240, 200);
 
 			ECS::GetComponent<Transform>(entity).SetPosition(vec3(0.f, 500.f, 30.f));
 
@@ -427,7 +427,7 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 
 			std::string filename = "/rooms/bonnie/" + std::to_string(x) + ".png";
 			
-			ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 200, 200);
+			ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 240, 200);
 
 			ECS::GetComponent<Transform>(entity).SetPosition(vec3(0.f, 500.f, 31.f));
 
@@ -447,7 +447,7 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 
 			std::string filename = "/rooms/chica/" + std::to_string(x) + ".png";
 			
-			ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 200, 200);
+			ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 240, 200);
 
 			ECS::GetComponent<Transform>(entity).SetPosition(vec3(0.f, 500.f, 30.f));
 
@@ -467,7 +467,7 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 
 			std::string filename = "/rooms/foxy/" + std::to_string(x) + ".png";
 			
-			ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 200, 200);
+			ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 240, 200);
 
 			ECS::GetComponent<Transform>(entity).SetPosition(vec3(0.f, 500.f, 30.f));
 
@@ -536,8 +536,9 @@ void Set::SetUpSet(int OldCameraChoice, int CameraChoice, bool isAnim[3], int fo
 		for (int x(1); x <= 5; x++) {
 			m_register->get<Transform>(EntityIdentifier::Button(50 + x)).SetPosition(vec3(0, 500, 30));
 		}
-
-		m_register->get<Transform>(EntityIdentifier::Button(50 + foxyPos)).SetPosition(vec3(0, 0, 30));
+		if (foxyPos > 0) {
+			m_register->get<Transform>(EntityIdentifier::Button(50 + foxyPos)).SetPosition(vec3(0, 0, 30));
+		}
 	}
 	else {
 		//Animatronics are numbered 20 - 40 + room number, x is a multiplier

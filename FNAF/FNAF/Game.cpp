@@ -333,7 +333,7 @@ void Game::SetScene()
 	//reduce power depending on usage
 	power -= (sum * 0.3f + 0.1f) * Timer::deltaTime;
 	if (power <= 0) {
-		power = 99;
+		power = 99.9;
 	}
 
 	//clock
