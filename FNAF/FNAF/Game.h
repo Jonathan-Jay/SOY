@@ -91,11 +91,12 @@ private:
 	bool onCamera = false;
 	bool change = false;
 	bool buttonPressed = false;
-	bool cameraflipped = false;
+	bool collision = true;
 	bool leftButton[2] = {};
 	bool isButtonPressed[4] = {};
 
 	int acceleration = 0;
+	bool accelerate = true;
 
 	int gameState = 0;
 	int CameraChoice = 3;
