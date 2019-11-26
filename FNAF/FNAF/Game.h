@@ -95,6 +95,8 @@ private:
 	bool leftButton[2] = {};
 	bool isButtonPressed[4] = {};
 
+	int acceleration = 0;
+
 	int gameState = 0;
 	int CameraChoice = 3;
 	int OldCameraChoice = 3;

@@ -181,8 +181,12 @@ void Game::MovementMath(int mainplayer)
 	vec3(CurrentPos) = m_register->get<Transform>(mainplayer).GetPosition();
 	vec2(distance) = vec2(TrackerPos.x - CurrentPos.x, TrackerPos.y - CurrentPos.y);
 
-	if (distance.GetMagnitude() > 0.5f)	movement = distance.Normalize() * 150.f;
-	
+	if (distance.GetMagnitude() > 1.f) {
+		movement = distance.Normalize() * acceleration;
+		acceleration += 400 * Timer::deltaTime;
+	}
+	else	acceleration = 75;
+
 	CurrentPos = CurrentPos + vec3(movement.x, movement.y, 0.f) * Timer::deltaTime;
 
 	if (movement.x > 0)		m_register->get<Transform>(mainplayer).SetRotationAngleZ(PI - movement.GetAngle(vec2(0.f, 1.f)));
@@ -190,10 +194,10 @@ void Game::MovementMath(int mainplayer)
 	else if(movement.y < 0)	m_register->get<Transform>(mainplayer).SetRotationAngleZ(0);
 	else m_register->get<Transform>(mainplayer).SetRotationAngleZ(PI);
 
-	if (CurrentPos.x > 43)	CurrentPos.x = 43;
-	if (CurrentPos.x < -43)	CurrentPos.x = -43;
-	if (CurrentPos.y > -40)	CurrentPos.y = -40;
-	if (CurrentPos.y < -93)	CurrentPos.y = -93;
+	if (CurrentPos.x > 43)	{	CurrentPos.x = 43;		acceleration = 75;	}
+	if (CurrentPos.x < -43)	{	CurrentPos.x = -43;		acceleration = 75;	}
+	if (CurrentPos.y > -40)	{	CurrentPos.y = -40;		acceleration = 75;	}
+	if (CurrentPos.y < -93)	{	CurrentPos.y = -93;		acceleration = 75;	}
 
 	m_register->get<Transform>(mainplayer).SetPosition(CurrentPos);
 
@@ -388,6 +392,7 @@ void Game::MouseMotion(SDL_MouseMotionEvent evnt)
 		if (oldposition.y + 10 <= evnt.y && evnt.y >= BackEnd::GetWindowHeight() - 4 && !onCamera) {
 			printf("Camera On!\n");
 			TrackerPos = playerPos;
+			acceleration = 75;
 			change = true;
 			buttonPressed = true;
 			onCamera = true;

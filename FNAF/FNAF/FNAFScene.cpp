@@ -92,9 +92,9 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 
 		animController.SetActiveAnim(0);
 
-		ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 22, 10, true, &animController);
+		ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 33, 15, true, &animController);
 
-		ECS::GetComponent<Transform>(entity).SetPosition(vec3(82.f, 90.f, 50.f));
+		ECS::GetComponent<Transform>(entity).SetPosition(vec3(79.f, 90.f, 50.f));
 
 		unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit() | EntityIdentifier::AnimationBit();
 		ECS::SetUpIdentifier(entity, bitHolder, "time");
@@ -102,8 +102,8 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 	}
 #pragma endregion
 
-#pragma region Power bottom
-	for (int x(0); x < 3; x++)
+#pragma region Power
+	for (int x(1); x < 4; x++)
 	{
 		auto entity = ECS::CreateEntity();
 
@@ -113,17 +113,20 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 
 		int temp(0);
 		std::string filename = "power";
-		if (x == 0) {
+		switch (x) {
+		case 1:
 			filename += "counter.png";
 			temp = 10;
-		}
-		else if (x == 1) {
+			break;
+		case 2:
 			filename += "digit.png";
 			temp = 10;
-		}
-		else if (x == 2) {
+			break;
+		case 3:
 			filename += "bar.png";
 			temp = 4;
+			break;
+		default:	break;
 		}
 		auto& animController = ECS::GetComponent<AnimationController>(entity);
 		animController.InitUVs(filename);
@@ -136,17 +139,17 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 			anim.SetSecPerFrame(0.1f);
 		}
 
-		if (x == 2)
-			animController.SetActiveAnim(0);
-		else	animController.SetActiveAnim(9);
+		if (x < 3)
+			animController.SetActiveAnim(9);
+		else	animController.SetActiveAnim(0);
 
-		ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 62, 10, true, &animController);
+		ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 93, 15, true, &animController);
 
-		ECS::GetComponent<Transform>(entity).SetPosition(vec3(-63.f, 90.f, 45.f + x));
+		ECS::GetComponent<Transform>(entity).SetPosition(vec3(-50.f, 90.f, 45.f + x));
 
 		unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit() | EntityIdentifier::AnimationBit();
 		ECS::SetUpIdentifier(entity, bitHolder, "power part " + std::to_string(x));
-		ECS::SetIsButton(entity, true, 21 + x * 10);
+		ECS::SetIsButton(entity, true, 11 + x * 10);
 	}
 #pragma endregion
 
@@ -217,10 +220,10 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 			ECS::AttachComponent<Transform>(entity);
 			ECS::AttachComponent<AnimationController>(entity);
 
-			std::string filename;
+			std::string filename = "door";
 			if (x <= 2)			filename = "light button.png";
-			else if (x <= 4)	filename = "door button.png";
-			else				filename = "door.png";
+			else if (x <= 4)	filename += " button.png";
+			else				filename += ".png";
 
 			auto& animController = ECS::GetComponent<AnimationController>(entity);
 			animController.InitUVs(filename);
@@ -509,7 +512,7 @@ void Set::SetUpSet(int OldCameraChoice, int CameraChoice, bool isAnim[3],
 	int foxyPos, bool buttonPressed, bool flipped)
 {
 	wait = 0.25f;
-	hasStatic = true;
+	if (!hasStatic)	hasStatic = true;
 
 	//button reseting
 	if (buttonPressed) {
