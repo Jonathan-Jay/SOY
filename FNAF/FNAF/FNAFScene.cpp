@@ -60,7 +60,7 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 		ECS::AttachComponent<Transform>(entity);
 
 		std::string filename = "player.png";
-		ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 25, 15);
+		ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 25, 14);
 
 		ECS::GetComponent<Transform>(entity).SetPosition(vec3(0.f, -50.f, 10.f));
 
@@ -70,6 +70,7 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 	}
 #pragma endregion
 
+	//Button 0
 #pragma region Time
 	{
 		auto entity = ECS::CreateEntity();
@@ -92,18 +93,19 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 
 		animController.SetActiveAnim(0);
 
-		ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 22, 10, true, &animController);
+		ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 33, 15, true, &animController);
 
-		ECS::GetComponent<Transform>(entity).SetPosition(vec3(82.f, 90.f, 50.f));
+		ECS::GetComponent<Transform>(entity).SetPosition(vec3(79.f, 90.f, 45.f));
 
 		unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit() | EntityIdentifier::AnimationBit();
 		ECS::SetUpIdentifier(entity, bitHolder, "time");
 		ECS::SetIsButton(entity, true, 0);
 	}
 #pragma endregion
-
-#pragma region Power bottom
-	for (int x(0); x < 3; x++)
+	
+	//Button 21, 31, 41
+#pragma region Power
+	for (int x(1); x < 4; x++)
 	{
 		auto entity = ECS::CreateEntity();
 
@@ -113,17 +115,20 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 
 		int temp(0);
 		std::string filename = "power";
-		if (x == 0) {
+		switch (x) {
+		case 1:
 			filename += "counter.png";
 			temp = 10;
-		}
-		else if (x == 1) {
+			break;
+		case 2:
 			filename += "digit.png";
 			temp = 10;
-		}
-		else if (x == 2) {
+			break;
+		case 3:
 			filename += "bar.png";
 			temp = 4;
+			break;
+		default:	break;
 		}
 		auto& animController = ECS::GetComponent<AnimationController>(entity);
 		animController.InitUVs(filename);
@@ -136,20 +141,21 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 			anim.SetSecPerFrame(0.1f);
 		}
 
-		if (x == 2)
-			animController.SetActiveAnim(0);
-		else	animController.SetActiveAnim(9);
+		if (x < 3)
+			animController.SetActiveAnim(9);
+		else	animController.SetActiveAnim(0);
 
-		ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 62, 10, true, &animController);
+		ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 93, 15, true, &animController);
 
-		ECS::GetComponent<Transform>(entity).SetPosition(vec3(-63.f, 90.f, 45.f + x));
+		ECS::GetComponent<Transform>(entity).SetPosition(vec3(-50.f, 90.f, 45.f + x));
 
 		unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit() | EntityIdentifier::AnimationBit();
-		ECS::SetUpIdentifier(entity, bitHolder, "power part " + std::to_string(x));
-		ECS::SetIsButton(entity, true, 25 + x);
+		ECS::SetUpIdentifier(entity, bitHolder, "power UI part " + std::to_string(x));
+		ECS::SetIsButton(entity, true, 11 + x * 10);
 	}
 #pragma endregion
-
+	
+	//Button 9
 #pragma region map
 	{
 		auto entity = ECS::CreateEntity();
@@ -167,7 +173,8 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 		ECS::SetIsButton(entity, true, 9);
 	}
 #pragma endregion
-
+	
+	//Button 39
 #pragma region bar
 	{
 		auto entity = ECS::CreateEntity();
@@ -204,10 +211,59 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 		ECS::SetIsButton(entity, true, 39);
 	}
 #pragma endregion
+	
+	//Button 49
+#pragma region screen cover
+	{
+		srand(time(0));
+		auto entity = ECS::CreateEntity();
+
+		ECS::AttachComponent<Sprite>(entity);
+		ECS::AttachComponent<Transform>(entity);
+		ECS::AttachComponent<AnimationController>(entity);
+
+		std::string filename = "cover.png";
+
+		auto& animController = ECS::GetComponent<AnimationController>(entity);
+		animController.InitUVs(filename);
+
+		animController.AddAnimation(Animation());
+		animController.AddAnimation(Animation());
+
+		animController.SetActiveAnim(0);
+
+		auto& anim = animController.GetAnimation(0);
+		anim.AddFrame(vec2(1, 1), vec2(1, 0));
+
+		anim.SetRepeating(false);
+		anim.SetSecPerFrame(0.1f);
+
+		auto& anim2 = animController.GetAnimation(1);
+		anim2.AddFrame(vec2(1, 1), vec2(1, 0));
+		for (int x(0); x < 18; x++) {
+			if (rand() % 10 < 5)	anim2.AddFrame(vec2(0, 1), vec2(0, 0));
+			else	anim2.AddFrame(vec2(1, 1), vec2(1, 0));
+		}
+		anim2.AddFrame(vec2(0, 1), vec2(0, 0));
+
+		anim2.SetRepeating(false);
+		anim2.SetSecPerFrame(0.1f);
+
+		ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 200, 200, true, &animController);
+
+		ECS::GetComponent<Transform>(entity).SetPosition(vec3(0.f, 0.f, 50.f));
+
+		unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit() | EntityIdentifier::AnimationBit();
+		
+		ECS::SetUpIdentifier(entity, bitHolder, "Screen cover");
+		ECS::SetIsButton(entity, true, 49);
+	}
+#pragma endregion
 
 	//so that we can mass spawn without filling the cpp
 	for (int x(1); x <= 8; x++) {
 		
+	//Button 10 * 1-6, 19, 29
 #pragma region wall buttons doors & lights
 		if (x <= 6)		//wall buttons and doors (10 - 60)
 		{
@@ -217,10 +273,10 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 			ECS::AttachComponent<Transform>(entity);
 			ECS::AttachComponent<AnimationController>(entity);
 
-			std::string filename;
+			std::string filename = "door";
 			if (x <= 2)			filename = "light button.png";
-			else if (x <= 4)	filename = "door button.png";
-			else				filename = "door.png";
+			else if (x <= 4)	filename += " button.png";
+			else				filename += ".png";
 
 			auto& animController = ECS::GetComponent<AnimationController>(entity);
 			animController.InitUVs(filename);
@@ -232,14 +288,14 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 
 			auto& anim = animController.GetAnimation(0);
 			if (x <= 4)		anim.AddFrame(vec2(0, 2), vec2(0, 0));
-			else			anim.AddFrame(vec2(5, 12), vec2(8, 0));
+			else			anim.AddFrame(vec2(22, 29), vec2(42, 0));
 
 			anim.SetRepeating(false);
 			anim.SetSecPerFrame(0.1f);
 
 			auto& anim2 = animController.GetAnimation(1);
 			if (x <= 4)		anim2.AddFrame(vec2(1, 2), vec2(1, 0));
-			else			anim2.AddFrame(vec2(0, 12), vec2(4, 0));
+			else			anim2.AddFrame(vec2(0, 29), vec2(20, 0));
 
 			anim2.SetRepeating(false);
 			anim2.SetSecPerFrame(0.1f);
@@ -247,36 +303,36 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 			if (x <= 4)
 				ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 4, 8, true, &animController);
 			else
-				ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 13, 25, true, &animController);
+				ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 21, 29, true, &animController);
 
 
 			unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit() | EntityIdentifier::AnimationBit();
 
 			switch (x) {
 			case 1:		ECS::SetUpIdentifier(entity, bitHolder, "light button left");
-						ECS::GetComponent<Transform>(entity).SetPosition(vec3(-48.2f, -47.f, 0.f));
+						ECS::GetComponent<Transform>(entity).SetPosition(vec3(-40.5f, -45.f, 0.f));
 						break;
 			case 2:		ECS::SetUpIdentifier(entity, bitHolder, "light button right");
-						ECS::GetComponent<Transform>(entity).SetPosition(vec3(48.2f, -47.f, 0.f));
+						ECS::GetComponent<Transform>(entity).SetPosition(vec3(40.5f, -45.f, 0.f));
 						break;
 			case 3:		ECS::SetUpIdentifier(entity, bitHolder, "door button left");
-						ECS::GetComponent<Transform>(entity).SetPosition(vec3(-48.2f, -90.f, 0.f));
+						ECS::GetComponent<Transform>(entity).SetPosition(vec3(-40.5f, -91.f, 0.f));
 						break;
 			case 4:		ECS::SetUpIdentifier(entity, bitHolder, "door button right");
-						ECS::GetComponent<Transform>(entity).SetPosition(vec3(48.2f, -90.f, 0.f));
+						ECS::GetComponent<Transform>(entity).SetPosition(vec3(40.5f, -91.f, 0.f));
 						break;
 			case 5:		ECS::SetUpIdentifier(entity, bitHolder, "door left");
-						ECS::GetComponent<Transform>(entity).SetPosition(vec3(-57.f, -68.5f, 0.f));
+						ECS::GetComponent<Transform>(entity).SetPosition(vec3(-53.2f, -67.8f, 0.f));
 						break;
 			case 6:		ECS::SetUpIdentifier(entity, bitHolder, "door right");
-						ECS::GetComponent<Transform>(entity).SetPosition(vec3(57.f, -68.5f, 0.f));
+						ECS::GetComponent<Transform>(entity).SetPosition(vec3(53.2f, -67.8f, 0.f));
 						break;
 			default:	break;
 			}
 
 			ECS::SetIsButton(entity, true, 10 * x);
 		}
-		else	//lights (19, 29)
+		else	//lights
 		{
 			auto entity = ECS::CreateEntity();
 
@@ -306,11 +362,11 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 			anim2.SetRepeating(false);
 			anim2.SetSecPerFrame(0.1f);
 
-			ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 36, 200, true, &animController);
+			ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 37, 200, true, &animController);
 			unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit() | EntityIdentifier::AnimationBit();
 			if (x == 7) {
 				ECS::SetUpIdentifier(entity, bitHolder, "light left");
-				ECS::GetComponent<Transform>(entity).SetPosition(vec3(-82.f, 0.f, 0.f));
+				ECS::GetComponent<Transform>(entity).SetPosition(vec3(-81.5f, 0.f, 0.f));
 				ECS::SetIsButton(entity, true, 19);
 			}
 			else {
@@ -320,7 +376,8 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 			}
 		}
 #pragma endregion
-
+		
+	//Button 1-8
 #pragma region camera buttons
 		{
 			auto entity = ECS::CreateEntity();
@@ -374,7 +431,8 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 			ECS::SetIsButton(entity, true, x);
 		}
 #pragma endregion
-
+		
+	//Button 11-18
 #pragma region camera rooms
 		{
 			auto entity = ECS::CreateEntity();
@@ -384,7 +442,7 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 
 			std::string filename = "/rooms/" + std::to_string(x) + ".png";
 			
-			ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 200, 200);
+			ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 240, 200);
 
 			ECS::GetComponent<Transform>(entity).SetPosition(vec3(0.f, 500.f, 25.f));
 
@@ -394,6 +452,7 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 		}
 #pragma endregion
 		
+	//Button 23
 #pragma region Freddy
 		if (x == 3)
 		{
@@ -404,7 +463,7 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 
 			std::string filename = "/rooms/freddy/" + std::to_string(x) + ".png";
 			
-			ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 200, 200);
+			ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 240, 200);
 
 			ECS::GetComponent<Transform>(entity).SetPosition(vec3(0.f, 500.f, 30.f));
 
@@ -413,7 +472,8 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 			ECS::SetIsButton(entity, true, x + 20);
 		}
 #pragma endregion
-
+	
+	//Button 32, 33, 34, 35, 38
 #pragma region Bonnie
 		if ((x >= 2 && x <= 5) || x == 8)
 		{
@@ -424,7 +484,7 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 
 			std::string filename = "/rooms/bonnie/" + std::to_string(x) + ".png";
 			
-			ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 200, 200);
+			ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 240, 200);
 
 			ECS::GetComponent<Transform>(entity).SetPosition(vec3(0.f, 500.f, 31.f));
 
@@ -433,7 +493,8 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 			ECS::SetIsButton(entity, true, x + 30);
 		}
 #pragma endregion
-
+	
+	//Button 42, 43, 47, 48
 #pragma region Chica
 		if ((x >= 2 && x <= 3) || (x >= 7 && x <= 8))
 		{
@@ -444,7 +505,7 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 
 			std::string filename = "/rooms/chica/" + std::to_string(x) + ".png";
 			
-			ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 200, 200);
+			ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 240, 200);
 
 			ECS::GetComponent<Transform>(entity).SetPosition(vec3(0.f, 500.f, 30.f));
 
@@ -453,9 +514,10 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 			ECS::SetIsButton(entity, true, x + 40);
 		}
 #pragma endregion
-
+	
+	//Button 51-55
 #pragma region Foxy
-		if (x <= 5)
+		if (x < 5)
 		{
 			auto entity = ECS::CreateEntity();
 
@@ -464,7 +526,7 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 
 			std::string filename = "/rooms/foxy/" + std::to_string(x) + ".png";
 			
-			ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 200, 200);
+			ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 240, 200);
 
 			ECS::GetComponent<Transform>(entity).SetPosition(vec3(0.f, 500.f, 30.f));
 
@@ -478,18 +540,19 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 
 }
 
-void FNAF::Update()
-{
-}
+void FNAF::Update() { }
 
 bool Set::positionTesting(int entity, vec3(otherposition), bool isPlayer)
 {
 	vec3(Pos) = otherposition - m_register->get<Transform>(entity).GetPosition();
+	
+	//isPlayer increase hitbox of buttons
+	//position testing takes sprite size and checks for collision with other position
 	if (isPlayer) {
 		if (Pos.x <= 5 + m_register->get<Sprite>(entity).GetWidth() / 2.f &&
 			Pos.x >= -(5 + m_register->get<Sprite>(entity).GetWidth() / 2.f) &&
-			Pos.y <= 1 + m_register->get<Sprite>(entity).GetHeight() / 2.f &&
-			Pos.y >= -(1 + m_register->get<Sprite>(entity).GetHeight() / 2.f) )
+			Pos.y <= 3 + m_register->get<Sprite>(entity).GetHeight() / 2.f &&
+			Pos.y >= -(3 + m_register->get<Sprite>(entity).GetHeight() / 2.f) )
 		{
 			return true;
 		}
@@ -505,14 +568,15 @@ bool Set::positionTesting(int entity, vec3(otherposition), bool isPlayer)
 	return false;
 }
 
-void Set::SetUpSet(int OldCameraChoice, int CameraChoice, bool isAnim[3],
-	int foxyPos, bool buttonPressed, bool flipped)
+void Set::SetUpSet(int OldCameraChoice, int CameraChoice, bool isAnim[3], int foxyPos, bool buttonPressed)
 {
+	//sets static time and makes hasStatic true, making static reset
 	wait = 0.25f;
-	hasStatic = true;
+	if (!hasStatic)	hasStatic = true;
 
 	//button reseting
 	if (buttonPressed) {
+		//resets animations for camera choice and last amera choice
 		auto& temp = m_register->get<AnimationController>(EntityIdentifier::Button(OldCameraChoice));
 		temp.SetActiveAnim(0);
 		temp.GetAnimation(1).Reset();
@@ -523,36 +587,44 @@ void Set::SetUpSet(int OldCameraChoice, int CameraChoice, bool isAnim[3],
 		m_register->get<Transform>(EntityIdentifier::Button(CameraChoice + 10)).SetPosition(vec3(0, 0, 25));
 	}
 
-	//Animatronics are numbered 20 - 40 + room number, x is a multiplier
-	//0 is for fred
-	//1 is for bon
-	//2 is for goose
-	//rooms 51 - 54 are foxy
-	for (int x(0); x < 3; x++) {
-		if (oldIsAnim[x] && buttonPressed && !flipped) {
-			m_register->get<Transform>(EntityIdentifier::Button(OldCameraChoice + 10 * (x + 2))).SetPosition(vec3(0, 500, 30));
-		}
-		if (oldIsAnim[x] != isAnim[x] && !buttonPressed) {
-			m_register->get<Transform>(EntityIdentifier::Button(CameraChoice + 10 * (x + 2))).SetPosition(vec3(0, 500, 30));
-		}
-		if (isAnim[x]) {
-			m_register->get<Transform>(EntityIdentifier::Button(CameraChoice + 10 * (x + 2))).SetPosition(vec3(0, 0, 30));
-		}
-		oldIsAnim[x] = isAnim[x];
-	}
-
+	//if on camera 1 aka foxy's room
+	//foxy is in rooms 51 - 54
 	if (OldCameraChoice == 1) {
 		for (int x(1); x <= 5; x++) {
 			m_register->get<Transform>(EntityIdentifier::Button(50 + x)).SetPosition(vec3(0, 500, 30));
 		}
 	}
-	if (foxyPos > 0) {
+	if (foxyPos > 0 && foxyPos < 5) {
 		m_register->get<Transform>(EntityIdentifier::Button(50 + foxyPos)).SetPosition(vec3(0, 0, 30));
+	}
+
+	//Animatronics are numbered 20 - 40 + room number, x is a multiplier
+	//0 is for fred
+	//1 is for bon
+	//2 is for goose
+	for (int x(0); x < 3; x++) {
+		//remove old animatronics unless it was from camera opening or a new button wasn't pressed
+		if (oldIsAnim[x] && buttonPressed && !settingup) {
+			m_register->get<Transform>(EntityIdentifier::Button(OldCameraChoice + 10 * (x + 2))).SetPosition(vec3(0, 500, 30));
+		}
+
+		//if button wasn't pressed and animatronics have left scene, remove them
+		if (oldIsAnim[x] != isAnim[x] && !buttonPressed) {
+			m_register->get<Transform>(EntityIdentifier::Button(CameraChoice + 10 * (x + 2))).SetPosition(vec3(0, 500, 30));
+		}
+
+		//if animatronic should be on scene
+		if (isAnim[x]) {
+			m_register->get<Transform>(EntityIdentifier::Button(CameraChoice + 10 * (x + 2))).SetPosition(vec3(0, 0, 30));
+		}
+		
+		//reset oldIsAnim
+		oldIsAnim[x] = isAnim[x];
 	}
 	//map
 	m_register->get<Transform>(EntityIdentifier::Button(9)).SetPosition(vec3(50, -50, 40.f));
 
-	//camera buttons
+	//setting up camera buttons only when camera opens
 	if (settingup) {
 		for (int x(1); x <= 8; x++) {
 			vec3 temp = m_register->get<Transform>(EntityIdentifier::Button(x)).GetPosition();
@@ -564,6 +636,7 @@ void Set::SetUpSet(int OldCameraChoice, int CameraChoice, bool isAnim[3],
 
 void Set::UndoSet(int CameraChoice, bool isAnim[3], int foxyPos)
 {
+	//remove map, buttons and animatronic once
 	if (!settingup) {
 		for (int x(1); x <= 8; x++) {
 			vec3 temp = m_register->get<Transform>(EntityIdentifier::Button(x)).GetPosition();
@@ -576,15 +649,16 @@ void Set::UndoSet(int CameraChoice, bool isAnim[3], int foxyPos)
 		for (int x(1); x <= 4; x++) {
 			m_register->get<Transform>(EntityIdentifier::Button(50 + x)).SetPosition(vec3(0, 500, 30));
 		}
+		m_register->get<Transform>(EntityIdentifier::Button(CameraChoice + 10)).SetPosition(vec3(0, 500, 25));
+		m_register->get<Transform>(EntityIdentifier::Button(9)).SetPosition(vec3(50, 500, 40));
 	}
 
-	m_register->get<Transform>(EntityIdentifier::Button(CameraChoice + 10)).SetPosition(vec3(0, 500, 25));
-	m_register->get<Transform>(EntityIdentifier::Button(9)).SetPosition(vec3(50, 500, 40));
 	settingup = true;
 }
 
 void Set::Update()
 {
+	//check if static should be removed and adds/removees depending on hasStatic
 	if (wait > 0) {
 		if (hasStatic) {
 			EffectManager::CreateEffect(Grain, BackEnd::GetWindowWidth(), BackEnd::GetWindowHeight());
@@ -609,8 +683,9 @@ void Set::Update()
 	}
 }
 
-void Set::GetRegister(entt::registry* m_reg)
+void Set::Reset(entt::registry* m_reg)
 {
+	//reset all variables
 	m_register = m_reg;
 	settingup = true;
 	hasStatic = false;
@@ -649,6 +724,7 @@ void MainMenu::InitScene(float windowWidth, float windowHeight)
 	}
 #pragma endregion
 
+	//Button 0
 #pragma region Loading Screen
 	{
 		auto entity = ECS::CreateEntity();
@@ -685,6 +761,7 @@ void MainMenu::InitScene(float windowWidth, float windowHeight)
 	srand(time(0));
 	for (int x(1); x <= 5; x++) {
 
+	//Button 1-8
 #pragma region Night Buttons
 		{
 			auto entity = ECS::CreateEntity();
@@ -730,7 +807,4 @@ void MainMenu::InitScene(float windowWidth, float windowHeight)
 	}
 }
 
-void MainMenu::Update()
-{
-
-}
+void MainMenu::Update() { }

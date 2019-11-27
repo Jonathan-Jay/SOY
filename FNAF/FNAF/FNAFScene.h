@@ -20,11 +20,15 @@ public:
 
 class Set {
 public:
-	static void GetRegister(entt::registry* m_register);
+	//resets variables
+	static void Reset(entt::registry* m_register);
+	//position testing function
 	static bool positionTesting(int entity, vec3(otherposition), bool isPlayer = false);
-	static void SetUpSet(int OldCameraChoice, int CameraChoice, bool isAnimatronicPresent[3], 
-		int foxyPos, bool buttonPressed, bool flipped);
+	//setup camera set
+	static void SetUpSet(int OldCameraChoice, int CameraChoice, bool isAnimatronicPresent[3], int foxyPos, bool buttonPressed);
+	//undo camera set
 	static void UndoSet(int CameraChoice, bool isAnim[3], int foxyPos);
+	//update timer
 	static void Update();
 
 private:
