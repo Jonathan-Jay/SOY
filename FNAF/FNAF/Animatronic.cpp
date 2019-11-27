@@ -16,23 +16,23 @@ bool isRun = true;
 
 void initializeAnimatronics(int difficulty) //To initialize all of the animatronics things
 {
-	if (isRun)
-	{
-		isRun = false;
-		//Initializing the number
-		Freddy.animatronicNB = 0;
-		Chica.animatronicNB = 1;
-		Bonnie.animatronicNB = 2;
-		Foxy.animatronicNB = 3;
-		//foxy's position is different than the rest of the animatronic
-		Foxy.position = 1;
-		//difficulty
-		Freddy.difficulty = difficulty;
-		Chica.difficulty = difficulty;
-		Bonnie.difficulty = difficulty;
-		Foxy.difficulty = difficulty;
+	//Initializing the number
+	Freddy.animatronicNB = 0;
+	Chica.animatronicNB = 1;
+	Bonnie.animatronicNB = 2;
+	Foxy.animatronicNB = 3;
+	//Initialzes positions if the night changes
+	Freddy.position = 3;
+	Chica.position  = 3;
+	Bonnie.position = 3;
+	Foxy.position = 1;
+	//difficulty
+	Freddy.difficulty = difficulty;
+	Chica.difficulty = difficulty;
+	Bonnie.difficulty = difficulty;
+	Foxy.difficulty = difficulty;
 
-	}
+
 
 }
 
@@ -204,4 +204,14 @@ void Animatronic::changePosition(int onCamera, int timeOfNight)
 		deltaOnCam = Timer::currentClock;
 	}
 	//Foxy is a special case
+}
+
+int* returnPosition()
+{
+	int* position = new int[4];
+	position[0] = Freddy.position;
+	position[1] = Bonnie.position;
+	position[2] = Chica.position;
+	position[3] = Foxy.position;
+	return position;
 }

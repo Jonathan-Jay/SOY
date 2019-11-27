@@ -257,6 +257,8 @@ void Game::SetScene()
 	//runing whether to move the characters or not
 	Animatronic::changePosition(CameraChoice, currenttime);
 
+	int* AnimatronicPos = returnPosition();
+
 	//sum is power usage, using true = 1 and false = 0 to calculate sum (3 is max)
 	int sum = onCamera;
 	for (int x(0); x < 4; x++) {
@@ -265,7 +267,7 @@ void Game::SetScene()
 
 	//reduce power depending on usage
 	if (power >= 1) {
-		power -= (sum * 0.3f + 0.1f) * Timer::deltaTime;
+		power -= (sum * 0.2f + 0.2f) * Timer::deltaTime;
 	}
 	else {
 		onCamera = false;
@@ -297,42 +299,42 @@ void Game::SetScene()
 	//1 is chica
 	//2 is bonnie
 	//3 is foxy
-	if (CameraChoice == tempAnimPos[0]) {
+	if (CameraChoice == AnimatronicPos[0]) {
 		isAnimatronicInRoom[0] = true;
 		//check if animatronic changed position since last update
-		if (oldAnimPos[0] != tempAnimPos[0]) {
+		if (oldAnimPos[0] != AnimatronicPos[0]) {
 			change = true;
-			oldAnimPos[0] = tempAnimPos[0];
+			oldAnimPos[0] = AnimatronicPos[0];
 		}
 	}
 	else if (oldAnimPos[0] == CameraChoice) {	//check if animatronic left the room
 		change = true;
-		oldAnimPos[0] = tempAnimPos[0];
+		oldAnimPos[0] = AnimatronicPos[0];
 	}
-	if (CameraChoice == tempAnimPos[1]) {
+	if (CameraChoice == AnimatronicPos[1]) {
 		isAnimatronicInRoom[1] = true;
-		if (oldAnimPos[1] != tempAnimPos[1]) {
+		if (oldAnimPos[1] != AnimatronicPos[1]) {
 			change = true;
-			oldAnimPos[1] = tempAnimPos[1];
+			oldAnimPos[1] = AnimatronicPos[1];
 		}
 	}
 	else if (oldAnimPos[1] == CameraChoice) {
 		change = true;
-		oldAnimPos[1] = tempAnimPos[1];
+		oldAnimPos[1] = AnimatronicPos[1];
 	}
-	if (CameraChoice == tempAnimPos[2]) {
+	if (CameraChoice == AnimatronicPos[2]) {
 		isAnimatronicInRoom[2] = true;
-		if (oldAnimPos[2] != tempAnimPos[2]) {
+		if (oldAnimPos[2] != AnimatronicPos[2]) {
 			change = true;
-			oldAnimPos[2] = tempAnimPos[2];
+			oldAnimPos[2] = AnimatronicPos[2];
 		}
 	}
 	else if (oldAnimPos[2] == CameraChoice) {
 		change = true;
-		oldAnimPos[2] = tempAnimPos[2];
+		oldAnimPos[2] = AnimatronicPos[2];
 	}
 	//checking if on camera 1 (foxy's room) then taking foxy's position
-	if (CameraChoice == 1)	foxyPos = tempAnimPos[3];
+	if (CameraChoice == 1)	foxyPos = AnimatronicPos[3];
 
 	//change means update scene, so it doesn't update every frame
 	if (onCamera && change) {
@@ -399,19 +401,19 @@ void Game::MainMenuControls(SDL_MouseButtonEvent evnt)
 				switch (x) {
 				default:
 				case 1:
-					initializeAnimatronics(10);
+					initializeAnimatronics(5); //difficulty is the overload
 					break;
 				case 2:
-					initializeAnimatronics(20);
+					initializeAnimatronics(10);
 					break;
 				case 3:
-					initializeAnimatronics(30);
+					initializeAnimatronics(20);
 					break;
 				case 4:
 					initializeAnimatronics(40);
 					break;
 				case 5:
-					initializeAnimatronics(50);
+					initializeAnimatronics(80);
 					break;
 				}
 				change = true;
