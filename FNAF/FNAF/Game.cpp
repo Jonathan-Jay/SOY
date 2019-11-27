@@ -288,6 +288,10 @@ void Game::SetScene()
 	m_register->get<AnimationController>(EntityIdentifier::Button(31)).SetActiveAnim(floor(power) - (floor(power / 10) * 10));
 	m_register->get<AnimationController>(EntityIdentifier::Button(41)).SetActiveAnim(sum);
 
+
+
+	int foxyPos = 0;
+	bool isAnimatronicInRoom[3] = {};
 	//Animatronics according to number in isAnimatronicInRoom
 	//0 is freddy
 	//1 is chica

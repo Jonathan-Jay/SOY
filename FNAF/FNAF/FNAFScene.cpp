@@ -590,7 +590,7 @@ void Set::SetUpSet(int OldCameraChoice, int CameraChoice, bool isAnim[3], int fo
 	//if on camera 1 aka foxy's room
 	//foxy is in rooms 51 - 54
 	if (OldCameraChoice == 1) {
-		for (int x(1); x <= 5; x++) {
+		for (int x(1); x < 5; x++) {
 			m_register->get<Transform>(EntityIdentifier::Button(50 + x)).SetPosition(vec3(0, 500, 30));
 		}
 	}
