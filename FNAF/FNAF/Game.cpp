@@ -226,7 +226,7 @@ void Game::SetScene()
 {
 
 	//runing whether to move the characters or not
-	Animatronic::changePosition(CameraChoice);
+	Animatronic::changePosition(CameraChoice, currenttime);
 
 	int foxyPos(0);
 	bool isAnimatronicInRoom[3] = {};
