@@ -228,7 +228,7 @@ void Game::MovementMath(int mainplayer)
 	for (int x(1); x <= 2; x++) {
 		//button being active or not is stored in bool array isButtonPressed
 		//0 and 1 are lights (left and right)
-		//2 and 3 are doors (left and right
+		//2 and 3 are doors (left and right)
 		
 		//testing for light button being pressed
 		if (Set::positionTesting(EntityIdentifier::Button(10 * x), CurrentPos, true)) {
@@ -253,8 +253,11 @@ void Game::MovementMath(int mainplayer)
 
 void Game::SetScene()
 {
+
 	//runing whether to move the characters or not
-	Animatronic::changePosition();
+	Animatronic::changePosition(CameraChoice, currenttime, isButtonPressed);
+
+	int* AnimatronicPos = returnPosition();
 
 	//sum is power usage, using true = 1 and false = 0 to calculate sum (3 is max)
 	int sum = onCamera;
@@ -264,7 +267,7 @@ void Game::SetScene()
 
 	//reduce power depending on usage
 	if (power >= 1) {
-		power -= (sum * 0.3f + 0.1f) * Timer::deltaTime;
+		power -= (sum * 0.2f + 0.2f) * Timer::deltaTime;
 	}
 	else {
 		onCamera = false;
@@ -287,55 +290,51 @@ void Game::SetScene()
 	m_register->get<AnimationController>(EntityIdentifier::Button(31)).SetActiveAnim(floor(power) - (floor(power / 10) * 10));
 	m_register->get<AnimationController>(EntityIdentifier::Button(41)).SetActiveAnim(sum);
 
+
+
+	int foxyPos = 0;
+	bool isAnimatronicInRoom[3] = {};
 	//Animatronics according to number in isAnimatronicInRoom
 	//0 is freddy
-	//1 is bonnie
-	//2 is chica
+	//1 is chica
+	//2 is bonnie
 	//3 is foxy
-
-	//foxy position
-	int foxyPos(0);
-	//other animatronic position
-	bool isAnimatronicInRoom[3] = {};
-	//tempAnimPos is current animatronic position
-
-	//check is animatronic is in same room as current camera
-	if (CameraChoice == tempAnimPos[0]) {
+	if (CameraChoice == AnimatronicPos[0]) {
 		isAnimatronicInRoom[0] = true;
 		//check if animatronic changed position since last update
-		if (oldAnimPos[0] != tempAnimPos[0]) {
+		if (oldAnimPos[0] != AnimatronicPos[0]) {
 			change = true;
-			oldAnimPos[0] = tempAnimPos[0];
+			oldAnimPos[0] = AnimatronicPos[0];
 		}
 	}
 	else if (oldAnimPos[0] == CameraChoice) {	//check if animatronic left the room
 		change = true;
-		oldAnimPos[0] = tempAnimPos[0];
+		oldAnimPos[0] = AnimatronicPos[0];
 	}
-	if (CameraChoice == tempAnimPos[1]) {
+	if (CameraChoice == AnimatronicPos[1]) {
 		isAnimatronicInRoom[1] = true;
-		if (oldAnimPos[1] != tempAnimPos[1]) {
+		if (oldAnimPos[1] != AnimatronicPos[1]) {
 			change = true;
-			oldAnimPos[1] = tempAnimPos[1];
+			oldAnimPos[1] = AnimatronicPos[1];
 		}
 	}
 	else if (oldAnimPos[1] == CameraChoice) {
 		change = true;
-		oldAnimPos[1] = tempAnimPos[1];
+		oldAnimPos[1] = AnimatronicPos[1];
 	}
-	if (CameraChoice == tempAnimPos[2]) {
+	if (CameraChoice == AnimatronicPos[2]) {
 		isAnimatronicInRoom[2] = true;
-		if (oldAnimPos[2] != tempAnimPos[2]) {
+		if (oldAnimPos[2] != AnimatronicPos[2]) {
 			change = true;
-			oldAnimPos[2] = tempAnimPos[2];
+			oldAnimPos[2] = AnimatronicPos[2];
 		}
 	}
 	else if (oldAnimPos[2] == CameraChoice) {
 		change = true;
-		oldAnimPos[2] = tempAnimPos[2];
+		oldAnimPos[2] = AnimatronicPos[2];
 	}
 	//checking if on camera 1 (foxy's room) then taking foxy's position
-	if (CameraChoice == 1)	foxyPos = tempAnimPos[3];
+	if (CameraChoice == 1)	foxyPos = AnimatronicPos[3];
 
 	//change means update scene, so it doesn't update every frame
 	if (onCamera && change) {
@@ -368,6 +367,8 @@ void Game::SetScene()
 
 	//reset values
 	change = false;
+
+
 	buttonPressed = false;
 }
 
@@ -399,11 +400,21 @@ void Game::MainMenuControls(SDL_MouseButtonEvent evnt)
 				//setting up difficulty according to night
 				switch (x) {
 				default:
-				case 1:		break;
-				case 2:		break;
-				case 3:		break;
-				case 4:		break;
-				case 5:		break;
+				case 1:
+					initializeAnimatronics(5); //difficulty is the overload
+					break;
+				case 2:
+					initializeAnimatronics(10);
+					break;
+				case 3:
+					initializeAnimatronics(20);
+					break;
+				case 4:
+					initializeAnimatronics(40);
+					break;
+				case 5:
+					initializeAnimatronics(80);
+					break;
 				}
 				change = true;
 				wait = 0;

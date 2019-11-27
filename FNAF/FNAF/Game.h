@@ -109,7 +109,6 @@ private:
 
 	vec3(TrackerPos) = vec3(0.f, -50.f, 0.f);
 
-	int tempAnimPos[4] = {3, 3, 3, 1};
 
 	float currenttime = 0;
 	float power = 0;

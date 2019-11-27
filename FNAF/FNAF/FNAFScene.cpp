@@ -452,9 +452,9 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 		}
 #pragma endregion
 		
-	//Button 23
+	//Button 22, 23, 26, 28
 #pragma region Freddy
-		if (x == 3)
+		if ((x >= 2 && x <= 3) || x == 6 || x == 8)
 		{
 			auto entity = ECS::CreateEntity();
 
@@ -494,9 +494,9 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 		}
 #pragma endregion
 	
-	//Button 42, 43, 47, 48
+	//Button 42, 43, 46, 47, 48
 #pragma region Chica
-		if ((x >= 2 && x <= 3) || (x >= 7 && x <= 8))
+		if ((x >= 2 && x <= 3) || (x >= 6 && x <= 8))
 		{
 			auto entity = ECS::CreateEntity();
 
@@ -515,7 +515,7 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 		}
 #pragma endregion
 	
-	//Button 51-55
+	//Button 51-54
 #pragma region Foxy
 		if (x < 5)
 		{
@@ -590,7 +590,7 @@ void Set::SetUpSet(int OldCameraChoice, int CameraChoice, bool isAnim[3], int fo
 	//if on camera 1 aka foxy's room
 	//foxy is in rooms 51 - 54
 	if (OldCameraChoice == 1) {
-		for (int x(1); x <= 5; x++) {
+		for (int x(1); x < 5; x++) {
 			m_register->get<Transform>(EntityIdentifier::Button(50 + x)).SetPosition(vec3(0, 500, 30));
 		}
 	}
