@@ -81,9 +81,20 @@ bool Game::Run()
 		//if Game is loaded
 		if (m_activeScene == m_scenes[0]) {
 			//gameState 0 is first loaded, 1 means game started, 2 means game over, 3 means win
-			if (gameState == 1) 	SetScene();
-			//Update rendering system
-			Set::Update();
+			if (gameState == 1) {
+				SetScene();
+				//Update rendering system
+				Set::Update();
+			}
+			if (gameState == 3) {
+				//if win, remove camera menu
+				if (onCamera) {
+					onCamera = false;
+					change = true;
+					SetScene();
+				}
+
+			}
 		}
 	}
 
@@ -245,7 +256,38 @@ void Game::SetScene()
 	//runing whether to move the characters or not
 	Animatronic::changePosition();
 
-	//Animatronics according to number (in isAnimatronicInRoom)
+	//sum is power usage, using true = 1 and false = 0 to calculate sum (3 is max)
+	int sum = onCamera;
+	for (int x(0); x < 4; x++) {
+		sum += isButtonPressed[x];
+	}
+
+	//reduce power depending on usage
+	if (power >= 1) {
+		power -= (sum * 0.3f + 0.1f) * Timer::deltaTime;
+	}
+	else {
+		onCamera = false;
+		change = true;
+		sum = 0;
+		for (int x(0); x < 4; x++) {
+			isButtonPressed[x] = false;
+		}
+		m_register->get<AnimationController>(EntityIdentifier::Button(49)).SetActiveAnim(1);
+	}
+	//clock
+	currenttime += Timer::deltaTime;
+	if (currenttime >= 271) {
+		gameState = 3;
+	}
+
+	//changing display for power, and time
+	m_register->get<AnimationController>(EntityIdentifier::Button(0)).SetActiveAnim(floor(currenttime / 45));
+	m_register->get<AnimationController>(EntityIdentifier::Button(21)).SetActiveAnim(floor(power / 10));
+	m_register->get<AnimationController>(EntityIdentifier::Button(31)).SetActiveAnim(floor(power) - (floor(power / 10) * 10));
+	m_register->get<AnimationController>(EntityIdentifier::Button(41)).SetActiveAnim(sum);
+
+	//Animatronics according to number in isAnimatronicInRoom
 	//0 is freddy
 	//1 is bonnie
 	//2 is chica
@@ -324,30 +366,6 @@ void Game::SetScene()
 	//increase counter for light blink
 	counter += Timer::deltaTime;
 
-	//sum is power usage, using true = 1 and false = 0 to calculate sum (3 is max)
-	int sum = onCamera;
-	for (int x(0); x < 4; x++) {
-		sum += isButtonPressed[x];
-	}
-
-	//reduce power depending on usage
-	power -= (sum * 0.3f + 0.1f) * Timer::deltaTime;
-	if (power <= 0) {
-		power = 99.9;
-	}
-
-	//clock
-	currenttime += Timer::deltaTime;
-	if (currenttime >= 70) {
-		currenttime = 0;
-	}
-
-	//changing display for power, and time
-	m_register->get<AnimationController>(EntityIdentifier::Button(0)).SetActiveAnim(floor(currenttime / 10));
-	m_register->get<AnimationController>(EntityIdentifier::Button(21)).SetActiveAnim(floor(power / 10));
-	m_register->get<AnimationController>(EntityIdentifier::Button(31)).SetActiveAnim(floor(power) - (floor(power / 10) * 10) );
-	m_register->get<AnimationController>(EntityIdentifier::Button(41)).SetActiveAnim(sum);
-
 	//reset values
 	change = false;
 	buttonPressed = false;
@@ -416,7 +434,7 @@ void Game::MainMenuControls(SDL_MouseButtonEvent evnt)
 			//reset set class function variables and send register and reset variables
 			Set::Reset(m_register);
 			currenttime = 0;
-			power = 99;
+			power = 100;
 			gameState = 0;
 		}
 	}
@@ -521,14 +539,6 @@ void Game::MouseWheel(SDL_MouseWheelEvent evnt)
 	if (m_guiActive)
 	{
 		ImGui::GetIO().MouseWheel = float(evnt.y);
-	}
-	
-	//remove this
-	if (evnt.y < 0) {
-		tempAnimPos[0] = 3;
-		tempAnimPos[1] = rand() % 4 + 2;
-		if (rand() % 30 > 20)	tempAnimPos[1] = 8;
-		tempAnimPos[2] = rand() % 2 + (rand() % 2) * 5 + 2;
 	}
 
 	//Resets the enabled flag
