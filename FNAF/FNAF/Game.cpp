@@ -228,7 +228,7 @@ void Game::MovementMath(int mainplayer)
 	for (int x(1); x <= 2; x++) {
 		//button being active or not is stored in bool array isButtonPressed
 		//0 and 1 are lights (left and right)
-		//2 and 3 are doors (left and right
+		//2 and 3 are doors (left and right)
 		
 		//testing for light button being pressed
 		if (Set::positionTesting(EntityIdentifier::Button(10 * x), CurrentPos, true)) {
@@ -255,7 +255,7 @@ void Game::SetScene()
 {
 
 	//runing whether to move the characters or not
-	Animatronic::changePosition(CameraChoice, currenttime);
+	Animatronic::changePosition(CameraChoice, currenttime, isButtonPressed);
 
 	int* AnimatronicPos = returnPosition();
 

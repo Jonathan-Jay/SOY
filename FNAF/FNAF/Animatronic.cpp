@@ -48,7 +48,7 @@ bool doMove(Animatronic& AnimatronicName)
 	return false;
 }
 
-int positionChange(Animatronic& AnimatronicName, int onCamera)
+int positionChange(Animatronic& AnimatronicName, int onCamera, bool isDoorClosed[])
 {
 	//if they the animatronic move position
 	//POSITION == CAMERA THAT THEY SHOULD BE ON
@@ -74,7 +74,7 @@ int positionChange(Animatronic& AnimatronicName, int onCamera)
 			AnimatronicName.position = 10; //blindspot on the left
 			break;
 		case 10:
-			//if time passes, and there is no door, then jumpscare
+			
 			//but door is back closed then back at
 			break;
 		}
@@ -107,6 +107,14 @@ int positionChange(Animatronic& AnimatronicName, int onCamera)
 		case 4:
 			AnimatronicName.position = 2;
 		case 9:
+			if (isDoorClosed[2])
+			{
+				AnimatronicName.position = 8;
+			}
+			else
+			{
+
+			}
 			//if time passes, and there is no door, then jumpscare
 			break;
 
@@ -144,6 +152,14 @@ int positionChange(Animatronic& AnimatronicName, int onCamera)
 			AnimatronicName.position = 6;
 			break;
 		case 10:
+			if (isDoorClosed[3])
+			{
+				AnimatronicName.position = 8;
+			}
+			else
+			{
+
+			}
 			//if time passes, and there is no door, then jumpscare
 			//but door is back closed then back at
 			break;
@@ -166,7 +182,8 @@ int positionChange(Animatronic& AnimatronicName, int onCamera)
 	return 0;
 }
 
-void Animatronic::changePosition(int onCamera, int timeOfNight)
+void Animatronic::changePosition(int onCamera, int timeOfNight, bool isDoorDown[])
+
 {
 	timeAfter = std::time(0) - deltaTime;
 	int timeBetween = (std::rand() % 5) + 5; //Five seconds for an example
@@ -175,25 +192,25 @@ void Animatronic::changePosition(int onCamera, int timeOfNight)
 		bool move = doMove(Freddy);
 		if (move)
 		{
-			positionChange(Freddy, onCamera);
+			positionChange(Freddy, onCamera, isDoorDown);
 			move = false;
 		}
 		move = doMove(Chica);
 		if (move)
 		{
-			positionChange(Chica, onCamera);
+			positionChange(Chica, onCamera, isDoorDown);
 			move = false;
 		}
 		move = doMove(Chica);
 		if (move)
 		{
-			positionChange(Bonnie, onCamera);
+			positionChange(Bonnie, onCamera, isDoorDown);
 			move = false;
 		}
 
 		deltaTime = std::time(0);
 	}
-	positionChange(Foxy, onCamera);
+	positionChange(Foxy, onCamera, isDoorDown);
 	//foxy camera things
 	if (onCamera == 1)
 	{
