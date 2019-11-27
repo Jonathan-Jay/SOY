@@ -261,7 +261,8 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 #pragma endregion
 
 	//so that we can mass spawn without filling the cpp
-	for (int x(1); x <= 8; x++) {
+	for (int x(1); x <= 8; x++)
+	{
 		
 	//Button 10 * 1-6, 19, 29
 #pragma region wall buttons doors & lights
@@ -548,7 +549,8 @@ bool Set::positionTesting(int entity, vec3(otherposition), bool isPlayer)
 	
 	//isPlayer increase hitbox of buttons
 	//position testing takes sprite size and checks for collision with other position
-	if (isPlayer) {
+	if (isPlayer)
+	{
 		if (Pos.x <= 5 + m_register->get<Sprite>(entity).GetWidth() / 2.f &&
 			Pos.x >= -(5 + m_register->get<Sprite>(entity).GetWidth() / 2.f) &&
 			Pos.y <= 3 + m_register->get<Sprite>(entity).GetHeight() / 2.f &&
@@ -575,7 +577,8 @@ void Set::SetUpSet(int OldCameraChoice, int CameraChoice, bool isAnim[3], int fo
 	if (!hasStatic)	hasStatic = true;
 
 	//button reseting
-	if (buttonPressed) {
+	if (buttonPressed)
+	{
 		//resets animations for camera choice and last amera choice
 		auto& temp = m_register->get<AnimationController>(EntityIdentifier::Button(OldCameraChoice));
 		temp.SetActiveAnim(0);
@@ -589,12 +592,15 @@ void Set::SetUpSet(int OldCameraChoice, int CameraChoice, bool isAnim[3], int fo
 
 	//if on camera 1 aka foxy's room
 	//foxy is in rooms 51 - 54
-	if (OldCameraChoice == 1) {
-		for (int x(1); x < 5; x++) {
+	if (OldCameraChoice == 1)
+	{
+		for (int x(1); x < 5; x++)
+		{
 			m_register->get<Transform>(EntityIdentifier::Button(50 + x)).SetPosition(vec3(0, 500, 30));
 		}
 	}
-	if (foxyPos > 0 && foxyPos < 5) {
+	if (foxyPos > 0 && foxyPos < 5)
+	{
 		m_register->get<Transform>(EntityIdentifier::Button(50 + foxyPos)).SetPosition(vec3(0, 0, 30));
 	}
 
@@ -604,17 +610,20 @@ void Set::SetUpSet(int OldCameraChoice, int CameraChoice, bool isAnim[3], int fo
 	//2 is for goose
 	for (int x(0); x < 3; x++) {
 		//remove old animatronics unless it was from camera opening or a new button wasn't pressed
-		if (oldIsAnim[x] && buttonPressed && !settingup) {
+		if (oldIsAnim[x] && buttonPressed && !settingup)
+		{
 			m_register->get<Transform>(EntityIdentifier::Button(OldCameraChoice + 10 * (x + 2))).SetPosition(vec3(0, 500, 30));
 		}
 
 		//if button wasn't pressed and animatronics have left scene, remove them
-		if (oldIsAnim[x] != isAnim[x] && !buttonPressed) {
+		if (oldIsAnim[x] != isAnim[x] && !buttonPressed)
+		{
 			m_register->get<Transform>(EntityIdentifier::Button(CameraChoice + 10 * (x + 2))).SetPosition(vec3(0, 500, 30));
 		}
 
 		//if animatronic should be on scene
-		if (isAnim[x]) {
+		if (isAnim[x])
+		{
 			m_register->get<Transform>(EntityIdentifier::Button(CameraChoice + 10 * (x + 2))).SetPosition(vec3(0, 0, 30));
 		}
 		
@@ -625,8 +634,10 @@ void Set::SetUpSet(int OldCameraChoice, int CameraChoice, bool isAnim[3], int fo
 	m_register->get<Transform>(EntityIdentifier::Button(9)).SetPosition(vec3(50, -50, 40.f));
 
 	//setting up camera buttons only when camera opens
-	if (settingup) {
-		for (int x(1); x <= 8; x++) {
+	if (settingup)
+	{
+		for (int x(1); x <= 8; x++)
+		{
 			vec3 temp = m_register->get<Transform>(EntityIdentifier::Button(x)).GetPosition();
 			m_register->get<Transform>(EntityIdentifier::Button(x)).SetPosition(vec3(temp.x, temp.y - 500, 50));
 		}
@@ -637,16 +648,20 @@ void Set::SetUpSet(int OldCameraChoice, int CameraChoice, bool isAnim[3], int fo
 void Set::UndoSet(int CameraChoice, bool isAnim[3], int foxyPos)
 {
 	//remove map, buttons and animatronic once
-	if (!settingup) {
-		for (int x(1); x <= 8; x++) {
+	if (!settingup)
+	{
+		for (int x(1); x <= 8; x++)
+		{
 			vec3 temp = m_register->get<Transform>(EntityIdentifier::Button(x)).GetPosition();
 			m_register->get<Transform>(EntityIdentifier::Button(x)).SetPosition(vec3(temp.x, temp.y + 500, 50));
 			
-			if (x >= 2 && x <= 4 && isAnim[x - 2]) {
+			if (x >= 2 && x <= 4 && isAnim[x - 2])
+			{
 				m_register->get<Transform>(EntityIdentifier::Button(CameraChoice + 10 * x)).SetPosition(vec3(0, 500, 30));
 			}
 		}
-		for (int x(1); x <= 4; x++) {
+		for (int x(1); x <= 4; x++)
+		{
 			m_register->get<Transform>(EntityIdentifier::Button(50 + x)).SetPosition(vec3(0, 500, 30));
 		}
 		m_register->get<Transform>(EntityIdentifier::Button(CameraChoice + 10)).SetPosition(vec3(0, 500, 25));
@@ -659,8 +674,10 @@ void Set::UndoSet(int CameraChoice, bool isAnim[3], int foxyPos)
 void Set::Update()
 {
 	//check if static should be removed and adds/removees depending on hasStatic
-	if (wait > 0) {
-		if (hasStatic) {
+	if (wait > 0)
+	{
+		if (hasStatic)
+		{
 			EffectManager::CreateEffect(Grain, BackEnd::GetWindowWidth(), BackEnd::GetWindowHeight());
 			GrainEffect* temp = (GrainEffect*)EffectManager::GetEffect(0);
 			temp->SetStrength(500);
@@ -670,12 +687,14 @@ void Set::Update()
 			hasStatic = false;
 		}
 		wait -= Timer::deltaTime;
-		if (wait <= 0) {
+		if (wait <= 0)
+		{
 			hasStatic = true;
 		}
 	}
 	else {
-		if (hasStatic) {
+		if (hasStatic)
+		{
 			EffectManager::RemoveEffect(0);
 			EffectManager::RemoveEffect(0);
 		}
@@ -689,7 +708,8 @@ void Set::Reset(entt::registry* m_reg)
 	m_register = m_reg;
 	settingup = true;
 	hasStatic = false;
-	for (int x(0); x < 3; x++) {
+	for (int x(0); x < 3; x++)
+	{
 		oldIsAnim[x] = false;
 	}
 	wait = 0;
@@ -759,7 +779,8 @@ void MainMenu::InitScene(float windowWidth, float windowHeight)
 #pragma endregion
 
 	srand(time(0));
-	for (int x(1); x <= 5; x++) {
+	for (int x(1); x <= 5; x++)
+	{
 
 	//Button 1-8
 #pragma region Night Buttons
