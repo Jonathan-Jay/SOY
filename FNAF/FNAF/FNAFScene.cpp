@@ -596,7 +596,6 @@ void Set::Update()
 			EffectManager::CreateEffect(Pixelate, BackEnd::GetWindowWidth(), BackEnd::GetWindowHeight());
 			PixelateEffect* temp2 = (PixelateEffect*)EffectManager::GetEffect(1);
 			temp2->SetPixelSize(10);
-			Soundfunctions().PlaySingleSound("Camera_Switch_Static.mp3");
 			hasStatic = false;
 		}
 		wait -= Timer::deltaTime;

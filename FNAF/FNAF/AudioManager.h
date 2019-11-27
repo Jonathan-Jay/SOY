@@ -10,5 +10,4 @@ public:
 	void PlaySingleSound(std::string Filename);
 	void LoopSound(std::string Filename);
 	void PauseSound(std::string Filename);
-	void LoadSounds(std::string Filename);
 };

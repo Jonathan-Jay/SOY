@@ -1,7 +1,6 @@
 #pragma once
 #include "Animatronic.h"
 #include "Game.h"
-#include "AudioManager.h"
 
 class FNAF : public Scene
 {

@@ -16,8 +16,3 @@ void Soundfunctions::PauseSound(std::string Filename)
 	std::string SoundString = "stop assets/Audio_Files/" + Filename;
 	mciSendString(SoundString.c_str(), NULL, 0, NULL);
 }
-
-void Soundfunctions::LoadSounds(std::string Filename)
-{
-	std::string SoundString = "open assets/Audio_Files/ " + Filename + " type mpegvideo alias mp3";
-}
