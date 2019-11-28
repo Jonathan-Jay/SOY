@@ -16,6 +16,7 @@ bool isRun = true;
 
 void initializeAnimatronics(int difficulty) //To initialize all of the animatronics things
 {
+	srand(time(NULL));
 	//Initializing the number
 	Freddy.animatronicNB = 0;
 	Chica.animatronicNB = 1;
@@ -74,7 +75,14 @@ int positionChange(Animatronic& AnimatronicName, int onCamera, bool isDoorClosed
 			AnimatronicName.position = 10; //blindspot on the left
 			break;
 		case 10:
-			
+			if (isDoorClosed[3])
+			{
+				AnimatronicName.position = 8;
+			}
+			else //if time passes, and there is no door, then jumpscare
+			{
+				std::cout << "Freddy is in the office\n";
+			}
 			//but door is back closed then back at
 			break;
 		}
@@ -111,11 +119,11 @@ int positionChange(Animatronic& AnimatronicName, int onCamera, bool isDoorClosed
 			{
 				AnimatronicName.position = 8;
 			}
-			else
+			else //if time passes, and there is no door, then jumpscare
 			{
-
+				std::cout << "Bonnie is in the office\n";
 			}
-			//if time passes, and there is no door, then jumpscare
+			
 			break;
 
 		default:
@@ -158,7 +166,7 @@ int positionChange(Animatronic& AnimatronicName, int onCamera, bool isDoorClosed
 			}
 			else
 			{
-
+				std::cout << "Chica is in the office\n";
 			}
 			//if time passes, and there is no door, then jumpscare
 			//but door is back closed then back at
