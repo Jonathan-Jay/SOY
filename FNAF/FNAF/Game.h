@@ -92,26 +92,25 @@ private:
 	bool change = false;
 	bool buttonPressed = false;
 	bool collision = true;
+	bool accelerate = true;
 	bool leftButton[2] = {};
 	bool isButtonPressed[4] = {};
 
 	int acceleration = 0;
-	bool accelerate = true;
-
 	int gameState = 0;
 	int CameraChoice = 3;
 	int OldCameraChoice = 3;
 	int oldAnimPos[3] = {3, 3, 3};
+
 	float counter = 0;
 	float wait = 5;
+	float currenttime = 0;
+	float power = 0;
+
 	vec2(movement) = vec2(0.f, 0.f);
 	vec2(oldposition) = vec2(0.f, 0.f);
 
 	vec3(TrackerPos) = vec3(0.f, -50.f, 0.f);
-
-
-	float currenttime = 0;
-	float power = 0;
 };
 
 
