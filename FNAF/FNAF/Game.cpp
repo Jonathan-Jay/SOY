@@ -295,7 +295,7 @@ void Game::SetScene()
 	}
 
 	//runing whether to move the characters or not
-	Animatronic::changePosition(CameraChoice, currenttime, isButtonPressed);
+	Animatronic::changePosition(CameraChoice, currenttime, isButtonPressed, onCamera);
 
 	int* AnimatronicPos = returnPosition();
 
@@ -448,19 +448,19 @@ void Game::MainMenuControls(SDL_MouseButtonEvent evnt)
 				{
 				default:
 				case 1:
-					initializeAnimatronics(5); //difficulty is the overload
+					initializeAnimatronics(5, 1); //difficulty is the overload out of 100%, nightNumber
 					break;
 				case 2:
-					initializeAnimatronics(10);
+					initializeAnimatronics(10, 2);
 					break;
 				case 3:
-					initializeAnimatronics(20);
+					initializeAnimatronics(20, 3);
 					break;
 				case 4:
-					initializeAnimatronics(40);
+					initializeAnimatronics(40, 4);
 					break;
 				case 5:
-					initializeAnimatronics(80);
+					initializeAnimatronics(60, 5);
 					break;
 				}
 				change = true;
