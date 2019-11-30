@@ -367,12 +367,12 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 			unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit() | EntityIdentifier::AnimationBit();
 			if (x == 7) {
 				ECS::SetUpIdentifier(entity, bitHolder, "light left");
-				ECS::GetComponent<Transform>(entity).SetPosition(vec3(-81.5f, 0.f, 0.f));
+				ECS::GetComponent<Transform>(entity).SetPosition(vec3(-81.5f, 0.f, 10.f));
 				ECS::SetIsButton(entity, true, 19);
 			}
 			else {
 				ECS::SetUpIdentifier(entity, bitHolder, "light right");
-				ECS::GetComponent<Transform>(entity).SetPosition(vec3(82.f, 0.f, 0.f));
+				ECS::GetComponent<Transform>(entity).SetPosition(vec3(82.f, 0.f, 10.f));
 				ECS::SetIsButton(entity, true, 29);
 			}
 		}
@@ -536,9 +536,42 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 			ECS::SetIsButton(entity, true, x + 50);
 		}
 #pragma endregion
-		
-	}
+	
+	//Button 61-62
+#pragma region Bonnie and Chica sprites
+		if (x < 3)
+		{
+			auto entity = ECS::CreateEntity();
 
+			ECS::AttachComponent<Sprite>(entity);
+			ECS::AttachComponent<Transform>(entity);
+
+			std::string filename = "sprites/";
+			switch (x)
+			{
+			case 1:	filename += "bonnie.png";	break;
+			case 2:	filename += "chica.png";	break;
+			default:	break;
+			}
+			ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 23, 37);
+
+
+			unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit();
+			switch (x)
+			{
+			case 1:		ECS::SetUpIdentifier(entity, bitHolder, "Bonnie sprite");
+						ECS::GetComponent<Transform>(entity).SetPosition(vec3(-81.f, -200.f, 0.f));
+						break;
+			case 2:		ECS::SetUpIdentifier(entity, bitHolder, "Chica sprite");
+						ECS::GetComponent<Transform>(entity).SetPosition(vec3(81.f, -200.f, 0.f));
+						break;
+			default:	break;
+			}
+			ECS::SetIsButton(entity, true, 60 + x);
+		}
+#pragma endregion
+	
+	}
 }
 
 void FNAF::Update() { }
@@ -586,8 +619,8 @@ void Set::SetUpSet(int OldCameraChoice, int CameraChoice, bool isAnim[3], int fo
 		m_register->get<AnimationController>(EntityIdentifier::Button(CameraChoice)).SetActiveAnim(1);
 
 		//Scene organisation here (CameraChoice is current, OldCameraChoice is previous), add 10 for rooms
-		m_register->get<Transform>(EntityIdentifier::Button(OldCameraChoice + 10)).SetPosition(vec3(0, 500, 25));
-		m_register->get<Transform>(EntityIdentifier::Button(CameraChoice + 10)).SetPosition(vec3(0, 0, 25));
+		m_register->get<Transform>(EntityIdentifier::Button(OldCameraChoice + 10)).SetPositionY(500);
+		m_register->get<Transform>(EntityIdentifier::Button(CameraChoice + 10)).SetPositionY(0);
 	}
 
 	//if on camera 1 aka foxy's room
@@ -596,12 +629,12 @@ void Set::SetUpSet(int OldCameraChoice, int CameraChoice, bool isAnim[3], int fo
 	{
 		for (int x(1); x < 5; x++)
 		{
-			m_register->get<Transform>(EntityIdentifier::Button(50 + x)).SetPosition(vec3(0, 500, 30));
+			m_register->get<Transform>(EntityIdentifier::Button(50 + x)).SetPositionY(500);
 		}
 	}
 	if (foxyPos > 0 && foxyPos < 5)
 	{
-		m_register->get<Transform>(EntityIdentifier::Button(50 + foxyPos)).SetPosition(vec3(0, 0, 30));
+		m_register->get<Transform>(EntityIdentifier::Button(50 + foxyPos)).SetPositionY(0);
 	}
 
 	//Animatronics are numbered 20 - 40 + room number, x is a multiplier
@@ -612,26 +645,26 @@ void Set::SetUpSet(int OldCameraChoice, int CameraChoice, bool isAnim[3], int fo
 		//remove old animatronics unless it was from camera opening or a new button wasn't pressed
 		if (oldIsAnim[x] && buttonPressed && !settingup)
 		{
-			m_register->get<Transform>(EntityIdentifier::Button(OldCameraChoice + 10 * (x + 2))).SetPosition(vec3(0, 500, 30));
+			m_register->get<Transform>(EntityIdentifier::Button(OldCameraChoice + 10 * (x + 2))).SetPositionY(500);
 		}
 
 		//if button wasn't pressed and animatronics have left scene, remove them
 		if (oldIsAnim[x] != isAnim[x] && !buttonPressed)
 		{
-			m_register->get<Transform>(EntityIdentifier::Button(CameraChoice + 10 * (x + 2))).SetPosition(vec3(0, 500, 30));
+			m_register->get<Transform>(EntityIdentifier::Button(CameraChoice + 10 * (x + 2))).SetPositionY(500);
 		}
 
 		//if animatronic should be on scene
 		if (isAnim[x])
 		{
-			m_register->get<Transform>(EntityIdentifier::Button(CameraChoice + 10 * (x + 2))).SetPosition(vec3(0, 0, 30));
+			m_register->get<Transform>(EntityIdentifier::Button(CameraChoice + 10 * (x + 2))).SetPositionY(0);
 		}
 		
 		//reset oldIsAnim
 		oldIsAnim[x] = isAnim[x];
 	}
 	//map
-	m_register->get<Transform>(EntityIdentifier::Button(9)).SetPosition(vec3(50, -50, 40.f));
+	m_register->get<Transform>(EntityIdentifier::Button(9)).SetPositionY(-50);
 
 	//setting up camera buttons only when camera opens
 	if (settingup)
@@ -657,15 +690,15 @@ void Set::UndoSet(int CameraChoice, bool isAnim[3], int foxyPos)
 			
 			if (x >= 2 && x <= 4 && isAnim[x - 2])
 			{
-				m_register->get<Transform>(EntityIdentifier::Button(CameraChoice + 10 * x)).SetPosition(vec3(0, 500, 30));
+				m_register->get<Transform>(EntityIdentifier::Button(CameraChoice + 10 * x)).SetPositionY(500);
 			}
 		}
 		for (int x(1); x <= 4; x++)
 		{
-			m_register->get<Transform>(EntityIdentifier::Button(50 + x)).SetPosition(vec3(0, 500, 30));
+			m_register->get<Transform>(EntityIdentifier::Button(50 + x)).SetPositionY(500);
 		}
-		m_register->get<Transform>(EntityIdentifier::Button(CameraChoice + 10)).SetPosition(vec3(0, 500, 25));
-		m_register->get<Transform>(EntityIdentifier::Button(9)).SetPosition(vec3(50, 500, 40));
+		m_register->get<Transform>(EntityIdentifier::Button(CameraChoice + 10)).SetPositionY(500);
+		m_register->get<Transform>(EntityIdentifier::Button(9)).SetPositionY(500);
 	}
 
 	settingup = true;

@@ -295,7 +295,7 @@ void Game::SetScene()
 	}
 
 	//runing whether to move the characters or not
-	Animatronic::changePosition(CameraChoice, currenttime, isButtonPressed);
+	Animatronic::changePosition(CameraChoice, currenttime, isButtonPressed, onCamera);
 
 	int* AnimatronicPos = returnPosition();
 
@@ -358,6 +358,21 @@ void Game::SetScene()
 	//checking if on camera 1 (foxy's room) then taking foxy's position
 	if (CameraChoice == 1)	foxyPos = AnimatronicPos[3];
 
+	if (!onCamera)
+	{
+		//if Freddy is in the right hall
+		if (AnimatronicPos[0] == 10);
+
+		//if Bonnie is in the left hall
+		if (AnimatronicPos[1] == 9)
+			m_register->get<Transform>(EntityIdentifier::Button(61)).SetPositionY(-66);
+		else	m_register->get<Transform>(EntityIdentifier::Button(61)).SetPositionY(-200);
+		//if Chica is in the right hall
+		if (AnimatronicPos[2] == 10)
+			m_register->get<Transform>(EntityIdentifier::Button(62)).SetPositionY(-66);
+		else	m_register->get<Transform>(EntityIdentifier::Button(62)).SetPositionY(-200);
+	}
+
 	//change means update scene, so it doesn't update every frame
 	if (onCamera && change)
 	{
@@ -379,8 +394,11 @@ void Game::SetScene()
 		{
 			m_register->get<AnimationController>(EntityIdentifier::Button(19 + 10 * x)).SetActiveAnim(0);
 			//reset counter and wait time
-			counter = 0;
-			wait = rand() % 5 / 10.f + 0.1f;
+			if (x == 1)
+			{
+				counter = 0;
+				wait = rand() % 5 / 10.f + 0.1f;
+			}
 		}
 		else m_register->get<AnimationController>(EntityIdentifier::Button(19 + 10 * x)).SetActiveAnim(isButtonPressed[x]);
 		//sets both doors and door buttons
@@ -430,19 +448,19 @@ void Game::MainMenuControls(SDL_MouseButtonEvent evnt)
 				{
 				default:
 				case 1:
-					initializeAnimatronics(5); //difficulty is the overload
+					initializeAnimatronics(5, 1); //difficulty is the overload out of 100%, nightNumber
 					break;
 				case 2:
-					initializeAnimatronics(10);
+					initializeAnimatronics(10, 2);
 					break;
 				case 3:
-					initializeAnimatronics(20);
+					initializeAnimatronics(20, 3);
 					break;
 				case 4:
-					initializeAnimatronics(40);
+					initializeAnimatronics(40, 4);
 					break;
 				case 5:
-					initializeAnimatronics(80);
+					initializeAnimatronics(60, 5);
 					break;
 				}
 				change = true;
@@ -479,7 +497,7 @@ void Game::MainMenuControls(SDL_MouseButtonEvent evnt)
 			currenttime = 0;
 			power = 100;
 			gameState = 0;
-			TrackerPos = vec3(0.f, 0.f, 0.f);
+			TrackerPos = vec3(0.f, -50.f, 0.f);
 			CameraChoice, OldCameraChoice = 3;
 			for (int x(0); x < 4; x++)
 			{
@@ -508,13 +526,13 @@ void Game::MouseMotion(SDL_MouseMotionEvent evnt)
 	vec3(playerPos) = m_register->get<Transform>(EntityIdentifier::MainPlayer()).GetPosition();
 
 	//check if player is in front of desk
-	if (playerPos.y >= -41 && playerPos.x < 20 && playerPos.x > -20)
+	if (power > 1 && playerPos.y >= -41 && playerPos.x < 20 && playerPos.x > -20)
 	{
 		//display bar (set animation to 1)
 		m_register->get<AnimationController>(EntityIdentifier::Button(39)).SetActiveAnim(1);
 
 		//check if mouse was moved downwards over 10 pixels bellow bottom of tab and not currently on Camera
-		if (oldposition.y + 10 <= evnt.y && evnt.y >= BackEnd::GetWindowHeight() - 4 && !onCamera)
+		if (!onCamera && oldposition.y + 10 <= evnt.y && evnt.y >= BackEnd::GetWindowHeight() - 4)
 		{
 			printf("Camera On!\n");
 			//sets a bunch of variables to update
