@@ -16,9 +16,11 @@ private:
 
 
 };	
+
 void initializeAnimatronics(int, int);
 bool doMove(Animatronic& AnimatronicName);
 	
 	int positionChange(Animatronic& AnimatronicName, int onCamera, bool x[], bool y);
 
 	int* returnPosition();
+	

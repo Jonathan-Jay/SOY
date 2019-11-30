@@ -12,6 +12,7 @@ int timeOfNight = 0;
 float onCamTime = 0.f;
 float deltaOnCam = Timer::currentClock;
 int nightNumber = 0;
+int doorHitCounter = 1;
 
 void initializeAnimatronics(int difficulty, int night) //To initialize all of the animatronics things
 {
@@ -173,13 +174,14 @@ int positionChange(Animatronic& AnimatronicName, int onCamera, bool isDoorClosed
 
 	if ((AnimatronicName.animatronicNB == 3) && (onCamera != 1))
 	{
-		if (timeOfNight > 90 / nightNumber)
+		if (timeOfNight / doorHitCounter > 100 / nightNumber)
 		{
-			if (onCamTime / 100.f >= 2 * nightNumber)
+			if (onCamTime / 100.f <= 2 * nightNumber)
 			{
 				AnimatronicName.position++;
+				onCamTime = 0;
+				doorHitCounter++;
 			}
-			onCamTime = 0;
 		}
 	}
 	return 0;
@@ -189,20 +191,24 @@ void Animatronic::changePosition(int onCamera, int _timeOfNight, bool isDoorDown
 {
 	timeOfNight = _timeOfNight;
 	//This is to run the Jumpscare AI if the time comes
-	if ((playerOnCamera) && (Chica.position == 10))
+	if ((playerOnCamera) && (Chica.position == 10) && !(isDoorDown[3]))
 	{
 		std::cout << "Chica is in the office\n";
 		Chica.position = 11;
 	}
-	else if ((playerOnCamera) && (Bonnie.position == 9))
+	else if ((playerOnCamera) && (Bonnie.position == 9) && !(isDoorDown[2]))
 	{
 		std::cout << "Bonnie is in the office\n";
 		Bonnie.position = 11;
 	}
-	else if ((playerOnCamera) && (Freddy.position == 10))
+	else if ((playerOnCamera) && (Freddy.position == 10) && !(isDoorDown[3]))
 	{
 		std::cout << "Freddy is in the office\n";
 		Freddy.position = 11;
+	}
+	if (Foxy.position >= 5 && isDoorDown[2])
+	{
+		Foxy.position = 1;
 	}
 	
 	//Time for AI related things
