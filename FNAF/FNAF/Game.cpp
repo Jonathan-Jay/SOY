@@ -526,13 +526,13 @@ void Game::MouseMotion(SDL_MouseMotionEvent evnt)
 	vec3(playerPos) = m_register->get<Transform>(EntityIdentifier::MainPlayer()).GetPosition();
 
 	//check if player is in front of desk
-	if (playerPos.y >= -41 && playerPos.x < 20 && playerPos.x > -20)
+	if (power > 1 && playerPos.y >= -41 && playerPos.x < 20 && playerPos.x > -20)
 	{
 		//display bar (set animation to 1)
 		m_register->get<AnimationController>(EntityIdentifier::Button(39)).SetActiveAnim(1);
 
 		//check if mouse was moved downwards over 10 pixels bellow bottom of tab and not currently on Camera
-		if (oldposition.y + 10 <= evnt.y && evnt.y >= BackEnd::GetWindowHeight() - 4 && !onCamera)
+		if (!onCamera && oldposition.y + 10 <= evnt.y && evnt.y >= BackEnd::GetWindowHeight() - 4)
 		{
 			printf("Camera On!\n");
 			//sets a bunch of variables to update
