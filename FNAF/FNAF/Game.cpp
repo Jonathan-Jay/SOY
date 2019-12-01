@@ -211,7 +211,7 @@ void Game::MovementMath(int mainplayer)
 	vec2(distance) = vec2(TrackerPos.x - CurrentPos.x, TrackerPos.y - CurrentPos.y);
 
 	//to avoid bouncing from plaer when moving
-	if (distance.GetMagnitude() > acceleration / 200.f)
+	if (distance.GetMagnitude() > acceleration / 100.f)
 	{
 		if (!accelerate)	acceleration = 200.f;
 		movement = distance.Normalize() * acceleration;
@@ -477,10 +477,10 @@ void Game::MainMenuControls(SDL_MouseButtonEvent evnt)
 					initializeAnimatronics(20, 3);
 					break;
 				case 4:
-					initializeAnimatronics(40, 4);
+					initializeAnimatronics(30, 4);
 					break;
 				case 5:
-					initializeAnimatronics(60, 5);
+					initializeAnimatronics(40, 5);
 					break;
 				}
 				change = true;
