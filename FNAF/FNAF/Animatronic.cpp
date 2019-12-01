@@ -61,7 +61,7 @@ bool doMove(Animatronic& AnimatronicName)
 	return false;
 }
 
-int positionChange(Animatronic& AnimatronicName, int onCamera, bool isDoorClosed[], bool playerOnCamera, float power)
+int positionChange(Animatronic& AnimatronicName, int onCamera, bool isDoorDown[], bool playerOnCamera, float power)
 {
 	//if they the animatronic move position
 	//POSITION == CAMERA THAT THEY SHOULD BE ON
