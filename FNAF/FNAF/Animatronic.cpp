@@ -196,9 +196,9 @@ int positionChange(Animatronic& AnimatronicName, int onCamera, bool isDoorDown[]
 	//Foxy
 	if ((AnimatronicName.animatronicNB == 3) && !(onCamera == 1 && playerOnCamera))
 	{
-		if (timeOfNight / positionCounterByMovement > 100 / nightNumber)
+		if (timeOfNight / positionCounterByMovement > 50 / nightNumber)
 		{
-			if (onCamTime / 100.f <= 2 * nightNumber)
+			if (onCamTime / 100.f <= nightNumber)
 			{
 				if (Foxy.position <= 5)
 					AnimatronicName.position++;
@@ -248,10 +248,6 @@ void Animatronic::changePosition(int onCamera, int _timeOfNight, bool isDoorDown
 	int timeBetween = (std::rand() % 5) + 5; //Five seconds for an example
 	if (timeAfter >= timeBetween)
 	{
-		if (Foxy.position >= 5 && isDoorDown[2])
-		{
-			Foxy.position = 1;
-		}
 		bool move = doMove(Freddy);
 		if (move)
 		{
