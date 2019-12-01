@@ -4,13 +4,13 @@ Animatronic Freddy;
 Animatronic Chica;
 Animatronic Bonnie;
 Animatronic Foxy;
-int timeStart = time(0);
-int timeAfter = std::time(0) - timeStart;
-int deltaTime = std::time(0);
 
+int timeAfter = 0;
+int deltaTime = 0;
 int timeOfNight = 0;
 float onCamTime = 0.f;
 float deltaOnCam = Timer::currentClock;
+float foxyRunTime = 0;
 int nightNumber = 0;
 int doorHitCounter = 1;
 
@@ -18,6 +18,14 @@ void initializeAnimatronics(int difficulty, int night) //To initialize all of th
 {
 	nightNumber = night;
 	srand(time(NULL));
+	//Initializing the variables
+	timeAfter = 0;
+	deltaTime = 0;
+	timeOfNight = 0;
+	onCamTime = 0.f;
+	deltaOnCam = Timer::currentClock;
+	doorHitCounter = 1;
+
 	//Initializing the number
 	Freddy.animatronicNB = 0;
 	Chica.animatronicNB = 1;
@@ -59,7 +67,7 @@ int positionChange(Animatronic& AnimatronicName, int onCamera, bool isDoorClosed
 	int rng;
 
 	//freddy
-	if ((AnimatronicName.animatronicNB == 0) && (AnimatronicName.position != onCamera))
+	if ((AnimatronicName.animatronicNB == 0) && !(AnimatronicName.position == onCamera && playerOnCamera))
 	{
 		switch (AnimatronicName.position)
 		{
@@ -172,16 +180,19 @@ int positionChange(Animatronic& AnimatronicName, int onCamera, bool isDoorClosed
 
 	}
 
-	if ((AnimatronicName.animatronicNB == 3) && (onCamera != 1))
+	//Foxy
+	if ((AnimatronicName.animatronicNB == 3) && !(onCamera == 1 && playerOnCamera))
 	{
 		if (timeOfNight / doorHitCounter > 100 / nightNumber)
 		{
 			if (onCamTime / 100.f <= 2 * nightNumber)
 			{
-				AnimatronicName.position++;
-				onCamTime = 0;
+				if (Foxy.position <= 5)
+					AnimatronicName.position++;
 				doorHitCounter++;
 			}
+			onCamTime = 0;
+			std::cout << AnimatronicName.animatronicNB << ":" << AnimatronicName.position << "\n";
 		}
 	}
 	return 0;
@@ -206,13 +217,31 @@ void Animatronic::changePosition(int onCamera, int _timeOfNight, bool isDoorDown
 		std::cout << "Freddy is in the office\n";
 		Freddy.position = 11;
 	}
-	if (Foxy.position >= 5 && isDoorDown[2])
+
+	if (Foxy.position >= 5)
 	{
-		Foxy.position = 1;
+		if (foxyRunTime >= 3)
+		{
+			if (isDoorDown[2])
+			{
+				Foxy.position = 1;
+			}
+			else
+			{
+				Foxy.position = 11;
+			}
+		}
+		foxyRunTime += Timer::deltaTime;
 	}
-	
+	else
+	{
+		foxyRunTime = 0;
+	}
+
 	//Time for AI related things
-	timeAfter = std::time(0) - deltaTime;
+	if (deltaTime == 0)
+		deltaTime = time(0);
+	timeAfter = time(0) - deltaTime;
 	int timeBetween = (std::rand() % 5) + 5; //Five seconds for an example
 	if (timeAfter >= timeBetween)
 	{
@@ -235,7 +264,7 @@ void Animatronic::changePosition(int onCamera, int _timeOfNight, bool isDoorDown
 			move = false;
 		}
 
-		deltaTime = std::time(0);
+		deltaTime = time(0);
 	}
 	//if time passes, and there is no door, then jumpscare
 	//but door is back closed then back at
