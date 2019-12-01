@@ -538,8 +538,8 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 #pragma endregion
 	
 	//Button 61-62
-#pragma region Bonnie and Chica sprites
-		if (x < 3)
+#pragma region Character sprites
+		if (x < 5)
 		{
 			auto entity = ECS::CreateEntity();
 
@@ -549,21 +549,29 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 			std::string filename = "sprites/";
 			switch (x)
 			{
-			case 1:	filename += "bonnie.png";	break;
-			case 2:	filename += "chica.png";	break;
+			case 1:	filename += "freddy.png";	break;
+			case 2:	filename += "bonnie.png";	break;
+			case 3:	filename += "chica.png";	break;
+			case 4:	filename += "foxy.png";		break;
 			default:	break;
 			}
-			ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 23, 37);
+			ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 37, 23);
 
 
 			unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit();
 			switch (x)
 			{
-			case 1:		ECS::SetUpIdentifier(entity, bitHolder, "Bonnie sprite");
+			case 1:		ECS::SetUpIdentifier(entity, bitHolder, "Freddy sprite");
+						ECS::GetComponent<Transform>(entity).SetPosition(vec3(0.f, -200.f, 0.f));
+						break;
+			case 2:		ECS::SetUpIdentifier(entity, bitHolder, "Bonnie sprite");
 						ECS::GetComponent<Transform>(entity).SetPosition(vec3(-81.f, -200.f, 0.f));
 						break;
-			case 2:		ECS::SetUpIdentifier(entity, bitHolder, "Chica sprite");
+			case 3:		ECS::SetUpIdentifier(entity, bitHolder, "Chica sprite");
 						ECS::GetComponent<Transform>(entity).SetPosition(vec3(81.f, -200.f, 0.f));
+						break;
+			case 4:		ECS::SetUpIdentifier(entity, bitHolder, "Foxy sprite");
+						ECS::GetComponent<Transform>(entity).SetPosition(vec3(0.f, -200.f, 0.f));
 						break;
 			default:	break;
 			}

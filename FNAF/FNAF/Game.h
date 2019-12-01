@@ -96,12 +96,14 @@ private:
 	bool accelerate = true;
 	bool notTouchingButton[4] = {};
 	bool isButtonPressed[4] = {};
+	bool playSound = false;
 
 	int acceleration = 0;
 	int gameState = 0;
 	int CameraChoice = 3;
 	int OldCameraChoice = 3;
 	int oldAnimPos[3] = {3, 3, 3};
+	int killedYou = 0;
 
 	float counter = 0;
 	float wait = 5;

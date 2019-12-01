@@ -20,7 +20,7 @@ private:
 void initializeAnimatronics(int, int);
 bool doMove(Animatronic& AnimatronicName);
 	
-	int positionChange(Animatronic& AnimatronicName, int onCamera, bool x[], bool y);
+	int positionChange(Animatronic& AnimatronicName, int onCamera, bool x[], bool y, float power = 100);
 
 	int* returnPosition();
 	

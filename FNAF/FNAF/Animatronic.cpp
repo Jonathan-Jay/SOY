@@ -1,4 +1,5 @@
 #include "Animatronic.h"
+#include "AudioManager.h"
 #include <iostream>
 Animatronic Freddy;
 Animatronic Chica;
@@ -60,7 +61,7 @@ bool doMove(Animatronic& AnimatronicName)
 	return false;
 }
 
-int positionChange(Animatronic& AnimatronicName, int onCamera, bool isDoorClosed[], bool playerOnCamera)
+int positionChange(Animatronic& AnimatronicName, int onCamera, bool isDoorClosed[], bool playerOnCamera, float power)
 {
 	//if they the animatronic move position
 	//POSITION == CAMERA THAT THEY SHOULD BE ON
@@ -69,7 +70,7 @@ int positionChange(Animatronic& AnimatronicName, int onCamera, bool isDoorClosed
 	int rng;
 
 	//freddy
-	if ((AnimatronicName.animatronicNB == 0) && !(AnimatronicName.position == onCamera && playerOnCamera))
+	if ((AnimatronicName.animatronicNB == 0) && !(AnimatronicName.position == onCamera && (playerOnCamera || power <= 0)))
 	{
 		switch (AnimatronicName.position)
 		{
@@ -230,6 +231,7 @@ void Animatronic::changePosition(int onCamera, int _timeOfNight, bool isDoorDown
 				
 				//reduce power by 5 times amount of times hit + 1, then increase amount of times hit by 1 (post addition)
 				power -= 5 * hitcount++ + 1;
+				Soundfunctions().PlaySingleSound("Foxy_Knock.mp3");
 			}
 			else
 			{
@@ -253,7 +255,7 @@ void Animatronic::changePosition(int onCamera, int _timeOfNight, bool isDoorDown
 		bool move = doMove(Freddy);
 		if (move)
 		{
-			positionChange(Freddy, onCamera, isDoorDown, playerOnCamera);
+			positionChange(Freddy, onCamera, isDoorDown, playerOnCamera, power);
 			move = false;
 		}
 		move = doMove(Chica);
