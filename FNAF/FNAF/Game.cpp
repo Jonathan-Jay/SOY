@@ -112,10 +112,29 @@ bool Game::Run()
 
 				TrackerPos = m_register->get<Transform>(EntityIdentifier::MainPlayer()).GetPosition();
 				if (playSound) {
+					Soundfunctions().PauseSound("Fan_Buzzing.mp3");
+					m_register->get<Transform>(EntityIdentifier::Button(60 + killedYou)).SetPosition(
+						TrackerPos + vec3(0.f, 15.f, 1.f));
+					wait = 0.f;
+
 					Soundfunctions().PlaySingleSound("JumpScare.mp3");
 					playSound = false;
 				}
 
+				wait += Timer::deltaTime;
+
+				if (wait >= 5.f) {
+					change = false;
+					Soundfunctions().LoopSound("Menu_Music.mp3");
+					m_activeScene->Unload();
+					m_activeScene = m_scenes[1];
+					m_activeScene->Unload();
+					m_activeScene->InitScene(float(BackEnd::GetWindowWidth()), float(BackEnd::GetWindowHeight()));
+
+					m_register = m_activeScene->GetScene();
+
+					Set::Reset(m_register);
+				}
 			}
 
 			if (gameState == 3)
@@ -130,10 +149,27 @@ bool Game::Run()
 
 				TrackerPos = m_register->get<Transform>(EntityIdentifier::MainPlayer()).GetPosition();
 				if (playSound) {
+					Soundfunctions().PauseSound("Fan_Buzzing.mp3");
+					wait = 0.f;
+
 					Soundfunctions().PlaySingleSound("Victory_Chimes.mp3");
 					playSound = false;
 				}
 
+				wait += Timer::deltaTime;
+
+				if (wait >= 15.f) {
+					change = false;
+					Soundfunctions().LoopSound("Menu_Music.mp3");
+					m_activeScene->Unload();
+					m_activeScene = m_scenes[1];
+					m_activeScene->Unload();
+					m_activeScene->InitScene(float(BackEnd::GetWindowWidth()), float(BackEnd::GetWindowHeight()));
+
+					m_register = m_activeScene->GetScene();
+
+					Set::Reset(m_register);
+				}
 			}
 			
 			Set::Update();
@@ -149,8 +185,6 @@ void Game::Update()
 	Timer::Update();
 	//Update the backend
 	BackEnd::Update(m_register);
-
-	m_activeScene->Update();
 }
 
 void Game::GUI()
@@ -282,14 +316,16 @@ void Game::MovementMath(int mainplayer)
 		{
 			isButtonPressed[x - 1] = true;
 			if (notTouchingButton[x - 1]) {
-				Soundfunctions().LoopSound("HallLights_On.mp3");
+				if (power > 1)
+					Soundfunctions().LoopSound("HallLights_On.mp3");
 				notTouchingButton[x - 1] = false;
 			}
 		}
 		else {
 			isButtonPressed[x - 1] = false;
 			if (!notTouchingButton[x - 1]) {
-				Soundfunctions().PauseSound("HallLights_On.mp3");
+				if (power > 1)
+					Soundfunctions().PauseSound("HallLights_On.mp3");
 				notTouchingButton[x - 1] = true;
 			}
 		}
@@ -300,12 +336,20 @@ void Game::MovementMath(int mainplayer)
 			//only activate after player gets off button, stored in notTouchingButton (0 for left, 1 for right)
 			if (notTouchingButton[x + 1])
 			{
-				Soundfunctions().PlaySingleSound("Door_Sound.mp3");
+				if (power >= 1)
+					Soundfunctions().PlaySingleSound("Door_Sound.mp3");
 				isButtonPressed[x + 1] = !isButtonPressed[x + 1];	//swap button state
 				notTouchingButton[x + 1] = false;
 			}
 		}
 		else notTouchingButton[x + 1] = true;	//set notTouchingButton back to true once player leaves
+	}
+
+	for (int x(1); x <= 4; x++)
+	{
+		vec3 direction = m_register->get<Transform>(EntityIdentifier::Button(60 + x)).GetPosition() - CurrentPos;
+		float angle = atan2f(direction.y, direction.x);
+		m_register->get<Transform>(EntityIdentifier::Button(60 + x)).SetRotationAngleZ(angle);
 	}
 
 	//reset movement vector
@@ -420,14 +464,6 @@ void Game::SetScene()
 		if (AnimatronicPos[2] == 10)
 			m_register->get<Transform>(EntityIdentifier::Button(63)).SetPositionY(-66);
 		else	m_register->get<Transform>(EntityIdentifier::Button(63)).SetPositionY(-200);
-		
-		vec3 mainplayerPos = m_register->get<Transform>(EntityIdentifier::MainPlayer()).GetPosition();
-		for (int x(1); x <= 4; x++)
-		{
-			vec3 direction = m_register->get<Transform>(EntityIdentifier::Button(60 + x)).GetPosition() - mainplayerPos;
-			float angle = atanf(direction.y / direction.x) - PI / 2;
-			m_register->get<Transform>(EntityIdentifier::Button(60 + x)).SetRotationAngleZ(angle);
-		}
 	}
 
 	for (int x(0); x < 4; x++)
