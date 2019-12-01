@@ -522,13 +522,13 @@ void Game::MainMenuControls(SDL_MouseButtonEvent evnt)
 					initializeAnimatronics(10, 2);
 					break;
 				case 3:
-					initializeAnimatronics(20, 3);
+					initializeAnimatronics(15, 3);
 					break;
 				case 4:
-					initializeAnimatronics(40, 4);
+					initializeAnimatronics(20, 4);
 					break;
 				case 5:
-					initializeAnimatronics(60, 5);
+					initializeAnimatronics(30, 5);
 					break;
 				}
 				change = true;
