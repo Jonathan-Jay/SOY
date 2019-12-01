@@ -40,12 +40,16 @@ void Game::InitGame()
 	m_scenes.push_back(new FNAF("Game Scene"));
 	m_scenes.push_back(new MainMenu("Main Menu"));
 
-	Soundfunctions().LoadSound("Camera_Switch_Static.mp3");
-
 	m_activeScene = m_scenes[1];
 	m_activeScene->InitScene(float(BackEnd::GetWindowWidth()), float(BackEnd::GetWindowHeight()));
 
 	m_register = m_activeScene->GetScene();
+
+	Soundfunctions().LoadSound("Menu_Music.mp3");
+	Soundfunctions().LoadSound("Door_Sound.mp3");
+	Soundfunctions().LoadSound("HallLights_On.mp3");
+	Soundfunctions().LoadSound("Fan_Buzzing.mp3");
+	Soundfunctions().LoadSound("Camera_Switch_Static.mp3");
 
 	Set::Reset(m_register);
 	Soundfunctions().LoopSound("Menu_Music.mp3");
@@ -510,7 +514,7 @@ void Game::MainMenuControls(SDL_MouseButtonEvent evnt)
 			//reset set class function variables and send register and reset variables
 			Set::Reset(m_register);
 			Soundfunctions().PauseSound("Menu_Music.mp3");
-			//Soundfunctions().LoopSound("Fan_Buzzing.mp3");
+			Soundfunctions().LoopSound("Fan_Buzzing.mp3");
 			currenttime = 0;
 			power = 100;
 			gameState = 0;
@@ -594,8 +598,8 @@ void Game::MouseClick(SDL_MouseButtonEvent evnt)
 		{
 			TrackerPos = click;
 			//if mouse pressed on door button, reset notTouchingButton, making the door switch
-			if (Set::positionTesting(EntityIdentifier::Button(30), click, true))	notTouchingButton[0] = true;
-			if (Set::positionTesting(EntityIdentifier::Button(40), click, true))	notTouchingButton[1] = true;
+			if (Set::positionTesting(EntityIdentifier::Button(30), click, true))	notTouchingButton[2] = true;
+			if (Set::positionTesting(EntityIdentifier::Button(40), click, true))	notTouchingButton[3] = true;
 		}
 		else
 		{
