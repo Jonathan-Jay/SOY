@@ -211,7 +211,7 @@ void Game::MovementMath(int mainplayer)
 	vec2(distance) = vec2(TrackerPos.x - CurrentPos.x, TrackerPos.y - CurrentPos.y);
 
 	//to avoid bouncing from plaer when moving
-	if (distance.GetMagnitude() > acceleration / 200.f)
+	if (distance.GetMagnitude() > acceleration / 100.f)
 	{
 		if (!accelerate)	acceleration = 200.f;
 		movement = distance.Normalize() * acceleration;
