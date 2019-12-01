@@ -24,7 +24,7 @@ void initializeAnimatronics(int difficulty, int night) //To initialize all of th
 	timeOfNight = 0;
 	onCamTime = 0.f;
 	deltaOnCam = Timer::currentClock;
-	doorHitCounter = 1;
+	positionCounterByMovement = 1;
 
 	//Initializing the number
 	Freddy.animatronicNB = 0;
@@ -199,7 +199,7 @@ int positionChange(Animatronic& AnimatronicName, int onCamera, bool isDoorDown[]
 			{
 				if (Foxy.position <= 5)
 					AnimatronicName.position++;
-				doorHitCounter++;
+				positionCounterByMovement++;
 			}
 			onCamTime = 0;
 			std::cout << AnimatronicName.animatronicNB << ":" << AnimatronicName.position << "\n";
