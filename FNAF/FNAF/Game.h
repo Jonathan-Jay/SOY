@@ -3,6 +3,7 @@
 
 #include "BackEnd.h"
 #include "FNAFScene.h"
+#include "AudioManager.h"
 
 //Our main class for running our game
 class Game
@@ -93,7 +94,7 @@ private:
 	bool buttonPressed = false;
 	bool collision = true;
 	bool accelerate = true;
-	bool leftButton[2] = {};
+	bool notTouchingButton[4] = {};
 	bool isButtonPressed[4] = {};
 
 	int acceleration = 0;

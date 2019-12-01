@@ -45,7 +45,15 @@ void Game::InitGame()
 
 	m_register = m_activeScene->GetScene();
 
+	Soundfunctions().LoadSound("Menu_Music.mp3");
+	Soundfunctions().LoadSound("Fan_Buzzing.mp3");
+	Soundfunctions().AdjustVolume("Fan_Buzzing.mp3", 250);
+	Soundfunctions().LoadSound("Door_Sound.mp3");
+	Soundfunctions().LoadSound("HallLights_On.mp3");
+	Soundfunctions().LoadSound("Camera_Switch_Static.mp3");
+
 	Set::Reset(m_register);
+	Soundfunctions().LoopSound("Menu_Music.mp3");
 }
 
 bool Game::Run()
@@ -203,7 +211,7 @@ void Game::MovementMath(int mainplayer)
 	vec2(distance) = vec2(TrackerPos.x - CurrentPos.x, TrackerPos.y - CurrentPos.y);
 
 	//to avoid bouncing from plaer when moving
-	if (distance.GetMagnitude() > 1.f)
+	if (distance.GetMagnitude() > acceleration / 200.f)
 	{
 		if (!accelerate)	acceleration = 200.f;
 		movement = distance.Normalize() * acceleration;
@@ -243,20 +251,31 @@ void Game::MovementMath(int mainplayer)
 		if (Set::positionTesting(EntityIdentifier::Button(10 * x), CurrentPos, true))
 		{
 			isButtonPressed[x - 1] = true;
+			if (notTouchingButton[x - 1]) {
+				Soundfunctions().LoopSound("HallLights_On.mp3");
+				notTouchingButton[x - 1] = false;
+			}
 		}
-		else isButtonPressed[x - 1] = false;
+		else {
+			isButtonPressed[x - 1] = false;
+			if (!notTouchingButton[x - 1]) {
+				Soundfunctions().PauseSound("HallLights_On.mp3");
+				notTouchingButton[x - 1] = true;
+			}
+		}
 
 		//testing for door button being pressed
 		if (Set::positionTesting(EntityIdentifier::Button(10 * x + 20), CurrentPos, true))
 		{
-			//only activate after player gets off button, stored in leftButton (0 for left, 1 for right)
-			if (leftButton[x - 1])
+			//only activate after player gets off button, stored in notTouchingButton (0 for left, 1 for right)
+			if (notTouchingButton[x + 1])
 			{
+				Soundfunctions().PlaySingleSound("Door_Sound.mp3");
 				isButtonPressed[x + 1] = !isButtonPressed[x + 1];	//swap button state
-				leftButton[x - 1] = false;
+				notTouchingButton[x + 1] = false;
 			}
 		}
-		else leftButton[x - 1] = true;	//set leftButton back to true once player leaves
+		else notTouchingButton[x + 1] = true;	//set notTouchingButton back to true once player leaves
 	}
 
 	//reset movement vector
@@ -443,6 +462,7 @@ void Game::MainMenuControls(SDL_MouseButtonEvent evnt)
 				//brings loading screen into frame
 				m_register->get<Transform>(EntityIdentifier::Button(0)).SetPositionY(0);
 				printf("Night %i\n", x);
+				Soundfunctions().PlaySingleSound("Camera_Switch_Static.mp3");
 				//setting up difficulty according to night
 				switch (x)
 				{
@@ -494,6 +514,8 @@ void Game::MainMenuControls(SDL_MouseButtonEvent evnt)
 
 			//reset set class function variables and send register and reset variables
 			Set::Reset(m_register);
+			Soundfunctions().PauseSound("Menu_Music.mp3");
+			Soundfunctions().LoopSound("Fan_Buzzing.mp3");
 			currenttime = 0;
 			power = 100;
 			gameState = 0;
@@ -526,15 +548,16 @@ void Game::MouseMotion(SDL_MouseMotionEvent evnt)
 	vec3(playerPos) = m_register->get<Transform>(EntityIdentifier::MainPlayer()).GetPosition();
 
 	//check if player is in front of desk
-	if (playerPos.y >= -41 && playerPos.x < 20 && playerPos.x > -20)
+	if (power > 1 && playerPos.y >= -41 && playerPos.x < 20 && playerPos.x > -20)
 	{
 		//display bar (set animation to 1)
 		m_register->get<AnimationController>(EntityIdentifier::Button(39)).SetActiveAnim(1);
 
 		//check if mouse was moved downwards over 10 pixels bellow bottom of tab and not currently on Camera
-		if (oldposition.y + 10 <= evnt.y && evnt.y >= BackEnd::GetWindowHeight() - 4 && !onCamera)
+		if (!onCamera && oldposition.y + 10 <= evnt.y && evnt.y >= BackEnd::GetWindowHeight() - 4)
 		{
 			printf("Camera On!\n");
+			Soundfunctions().PlaySingleSound("Camera_Switch_Static.mp3");
 			//sets a bunch of variables to update
 			TrackerPos = playerPos;
 			acceleration = 75;
@@ -576,9 +599,9 @@ void Game::MouseClick(SDL_MouseButtonEvent evnt)
 		if (!onCamera)
 		{
 			TrackerPos = click;
-			//if mouse pressed on door button, reset leftButton, making the door switch
-			if (Set::positionTesting(EntityIdentifier::Button(30), click, true))	leftButton[0] = true;
-			if (Set::positionTesting(EntityIdentifier::Button(40), click, true))	leftButton[1] = true;
+			//if mouse pressed on door button, reset notTouchingButton, making the door switch
+			if (Set::positionTesting(EntityIdentifier::Button(30), click, true))	notTouchingButton[2] = true;
+			if (Set::positionTesting(EntityIdentifier::Button(40), click, true))	notTouchingButton[3] = true;
 		}
 		else
 		{
@@ -588,6 +611,7 @@ void Game::MouseClick(SDL_MouseButtonEvent evnt)
 				if (CameraChoice != x && Set::positionTesting(EntityIdentifier::Button(x), click))
 				{
 					printf("Camera %i selected\n", x);
+					Soundfunctions().PlaySingleSound("Camera_Switch_Static.mp3");
 					//sets a bunch of variables
 					OldCameraChoice = CameraChoice;
 					change = true;
