@@ -2,7 +2,7 @@
 
 void Soundfunctions::PlaySingleSound(std::string Filename)
 {
-	std::string SoundString = "play assets/Audio_Files/" + Filename + " from 0";
+	std::string SoundString = "play " + Filename + " from 0";
 	mciSendString(SoundString.c_str(), NULL, 0, NULL);
 }
 
