@@ -314,7 +314,9 @@ void Game::SetScene()
 	}
 
 	//runing whether to move the characters or not
-	Animatronic::changePosition(CameraChoice, currenttime, isButtonPressed, onCamera);
+	Animatronic::changePosition(CameraChoice, currenttime, isButtonPressed, onCamera, power);
+
+	if (power < 0)	power = 0;
 
 	int* AnimatronicPos = returnPosition();
 

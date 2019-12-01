@@ -8,6 +8,7 @@ Animatronic Foxy;
 int timeAfter = 0;
 int deltaTime = 0;
 int timeOfNight = 0;
+int hitcount = 0;
 float onCamTime = 0.f;
 float deltaOnCam = Timer::currentClock;
 float foxyRunTime = 0;
@@ -22,6 +23,7 @@ void initializeAnimatronics(int difficulty, int night) //To initialize all of th
 	timeAfter = 0;
 	deltaTime = 0;
 	timeOfNight = 0;
+	hitcount = 0;
 	onCamTime = 0.f;
 	deltaOnCam = Timer::currentClock;
 	doorHitCounter = 1;
@@ -198,7 +200,7 @@ int positionChange(Animatronic& AnimatronicName, int onCamera, bool isDoorClosed
 	return 0;
 }
 
-void Animatronic::changePosition(int onCamera, int _timeOfNight, bool isDoorDown[], bool playerOnCamera)
+void Animatronic::changePosition(int onCamera, int _timeOfNight, bool isDoorDown[], bool playerOnCamera, float &power)
 {
 	timeOfNight = _timeOfNight;
 	//This is to run the Jumpscare AI if the time comes
@@ -225,6 +227,9 @@ void Animatronic::changePosition(int onCamera, int _timeOfNight, bool isDoorDown
 			if (isDoorDown[2])
 			{
 				Foxy.position = 1;
+				
+				//reduce power by 5 times amount of times hit + 1, then increase amount of times hit by 1 (post addition)
+				power -= 5 * hitcount++ + 1;
 			}
 			else
 			{
