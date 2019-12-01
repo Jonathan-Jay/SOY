@@ -9,6 +9,7 @@
 #include "Transform.h"
 #include "EntityIdentifier.h"
 #include "Selectable.h"
+#include "AudioManager.h"
 
 namespace SceneEditor
 {

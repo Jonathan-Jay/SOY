@@ -3,6 +3,7 @@
 
 #include "BackEnd.h"
 #include "FNAFScene.h"
+#include "AudioManager.h"
 
 //Our main class for running our game
 class Game
