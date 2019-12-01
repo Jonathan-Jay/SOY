@@ -46,9 +46,10 @@ void Game::InitGame()
 	m_register = m_activeScene->GetScene();
 
 	Soundfunctions().LoadSound("Menu_Music.mp3");
+	Soundfunctions().LoadSound("Fan_Buzzing.mp3");
+	Soundfunctions().AdjustVolume("Fan_Buzzing.mp3", 250);
 	Soundfunctions().LoadSound("Door_Sound.mp3");
 	Soundfunctions().LoadSound("HallLights_On.mp3");
-	Soundfunctions().LoadSound("Fan_Buzzing.mp3");
 	Soundfunctions().LoadSound("Camera_Switch_Static.mp3");
 
 	Set::Reset(m_register);

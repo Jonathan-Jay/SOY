@@ -23,8 +23,8 @@ void Soundfunctions::LoadSound(std::string Filename)
 	mciSendString(SoundString.c_str(), NULL, 0, NULL);
 }
 
-void Soundfunctions::AdjustVolume(std::string Filename)
+void Soundfunctions::AdjustVolume(std::string Filename, int Percentage)
 {
-	std::string SoundString = "sendvolume " + Filename + " volume to 50";
+	std::string SoundString = "setaudio " + Filename + " volume to " + std::to_string(Percentage);
 	mciSendString(SoundString.c_str(), NULL, 0, NULL);
 }
