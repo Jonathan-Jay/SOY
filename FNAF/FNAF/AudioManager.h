@@ -11,4 +11,6 @@ public:
 	void LoopSound(std::string Filename); //Loops Sound
 	void PauseSound(std::string Filename); //Stops sound
 	void LoadSound(std::string Filename); //Used to preload sounds during init
+	void AdjustVolume(std::string Filename); //Uses aliases to change volume
+
 };

@@ -2,7 +2,7 @@
 
 void Soundfunctions::PlaySingleSound(std::string Filename)
 {
-	std::string SoundString = "play assets/Audio_Files/" + Filename + " from 0";
+	std::string SoundString = "play " + Filename + " from 0";
 	mciSendString(SoundString.c_str(), NULL, 0, NULL);
 }
 
@@ -20,5 +20,11 @@ void Soundfunctions::PauseSound(std::string Filename)
 void Soundfunctions::LoadSound(std::string Filename)
 {
 	std::string SoundString = "open assets/Audio_Files/" + Filename + " type mpegvideo alias " + Filename;
+	mciSendString(SoundString.c_str(), NULL, 0, NULL);
+}
+
+void Soundfunctions::AdjustVolume(std::string Filename)
+{
+	std::string SoundString = "sendvolume " + Filename + " volume to 50";
 	mciSendString(SoundString.c_str(), NULL, 0, NULL);
 }
