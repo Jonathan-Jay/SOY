@@ -51,6 +51,10 @@ void Game::InitGame()
 	Soundfunctions().LoadSound("Door_Sound.mp3");
 	Soundfunctions().LoadSound("HallLights_On.mp3");
 	Soundfunctions().LoadSound("Camera_Switch_Static.mp3");
+	Soundfunctions().LoadSound("Foxy_Knock.mp3");
+	Soundfunctions().LoadSound("Slow_Laugh.mp3");
+	Soundfunctions().LoadSound("Jumpscare.mp3");
+	Soundfunctions().LoadSound("Victory_Chimes.mp3");
 
 	Set::Reset(m_register);
 	Soundfunctions().LoopSound("Menu_Music.mp3");
@@ -94,8 +98,26 @@ bool Game::Run()
 			{
 				SetScene();
 				//Update rendering system
-				Set::Update();
 			}
+			
+			if (gameState == 2)
+			{
+				//if die, remove camera menu
+				if (onCamera)
+				{
+					onCamera = false;
+					change = true;
+					SetScene();
+				}
+
+				TrackerPos = m_register->get<Transform>(EntityIdentifier::MainPlayer()).GetPosition();
+				if (playSound) {
+					Soundfunctions().PlaySingleSound("JumpScare.mp3");
+					playSound = false;
+				}
+
+			}
+
 			if (gameState == 3)
 			{
 				//if win, remove camera menu
@@ -106,7 +128,15 @@ bool Game::Run()
 					SetScene();
 				}
 
+				TrackerPos = m_register->get<Transform>(EntityIdentifier::MainPlayer()).GetPosition();
+				if (playSound) {
+					Soundfunctions().PlaySingleSound("Victory_Chimes.mp3");
+					playSound = false;
+				}
+
 			}
+			
+			Set::Update();
 		}
 	}
 
@@ -311,10 +341,13 @@ void Game::SetScene()
 	if (currenttime >= 271)
 	{
 		gameState = 3;
+		playSound = true;
 	}
 
 	//runing whether to move the characters or not
-	Animatronic::changePosition(CameraChoice, currenttime, isButtonPressed, onCamera);
+	Animatronic::changePosition(CameraChoice, currenttime, isButtonPressed, onCamera, power);
+
+	if (power < 1)	power = 0;
 
 	int* AnimatronicPos = returnPosition();
 
@@ -379,17 +412,32 @@ void Game::SetScene()
 
 	if (!onCamera)
 	{
-		//if Freddy is in the right hall
-		if (AnimatronicPos[0] == 10);
-
 		//if Bonnie is in the left hall
 		if (AnimatronicPos[1] == 9)
-			m_register->get<Transform>(EntityIdentifier::Button(61)).SetPositionY(-66);
-		else	m_register->get<Transform>(EntityIdentifier::Button(61)).SetPositionY(-200);
-		//if Chica is in the right hall
-		if (AnimatronicPos[2] == 10)
 			m_register->get<Transform>(EntityIdentifier::Button(62)).SetPositionY(-66);
 		else	m_register->get<Transform>(EntityIdentifier::Button(62)).SetPositionY(-200);
+		//if Chica is in the right hall
+		if (AnimatronicPos[2] == 10)
+			m_register->get<Transform>(EntityIdentifier::Button(63)).SetPositionY(-66);
+		else	m_register->get<Transform>(EntityIdentifier::Button(63)).SetPositionY(-200);
+		
+		vec3 mainplayerPos = m_register->get<Transform>(EntityIdentifier::MainPlayer()).GetPosition();
+		for (int x(1); x <= 4; x++)
+		{
+			vec3 direction = m_register->get<Transform>(EntityIdentifier::Button(60 + x)).GetPosition() - mainplayerPos;
+			float angle = atanf(direction.y / direction.x) - PI / 2;
+			m_register->get<Transform>(EntityIdentifier::Button(60 + x)).SetRotationAngleZ(angle);
+		}
+	}
+
+	for (int x(0); x < 4; x++)
+	{
+		if (AnimatronicPos[x] == 11)
+		{
+			killedYou = x + 1;
+			gameState = 2;
+			playSound = true;
+		}
 	}
 
 	//change means update scene, so it doesn't update every frame
@@ -548,7 +596,7 @@ void Game::MouseMotion(SDL_MouseMotionEvent evnt)
 	vec3(playerPos) = m_register->get<Transform>(EntityIdentifier::MainPlayer()).GetPosition();
 
 	//check if player is in front of desk
-	if (power > 1 && playerPos.y >= -41 && playerPos.x < 20 && playerPos.x > -20)
+	if (gameState == 1 && power > 1 && playerPos.y >= -41 && playerPos.x < 20 && playerPos.x > -20)
 	{
 		//display bar (set animation to 1)
 		m_register->get<AnimationController>(EntityIdentifier::Button(39)).SetActiveAnim(1);
@@ -564,6 +612,7 @@ void Game::MouseMotion(SDL_MouseMotionEvent evnt)
 			change = true;
 			buttonPressed = true;
 			onCamera = true;
+			playSound= false;
 		}
 	}
 	else	m_register->get<AnimationController>(EntityIdentifier::Button(39)).SetActiveAnim(0);	//hide bar
@@ -588,7 +637,7 @@ void Game::MouseClick(SDL_MouseButtonEvent evnt)
 	float windowWidth = BackEnd::GetWindowWidth();
 	float windowHeight = BackEnd::GetWindowHeight();
 
-	if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT))
+	if (gameState <= 1 && SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT))
 	{
 		vec3(click) = vec3(
 			evnt.x / windowHeight * 200.f - 100.f * windowWidth / windowHeight,

@@ -1,4 +1,5 @@
 #include "Animatronic.h"
+#include "AudioManager.h"
 #include <iostream>
 Animatronic Freddy;
 Animatronic Chica;
@@ -8,6 +9,7 @@ Animatronic Foxy;
 int timeAfter = 0;
 int deltaTime = 0;
 int timeOfNight = 0;
+int hitcount = 0;
 float onCamTime = 0.f;
 float deltaOnCam = Timer::currentClock;
 float foxyRunTime = 0;
@@ -22,6 +24,7 @@ void initializeAnimatronics(int difficulty, int night) //To initialize all of th
 	timeAfter = 0;
 	deltaTime = 0;
 	timeOfNight = 0;
+	hitcount = 0;
 	onCamTime = 0.f;
 	deltaOnCam = Timer::currentClock;
 	positionCounterByMovement = 1;
@@ -58,7 +61,7 @@ bool doMove(Animatronic& AnimatronicName)
 	return false;
 }
 
-int positionChange(Animatronic& AnimatronicName, int onCamera, bool isDoorDown[], bool playerOnCamera)
+int positionChange(Animatronic& AnimatronicName, int onCamera, bool isDoorDown[], bool playerOnCamera, float power)
 {
 	//if they the animatronic move position
 	//POSITION == CAMERA THAT THEY SHOULD BE ON
@@ -67,7 +70,7 @@ int positionChange(Animatronic& AnimatronicName, int onCamera, bool isDoorDown[]
 	int rng;
 
 	//freddy
-	if ((AnimatronicName.animatronicNB == 0) && !(AnimatronicName.position == onCamera && playerOnCamera))
+	if ((AnimatronicName.animatronicNB == 0) && !(AnimatronicName.position == onCamera && (playerOnCamera || power <= 0)))
 	{
 		switch (AnimatronicName.position)
 		{
@@ -193,9 +196,9 @@ int positionChange(Animatronic& AnimatronicName, int onCamera, bool isDoorDown[]
 	//Foxy
 	if ((AnimatronicName.animatronicNB == 3) && !(onCamera == 1 && playerOnCamera))
 	{
-		if (timeOfNight / positionCounterByMovement > 100 / nightNumber)
+		if (timeOfNight / positionCounterByMovement > 50 / nightNumber)
 		{
-			if (onCamTime / 100.f <= 2 * nightNumber)
+			if (onCamTime / 100.f <= nightNumber)
 			{
 				if (Foxy.position <= 5)
 					AnimatronicName.position++;
@@ -208,13 +211,36 @@ int positionChange(Animatronic& AnimatronicName, int onCamera, bool isDoorDown[]
 	return 0;
 }
 
-void Animatronic::changePosition(int onCamera, int _timeOfNight, bool isDoorDown[], bool playerOnCamera)
+void Animatronic::changePosition(int onCamera, int _timeOfNight, bool isDoorDown[], bool playerOnCamera, float &power)
 {
 	timeOfNight = _timeOfNight;
 	//This is to run the Jumpscare AI if the time comes
 	
 
-	
+	if (Foxy.position >= 5)
+	{
+		if (foxyRunTime >= 3)
+		{
+			if (isDoorDown[2])
+			{
+				Foxy.position = 1;
+				
+				//reduce power by 5 times amount of times hit + 1, then increase amount of times hit by 1 (post addition)
+				power -= 5 * hitcount++ + 1;
+				Soundfunctions().PlaySingleSound("Foxy_Knock.mp3");
+			}
+			else
+			{
+				Foxy.position = 11;
+			}
+		}
+		foxyRunTime += Timer::deltaTime;
+	}
+	else
+	{
+		foxyRunTime = 0;
+	}
+
 	//Time for AI related things
 	if (deltaTime == 0)
 		deltaTime = time(0);
@@ -222,14 +248,10 @@ void Animatronic::changePosition(int onCamera, int _timeOfNight, bool isDoorDown
 	int timeBetween = (std::rand() % 5) + 5; //Five seconds for an example
 	if (timeAfter >= timeBetween)
 	{
-		if (Foxy.position >= 5 && isDoorDown[2])
-		{
-			Foxy.position = 1;
-		}
 		bool move = doMove(Freddy);
 		if (move)
 		{
-			positionChange(Freddy, onCamera, isDoorDown, playerOnCamera);
+			positionChange(Freddy, onCamera, isDoorDown, playerOnCamera, power);
 			move = false;
 		}
 		move = doMove(Chica);
