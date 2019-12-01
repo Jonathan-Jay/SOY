@@ -556,6 +556,7 @@ void Game::MouseMotion(SDL_MouseMotionEvent evnt)
 		if (!onCamera && oldposition.y + 10 <= evnt.y && evnt.y >= BackEnd::GetWindowHeight() - 4)
 		{
 			printf("Camera On!\n");
+			Soundfunctions().PlaySingleSound("Camera_Switch_Static.mp3");
 			//sets a bunch of variables to update
 			TrackerPos = playerPos;
 			acceleration = 75;
