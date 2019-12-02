@@ -17,7 +17,7 @@ int nightNumber = 0;
 int positionCounterByMovement = 1;
 
 bool bruhMoment = true; //because for some reason foxy would move twice even though he should only move once. I don't know why and Time is too close to try to come up with something better
-void initializeAnimatronics(int difficulty, int night) //To initialize all of the animatronics things
+void initializeAnimatronics(int difficulty, int night, int freddyDifficulty) //To initialize all of the animatronics things
 {
 	bruhMoment = true;
 	nightNumber = night;
@@ -42,7 +42,7 @@ void initializeAnimatronics(int difficulty, int night) //To initialize all of th
 	Bonnie.position = 3;
 	Foxy.position = 1;
 	//difficulty
-	Freddy.difficulty = difficulty;
+	Freddy.difficulty = freddyDifficulty;
 	Chica.difficulty = difficulty;
 	Bonnie.difficulty = difficulty;
 	Foxy.difficulty = difficulty;
@@ -91,7 +91,7 @@ int positionChange(Animatronic& AnimatronicName, int onCamera, bool isDoorDown[]
 		case 10:
 			if (isDoorDown[3])
 			{
-				AnimatronicName.position = 8;
+				AnimatronicName.position = 6;
 			}
 			//but door is back closed then back at
 			break;

@@ -552,19 +552,19 @@ void Game::MainMenuControls(SDL_MouseButtonEvent evnt)
 				{
 				default:
 				case 1:
-					initializeAnimatronics(5, 1); //difficulty is the overload out of 100%, nightNumber
+					initializeAnimatronics(5, 1, 5); //difficulty is the overload out of 100%, nightNumber, then followed by Freddy's difficulty
 					break;
 				case 2:
-					initializeAnimatronics(10, 2);
+					initializeAnimatronics(10, 2, 10);
 					break;
 				case 3:
-					initializeAnimatronics(15, 3);
+					initializeAnimatronics(15, 3, 15);
 					break;
 				case 4:
-					initializeAnimatronics(20, 4);
+					initializeAnimatronics(20, 4, 20);
 					break;
 				case 5:
-					initializeAnimatronics(30, 5);
+					initializeAnimatronics(30, 5, 30);
 					break;
 				}
 				change = true;
