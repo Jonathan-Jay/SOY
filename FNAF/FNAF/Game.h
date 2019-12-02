@@ -3,6 +3,7 @@
 
 #include "BackEnd.h"
 #include "FNAFScene.h"
+#include "AudioManager.h"
 
 //Our main class for running our game
 class Game
@@ -56,6 +57,8 @@ public:
 	void MovementMath(int mainplayer);
 	void SetScene();
 
+	void MainMenuControls(SDL_MouseButtonEvent evnt);
+
 	//Mouse input
 	void MouseMotion(SDL_MouseMotionEvent evnt);
 	void MouseClick(SDL_MouseButtonEvent evnt);
@@ -88,16 +91,30 @@ private:
 	//our stuff
 	bool onCamera = false;
 	bool change = false;
-	bool leftButton[2] = {};
-	bool isAnimatronicInRoom[4] = {};
+	bool buttonPressed = false;
+	bool collision = true;
+	bool accelerate = true;
+	bool notTouchingButton[4] = {};
 	bool isButtonPressed[4] = {};
+	bool playSound = false;
+	bool animatronicAtWindow[4] = {};
 
-	int CameraChoice = 1;
-	int OldCameraChoice = 1;
+	int acceleration = 0;
+	int gameState = 0;
+	int CameraChoice = 3;
+	int OldCameraChoice = 3;
+	int oldAnimPos[3] = {3, 3, 3};
+	int killedYou = 0;
+
 	float counter = 0;
 	float wait = 5;
+	float currenttime = 0;
+	float power = 0;
+
 	vec2(movement) = vec2(0.f, 0.f);
 	vec2(oldposition) = vec2(0.f, 0.f);
+
+	vec3(TrackerPos) = vec3(0.f, -50.f, 0.f);
 };
 
 

@@ -214,7 +214,31 @@ void SceneEditor::CreateEditor(entt::registry * reg, Scene* scene)
 				ImGui::TreePop();
 			}
 		}
-
+		//New button to test sound effects
+		if (ImGui::TreeNode("Play Soundeffect"))
+		{
+			if (true)
+			{
+				ImGui::Text("Currently Attached");	
+				if (ImGui::Button("Play Sound", ImVec2(100.f, 20.f)))
+				{
+					Soundfunctions().PlaySingleSound("Camera_Switch_Static.mp3");
+				}
+				if (ImGui::Button("Stop Sound", ImVec2(100.f, 20.f)))
+				{
+					Soundfunctions().PauseSound("Camera_Switch_Static.mp3");
+				}
+				if (ImGui::Button("Loop Sound", ImVec2(100.f, 20.f)))
+				{
+					Soundfunctions().LoopSound("Camera_Switch_Static.mp3");
+				}
+			}
+				else
+				{
+					ImGui::Text("None Attached");
+				}
+				ImGui::TreePop();
+			}
 		if (ImGui::TreeNode("Spawn New Entities"))
 		{
 			if (ImGui::TreeNode("Enemy Entities"))
@@ -236,5 +260,5 @@ void SceneEditor::CreateEditor(entt::registry * reg, Scene* scene)
 		{
 			scene->SaveScene();
 		}
-	}
+		}
 }
