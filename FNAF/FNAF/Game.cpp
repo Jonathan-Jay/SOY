@@ -668,7 +668,8 @@ void Game::MainMenuControls(SDL_MouseButtonEvent evnt)
 			power = 100;
 			gameState = 0;
 			TrackerPos = vec3(0.f, -50.f, 0.f);
-			CameraChoice, OldCameraChoice = 3;
+			CameraChoice = 3;
+			OldCameraChoice = 3;
 			for (int x(0); x < 4; x++)
 			{
 				isButtonPressed[x] = false;
