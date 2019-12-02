@@ -785,6 +785,86 @@ void MainMenu::InitScene(float windowWidth, float windowHeight)
 	}
 #pragma endregion
 
+#pragma region main menu text
+	{
+		auto entity = ECS::CreateEntity();
+
+		ECS::AttachComponent<Transform>(entity);
+		ECS::AttachComponent<Sprite>(entity);
+		ECS::AttachComponent<AnimationController>(entity);
+
+		std::string filename = "main menu screen.png";
+		auto& animController = ECS::GetComponent<AnimationController>(entity);
+		animController.InitUVs(filename);
+
+		animController.AddAnimation(Animation());
+		animController.AddAnimation(Animation());
+
+		animController.SetActiveAnim(0);
+
+		auto& anim = animController.GetAnimation(0);
+		anim.AddFrame(vec2(0.f, 1000.f), vec2(1000.f, 0.f));
+
+		anim.SetRepeating(false);
+		anim.SetSecPerFrame(0.1f);
+
+		auto& anim2 = animController.GetAnimation(1);
+		anim2.AddFrame(vec2(), vec2());
+
+		anim2.SetRepeating(true);
+		anim2.SetSecPerFrame(0.1f);
+
+		ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 200, 200, true, &animController);
+
+		ECS::GetComponent<Transform>(entity).SetPosition(vec3(0.f, 0.f, 0.f));
+
+		unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit() | EntityIdentifier::AnimationBit();
+		ECS::SetUpIdentifier(entity, bitHolder, "Menu text");
+		ECS::SetIsMainCamera(entity, true);
+		EntityIdentifier::Button(entity, 6);
+	}
+#pragma endregion
+
+#pragma region freddy
+	{
+		auto entity = ECS::CreateEntity();
+
+		ECS::AttachComponent<Transform>(entity);
+		ECS::AttachComponent<Sprite>(entity);
+		ECS::AttachComponent<AnimationController>(entity);
+
+		std::string filename = "rooms/freddy/3.png";
+		auto& animController = ECS::GetComponent<AnimationController>(entity);
+		animController.InitUVs(filename);
+
+		animController.AddAnimation(Animation());
+		animController.AddAnimation(Animation());
+
+		animController.SetActiveAnim(0);
+
+		auto& anim = animController.GetAnimation(0);
+		anim.AddFrame(vec2(806.f, 999.f), vec2(358.f, 23.f));
+
+		anim.SetRepeating(false);
+		anim.SetSecPerFrame(0.1f);
+
+		auto& anim2 = animController.GetAnimation(1);
+		anim2.AddFrame(vec2(0.f, 0.f), vec2(0.f, 0.f));
+
+		anim2.SetRepeating(true);
+		anim2.SetSecPerFrame(0.1f);
+
+		ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 90, 186, true, &animController);
+
+		ECS::GetComponent<Transform>(entity).SetPosition(vec3(50.f, -12.f, 0.f));
+
+		unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit() | EntityIdentifier::AnimationBit();
+		ECS::SetUpIdentifier(entity, bitHolder, "Freddy");
+		ECS::SetIsMainCamera(entity, true);
+		EntityIdentifier::Button(entity, 7);
+	}
+#pragma endregion
+
 	//Button 0
 #pragma region Loading Screen
 	{
@@ -823,7 +903,7 @@ void MainMenu::InitScene(float windowWidth, float windowHeight)
 	for (int x(1); x <= 5; x++)
 	{
 
-	//Button 1-8
+	//Button 1-5
 #pragma region Night Buttons
 		{
 			auto entity = ECS::CreateEntity();

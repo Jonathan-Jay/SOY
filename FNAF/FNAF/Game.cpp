@@ -116,9 +116,11 @@ bool Game::Run()
 				TrackerPos = m_register->get<Transform>(EntityIdentifier::MainPlayer()).GetPosition();
 				if (playSound)
 				{
-					Soundfunctions().PauseSound("Fan_Buzzing.mp3");
+					if (power >= 1)
+						Soundfunctions().PauseSound("Fan_Buzzing.mp3");
 					m_register->get<Transform>(EntityIdentifier::Button(60 + killedYou)).SetPosition(
 						TrackerPos + vec3(0.f, 15.f, 1.f));
+					Soundfunctions().PauseSound("HallLights_On.mp3");
 					wait = 0.f;
 
 					Soundfunctions().PlaySingleSound("JumpScare.mp3");
@@ -161,7 +163,16 @@ bool Game::Run()
 				TrackerPos = m_register->get<Transform>(EntityIdentifier::MainPlayer()).GetPosition();
 				if (playSound)
 				{
-					Soundfunctions().PauseSound("Fan_Buzzing.mp3");
+					if (power >= 1)
+						Soundfunctions().PauseSound("Fan_Buzzing.mp3");
+					for (int x(0); x < 2; x++)
+					{
+						if (!notTouchingButton[x])
+						{
+							Soundfunctions().PauseSound("HallLights_On.mp3");
+							notTouchingButton[x] = true;
+						}
+					}
 					wait = 0.f;
 
 					Soundfunctions().PlaySingleSound("Victory_Chimes.mp3");
@@ -420,6 +431,15 @@ void Game::SetScene()
 	if (power < 1) {
 		power = 0;
 		Difficulty(40, 0);
+		Soundfunctions().PauseSound("Fan_Buzzing.mp3");
+		for (int x(0); x < 2; x++)
+		{
+			if (!notTouchingButton[x])
+			{
+				Soundfunctions().PauseSound("HallLights_On.mp3");
+				notTouchingButton[x] = true;
+			}
+		}
 	}
 
 	//runing whether to move the characters or not
@@ -567,7 +587,7 @@ void Game::MainMenuControls(SDL_MouseButtonEvent evnt)
 	float windowHeight = BackEnd::GetWindowHeight();
 	
 	//Contols for main menu
-	for (int x(1); x <= 5; x++)
+	for (int x(1); x <= 7; x++)
 	{
 		//buttons glitch change happens 1% of the time
 		if (rand() % 100 >= 99)
@@ -599,16 +619,16 @@ void Game::MainMenuControls(SDL_MouseButtonEvent evnt)
 					initializeAnimatronics(5, 1, 5); //difficulty is the overload out of 100%, nightNumber, then followed by Freddy's difficulty
 					break;
 				case 2:
-					initializeAnimatronics(10, 2, 10);
+					initializeAnimatronics(10, 2, 7);
 					break;
 				case 3:
-					initializeAnimatronics(15, 3, 15);
+					initializeAnimatronics(15, 3, 12);
 					break;
 				case 4:
-					initializeAnimatronics(20, 4, 20);
+					initializeAnimatronics(20, 4, 17);
 					break;
 				case 5:
-					initializeAnimatronics(30, 5, 30);
+					initializeAnimatronics(30, 5, 25);
 					break;
 				}
 				change = true;

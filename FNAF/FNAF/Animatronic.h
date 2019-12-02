@@ -10,6 +10,7 @@ public:
 	int animatronicNB; //Who is the animatronic. For the other cpps
 	int difficulty = 0; //Out of 100 -> 100 Equals Hardest, 0 Is easiest. Foxy Must be at least 1,
 	int position; //their position, this is more useful for other cpps
+	float delay = 0; //hallways delay
 	static void changePosition(int onCamera, int, bool x[], bool y, float &power);
 
 private:

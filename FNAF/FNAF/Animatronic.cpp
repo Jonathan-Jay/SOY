@@ -103,7 +103,7 @@ int positionChange(Animatronic& AnimatronicName, int onCamera, bool isDoorDown[]
 			//but door is back closed then back at
 			break;
 		}
-		std::cout << AnimatronicName.animatronicNB << ":" << AnimatronicName.position << "\n";
+		//std::cout << AnimatronicName.animatronicNB << ":" << AnimatronicName.position << "\n";
 	}//Bonnie
 	else if (AnimatronicName.animatronicNB == 2)
 	{
@@ -142,7 +142,7 @@ int positionChange(Animatronic& AnimatronicName, int onCamera, bool isDoorDown[]
 		default:
 			break;
 		}
-		std::cout << AnimatronicName.animatronicNB << ":" << AnimatronicName.position << "\n";
+		//std::cout << AnimatronicName.animatronicNB << ":" << AnimatronicName.position << "\n";
 	}
 	//Chica
 	else if (AnimatronicName.animatronicNB == 1)
@@ -183,13 +183,13 @@ int positionChange(Animatronic& AnimatronicName, int onCamera, bool isDoorDown[]
 		default:
 			break;
 		}
-		std::cout << AnimatronicName.animatronicNB << ":" << AnimatronicName.position << "\n";
+		//std::cout << AnimatronicName.animatronicNB << ":" << AnimatronicName.position << "\n";
 	}
 	
 	//Foxy
 	if ((AnimatronicName.animatronicNB == 3) && !(onCamera == 1 && playerOnCamera))
 	{
-		if ((float)timeOfNight - lastTimeFoxyMoved >= 100 / nightNumber)
+		if ((float)timeOfNight - lastTimeFoxyMoved >= 150 / nightNumber)
 		{
 			if (bruhMoment)
 			{
@@ -204,7 +204,7 @@ int positionChange(Animatronic& AnimatronicName, int onCamera, bool isDoorDown[]
 					}
 				}
 				onCamTime = 0;
-				std::cout << AnimatronicName.animatronicNB << ":" << AnimatronicName.position << "\n";
+				//std::cout << AnimatronicName.animatronicNB << ":" << AnimatronicName.position << "\n";
 			}
 			else 
 			{
@@ -214,20 +214,43 @@ int positionChange(Animatronic& AnimatronicName, int onCamera, bool isDoorDown[]
 		}
 	}
 
-	if ((playerOnCamera) && (Chica.position == 10) && !(isDoorDown[3]))
+	if (Chica.position == 10)
 	{
-		std::cout << "Chica is in the office\n";
-		Chica.position = 11;
+		if (Chica.delay > 4 && !(isDoorDown[3]) && (playerOnCamera))
+		{
+			std::cout << "Chica is in the office\n";
+			Chica.position = 11;
+		}
 	}
-	else if ((playerOnCamera) && (Bonnie.position == 9) && !(isDoorDown[2]))
+	else
 	{
-		std::cout << "Bonnie is in the office\n";
-		Bonnie.position = 11;
+		Chica.delay = 0;
 	}
-	else if ((playerOnCamera || power < 1) && (Freddy.position == 10) && !(isDoorDown[3]))
+	
+	if (Bonnie.position == 9)
 	{
-		std::cout << "Freddy is in the office\n";
-		Freddy.position = 11;
+		if (Bonnie.delay > 4 && !(isDoorDown[2]) && (playerOnCamera))
+		{
+			std::cout << "Bonnie is in the office\n";
+			Bonnie.position = 11;
+		}
+	}
+	else
+	{
+		Bonnie.delay = 0;
+	}
+
+	if (Freddy.position == 10)
+	{
+		if (Freddy.delay > 4 && !(isDoorDown[3]) && (playerOnCamera || power < 1))
+		{
+			std::cout << "Freddy is in the office\n";
+			Freddy.position = 11;
+		}
+	}
+	else
+	{
+		Freddy.delay = 0;
 	}
 
 	return 0;
@@ -311,6 +334,19 @@ void Animatronic::changePosition(int onCamera, int _timeOfNight, bool isDoorDown
 		deltaOnCam = time(0);
 	}
 	//Foxy is a special case
+
+	if (Freddy.position == 10)
+	{
+		Freddy.delay += Timer::deltaTime;
+	}
+	if (Bonnie.position == 9)
+	{
+		Bonnie.delay += Timer::deltaTime;
+	}
+	if (Chica.position == 10)
+	{
+		Chica.delay += Timer::deltaTime;
+	}
 }
 
 int* returnPosition()
