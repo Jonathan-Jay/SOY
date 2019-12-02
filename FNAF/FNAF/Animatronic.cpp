@@ -16,8 +16,10 @@ float foxyRunTime = 0;
 int nightNumber = 0;
 int positionCounterByMovement = 1;
 
-void initializeAnimatronics(int difficulty, int night) //To initialize all of the animatronics things
+bool bruhMoment = true; //because for some reason foxy would move twice even though he should only move once. I don't know why and Time is too close to try to come up with something better
+void initializeAnimatronics(int difficulty, int night, int freddyDifficulty) //To initialize all of the animatronics things
 {
+	bruhMoment = true;
 	nightNumber = night;
 	srand(time(NULL));
 	//Initializing the variables
@@ -40,7 +42,7 @@ void initializeAnimatronics(int difficulty, int night) //To initialize all of th
 	Bonnie.position = 3;
 	Foxy.position = 1;
 	//difficulty
-	Freddy.difficulty = difficulty;
+	Freddy.difficulty = freddyDifficulty;
 	Chica.difficulty = difficulty;
 	Bonnie.difficulty = difficulty;
 	Foxy.difficulty = difficulty;
@@ -89,7 +91,7 @@ int positionChange(Animatronic& AnimatronicName, int onCamera, bool isDoorDown[]
 		case 10:
 			if (isDoorDown[3])
 			{
-				AnimatronicName.position = 8;
+				AnimatronicName.position = 6;
 			}
 			//but door is back closed then back at
 			break;
@@ -192,23 +194,32 @@ int positionChange(Animatronic& AnimatronicName, int onCamera, bool isDoorDown[]
 		}
 
 	}
-
+	
 	//Foxy
 	if ((AnimatronicName.animatronicNB == 3) && !(onCamera == 1 && playerOnCamera))
 	{
 		if ((float)timeOfNight / (float)positionCounterByMovement >= 100 / nightNumber)
 		{
-			if (onCamTime <= nightNumber)
+			if (bruhMoment)
 			{
-				positionCounterByMovement++;
-				timeOfNight++;
-				if (Foxy.position <= 5)
+				bruhMoment = false;
+				if (onCamTime <= nightNumber)
 				{
-					AnimatronicName.position++;
+					positionCounterByMovement++;
+					timeOfNight++;
+					if (Foxy.position <= 5)
+					{
+						AnimatronicName.position++;
+					}
 				}
+				onCamTime = 0;
+				std::cout << AnimatronicName.animatronicNB << ":" << AnimatronicName.position << "\n";
 			}
-			onCamTime = 0;
-			std::cout << AnimatronicName.animatronicNB << ":" << AnimatronicName.position << "\n";
+			else 
+			{
+				bruhMoment = true;
+			}
+
 		}
 	}
 	return 0;
