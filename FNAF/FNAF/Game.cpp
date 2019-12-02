@@ -57,6 +57,7 @@ void Game::InitGame()
 	Soundfunctions().LoadSound("Victory_Chimes.mp3");
 	Soundfunctions().LoadSound("cheering.mp3");
 	Soundfunctions().LoadSound("Window_scare.mp3");
+	Soundfunctions().LoadSound("Static.mp3");
 
 	Set::Reset(m_register);
 	Soundfunctions().LoopSound("Menu_Music.mp3");
@@ -113,7 +114,8 @@ bool Game::Run()
 				}
 
 				TrackerPos = m_register->get<Transform>(EntityIdentifier::MainPlayer()).GetPosition();
-				if (playSound) {
+				if (playSound)
+				{
 					Soundfunctions().PauseSound("Fan_Buzzing.mp3");
 					m_register->get<Transform>(EntityIdentifier::Button(60 + killedYou)).SetPosition(
 						TrackerPos + vec3(0.f, 15.f, 1.f));
@@ -125,7 +127,14 @@ bool Game::Run()
 
 				wait += Timer::deltaTime;
 
-				if (wait >= 5.f) {
+				if (wait >= 2.f && wait < 3.f)
+				{
+					Soundfunctions().PlaySingleSound("Static.mp3");
+					wait += 1.f;
+				}
+
+				if (wait >= 12.f)
+				{
 					change = false;
 					Soundfunctions().LoopSound("Menu_Music.mp3");
 					m_activeScene->Unload();
@@ -150,7 +159,8 @@ bool Game::Run()
 				}
 
 				TrackerPos = m_register->get<Transform>(EntityIdentifier::MainPlayer()).GetPosition();
-				if (playSound) {
+				if (playSound)
+				{
 					Soundfunctions().PauseSound("Fan_Buzzing.mp3");
 					wait = 0.f;
 
@@ -160,12 +170,14 @@ bool Game::Run()
 
 				wait += Timer::deltaTime;
 
-				if (wait >= 8.f && wait < 9.f) {
+				if (wait >= 8.f && wait < 9.f)
+				{
 					wait += 1.f;
 					Soundfunctions().PlaySingleSound("cheering.mp3");
 				}
 
-				if (wait >= 16.f) {
+				if (wait >= 16.f)
+				{
 					change = false;
 					Soundfunctions().LoopSound("Menu_Music.mp3");
 					m_activeScene->Unload();
