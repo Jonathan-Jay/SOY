@@ -189,7 +189,7 @@ int positionChange(Animatronic& AnimatronicName, int onCamera, bool isDoorDown[]
 	//Foxy
 	if ((AnimatronicName.animatronicNB == 3) && !(onCamera == 1 && playerOnCamera))
 	{
-		if ((float)timeOfNight - lastTimeFoxyMoved >= 100 / nightNumber)
+		if ((float)timeOfNight - lastTimeFoxyMoved >= 150 / nightNumber)
 		{
 			if (bruhMoment)
 			{
