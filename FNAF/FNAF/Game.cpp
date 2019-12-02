@@ -55,6 +55,8 @@ void Game::InitGame()
 	Soundfunctions().LoadSound("Slow_Laugh.mp3");
 	Soundfunctions().LoadSound("Jumpscare.mp3");
 	Soundfunctions().LoadSound("Victory_Chimes.mp3");
+	Soundfunctions().LoadSound("cheering.mp3");
+	Soundfunctions().LoadSound("Window_scare.mp3");
 
 	Set::Reset(m_register);
 	Soundfunctions().LoopSound("Menu_Music.mp3");
@@ -158,7 +160,12 @@ bool Game::Run()
 
 				wait += Timer::deltaTime;
 
-				if (wait >= 15.f) {
+				if (wait >= 8.f && wait < 9.f) {
+					wait += 1.f;
+					Soundfunctions().PlaySingleSound("cheering.mp3");
+				}
+
+				if (wait >= 16.f) {
 					change = false;
 					Soundfunctions().LoopSound("Menu_Music.mp3");
 					m_activeScene->Unload();
@@ -315,15 +322,25 @@ void Game::MovementMath(int mainplayer)
 		if (Set::positionTesting(EntityIdentifier::Button(10 * x), CurrentPos, true))
 		{
 			isButtonPressed[x - 1] = true;
-			if (notTouchingButton[x - 1]) {
+			if (notTouchingButton[x - 1])
+			{
 				if (power > 1)
 					Soundfunctions().LoopSound("HallLights_On.mp3");
 				notTouchingButton[x - 1] = false;
 			}
+
+			if (animatronicAtWindow[x - 1])
+			{
+				if (animatronicAtWindow[x + 1]) {
+					Soundfunctions().PlaySingleSound("Window_scare.mp3");
+					animatronicAtWindow[x + 1] = false;
+				}
+			}
 		}
 		else {
 			isButtonPressed[x - 1] = false;
-			if (!notTouchingButton[x - 1]) {
+			if (!notTouchingButton[x - 1])
+			{
 				if (power > 1)
 					Soundfunctions().PauseSound("HallLights_On.mp3");
 				notTouchingButton[x - 1] = true;
@@ -388,10 +405,13 @@ void Game::SetScene()
 		playSound = true;
 	}
 
+	if (power < 1) {
+		power = 0;
+		Difficulty(40, 0);
+	}
+
 	//runing whether to move the characters or not
 	Animatronic::changePosition(CameraChoice, currenttime, isButtonPressed, onCamera, power);
-
-	if (power < 1)	power = 0;
 
 	int* AnimatronicPos = returnPosition();
 
@@ -457,13 +477,25 @@ void Game::SetScene()
 	if (!onCamera)
 	{
 		//if Bonnie is in the left hall
-		if (AnimatronicPos[1] == 9)
+		if (AnimatronicPos[1] == 9) {
 			m_register->get<Transform>(EntityIdentifier::Button(62)).SetPositionY(-66);
-		else	m_register->get<Transform>(EntityIdentifier::Button(62)).SetPositionY(-200);
+			animatronicAtWindow[0] = true;
+		}
+		else {
+			m_register->get<Transform>(EntityIdentifier::Button(62)).SetPositionY(-200);
+			animatronicAtWindow[0] = false;
+			animatronicAtWindow[2] = true;
+		}
 		//if Chica is in the right hall
-		if (AnimatronicPos[2] == 10)
+		if (AnimatronicPos[2] == 10) {
 			m_register->get<Transform>(EntityIdentifier::Button(63)).SetPositionY(-66);
-		else	m_register->get<Transform>(EntityIdentifier::Button(63)).SetPositionY(-200);
+			animatronicAtWindow[1] = true;
+		}
+		else {
+			m_register->get<Transform>(EntityIdentifier::Button(63)).SetPositionY(-200);
+			animatronicAtWindow[1] = false;
+			animatronicAtWindow[3] = true;
+		}
 	}
 
 	for (int x(0); x < 4; x++)

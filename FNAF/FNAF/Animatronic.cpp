@@ -14,7 +14,8 @@ long float onCamTime = 0.f;
 long float deltaOnCam = time(0);
 float foxyRunTime = 0;
 int nightNumber = 0;
-int positionCounterByMovement = 1;
+//int positionCounterByMovement = 1;
+float lastTimeFoxyMoved = 0;
 
 bool bruhMoment = true; //because for some reason foxy would move twice even though he should only move once. I don't know why and Time is too close to try to come up with something better
 void initializeAnimatronics(int difficulty, int night, int freddyDifficulty) //To initialize all of the animatronics things
@@ -29,7 +30,8 @@ void initializeAnimatronics(int difficulty, int night, int freddyDifficulty) //T
 	hitcount = 0;
 	onCamTime = 0.f;
 	deltaOnCam = Timer::currentClock;
-	positionCounterByMovement = 1;
+	//positionCounterByMovement = 1;
+	lastTimeFoxyMoved = 0;
 
 	//Initializing the number
 	Freddy.animatronicNB = 0;
@@ -41,14 +43,18 @@ void initializeAnimatronics(int difficulty, int night, int freddyDifficulty) //T
 	Chica.position  = 3;
 	Bonnie.position = 3;
 	Foxy.position = 1;
+	Difficulty(freddyDifficulty, difficulty);
+
+
+}
+
+void Difficulty(int freddyDifficulty, int difficulty)
+{
 	//difficulty
 	Freddy.difficulty = freddyDifficulty;
 	Chica.difficulty = difficulty;
 	Bonnie.difficulty = difficulty;
 	Foxy.difficulty = difficulty;
-
-
-
 }
 
 //Return true if the animatronic is ok to move, else false -> don't move.
@@ -72,8 +78,9 @@ int positionChange(Animatronic& AnimatronicName, int onCamera, bool isDoorDown[]
 	int rng;
 
 	//freddy
-	if ((AnimatronicName.animatronicNB == 0) && !(AnimatronicName.position == onCamera && (playerOnCamera || power <= 0)))
+	if ((AnimatronicName.animatronicNB == 0) && !(AnimatronicName.position == onCamera && playerOnCamera))
 	{
+		Soundfunctions().PlaySingleSound("Slow_Laugh.mp3");
 		switch (AnimatronicName.position)
 		{
 		case 3:
@@ -177,35 +184,19 @@ int positionChange(Animatronic& AnimatronicName, int onCamera, bool isDoorDown[]
 			break;
 		}
 		std::cout << AnimatronicName.animatronicNB << ":" << AnimatronicName.position << "\n";
-		if ((playerOnCamera) && (Chica.position == 10) && !(isDoorDown[3]))
-		{
-			std::cout << "Chica is in the office\n";
-			Chica.position = 11;
-		}
-		else if ((playerOnCamera) && (Bonnie.position == 9) && !(isDoorDown[2]))
-		{
-			std::cout << "Bonnie is in the office\n";
-			Bonnie.position = 11;
-		}
-		else if ((playerOnCamera) && (Freddy.position == 10) && !(isDoorDown[3]))
-		{
-			std::cout << "Freddy is in the office\n";
-			Freddy.position = 11;
-		}
-
 	}
 	
 	//Foxy
 	if ((AnimatronicName.animatronicNB == 3) && !(onCamera == 1 && playerOnCamera))
 	{
-		if ((float)timeOfNight / (float)positionCounterByMovement >= 100 / nightNumber)
+		if ((float)timeOfNight - lastTimeFoxyMoved >= 100 / nightNumber)
 		{
 			if (bruhMoment)
 			{
 				bruhMoment = false;
 				if (onCamTime <= nightNumber)
 				{
-					positionCounterByMovement++;
+					lastTimeFoxyMoved = timeOfNight;
 					timeOfNight++;
 					if (Foxy.position <= 5)
 					{
@@ -222,6 +213,23 @@ int positionChange(Animatronic& AnimatronicName, int onCamera, bool isDoorDown[]
 
 		}
 	}
+
+	if ((playerOnCamera) && (Chica.position == 10) && !(isDoorDown[3]))
+	{
+		std::cout << "Chica is in the office\n";
+		Chica.position = 11;
+	}
+	else if ((playerOnCamera) && (Bonnie.position == 9) && !(isDoorDown[2]))
+	{
+		std::cout << "Bonnie is in the office\n";
+		Bonnie.position = 11;
+	}
+	else if ((playerOnCamera || power < 1) && (Freddy.position == 10) && !(isDoorDown[3]))
+	{
+		std::cout << "Freddy is in the office\n";
+		Freddy.position = 11;
+	}
+
 	return 0;
 }
 
@@ -271,13 +279,13 @@ void Animatronic::changePosition(int onCamera, int _timeOfNight, bool isDoorDown
 		move = doMove(Chica);
 		if (move)
 		{
-			positionChange(Chica, onCamera, isDoorDown, playerOnCamera);
+			positionChange(Chica, onCamera, isDoorDown, playerOnCamera, power);
 			move = false;
 		}
 		move = doMove(Bonnie);
 		if (move)
 		{
-			positionChange(Bonnie, onCamera, isDoorDown, playerOnCamera);
+			positionChange(Bonnie, onCamera, isDoorDown, playerOnCamera, power);
 			move = false;
 		}
 
@@ -291,7 +299,7 @@ void Animatronic::changePosition(int onCamera, int _timeOfNight, bool isDoorDown
 	bool move = doMove(Foxy);
 	if (move)
 	{
-		positionChange(Foxy, onCamera, isDoorDown, playerOnCamera);
+		positionChange(Foxy, onCamera, isDoorDown, playerOnCamera, power);
 	}
 	//foxy camera things
 	if ((onCamera == 1) && (playerOnCamera))

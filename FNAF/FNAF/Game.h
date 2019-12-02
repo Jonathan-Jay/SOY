@@ -97,6 +97,7 @@ private:
 	bool notTouchingButton[4] = {};
 	bool isButtonPressed[4] = {};
 	bool playSound = false;
+	bool animatronicAtWindow[4] = {};
 
 	int acceleration = 0;
 	int gameState = 0;

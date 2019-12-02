@@ -18,9 +18,10 @@ private:
 };	
 
 void initializeAnimatronics(int, int, int);
+void Difficulty(int freddyDifficulty, int difficulty);
 bool doMove(Animatronic& AnimatronicName);
 	
-	int positionChange(Animatronic& AnimatronicName, int onCamera, bool x[], bool y, float power = 100);
+	int positionChange(Animatronic& AnimatronicName, int onCamera, bool x[], bool y, float power);
 
 	int* returnPosition();
 	
