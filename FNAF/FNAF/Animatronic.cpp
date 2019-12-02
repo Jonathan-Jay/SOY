@@ -10,8 +10,8 @@ int timeAfter = 0;
 int deltaTime = 0;
 int timeOfNight = 0;
 int hitcount = 0;
-float onCamTime = 0.f;
-float deltaOnCam = Timer::currentClock;
+long float onCamTime = 0.f;
+long float deltaOnCam = time(0);
 float foxyRunTime = 0;
 int nightNumber = 0;
 int positionCounterByMovement = 1;
@@ -196,13 +196,16 @@ int positionChange(Animatronic& AnimatronicName, int onCamera, bool isDoorDown[]
 	//Foxy
 	if ((AnimatronicName.animatronicNB == 3) && !(onCamera == 1 && playerOnCamera))
 	{
-		if (timeOfNight / positionCounterByMovement > 50 / nightNumber)
+		if ((float)timeOfNight / (float)positionCounterByMovement >= 100 / nightNumber)
 		{
-			if (onCamTime / 100.f <= nightNumber)
+			if (onCamTime <= nightNumber)
 			{
-				if (Foxy.position <= 5)
-					AnimatronicName.position++;
 				positionCounterByMovement++;
+				timeOfNight++;
+				if (Foxy.position <= 5)
+				{
+					AnimatronicName.position++;
+				}
 			}
 			onCamTime = 0;
 			std::cout << AnimatronicName.animatronicNB << ":" << AnimatronicName.position << "\n";
@@ -282,11 +285,11 @@ void Animatronic::changePosition(int onCamera, int _timeOfNight, bool isDoorDown
 	//foxy camera things
 	if ((onCamera == 1) && (playerOnCamera))
 	{
-		onCamTime += Timer::currentClock - deltaOnCam;
+		onCamTime += time(0) - deltaOnCam;
 	}
 	else
 	{
-		deltaOnCam = Timer::currentClock;
+		deltaOnCam = time(0);
 	}
 	//Foxy is a special case
 }
