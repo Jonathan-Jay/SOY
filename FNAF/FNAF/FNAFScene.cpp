@@ -555,7 +555,7 @@ void FNAF::InitScene(float windowWidth, float windowHeight)
 			case 4:	filename += "foxy.png";		break;
 			default:	break;
 			}
-			ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 37, 23);
+			ECS::GetComponent<Sprite>(entity).LoadSprite(filename, 23, 37);
 
 
 			unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit();
