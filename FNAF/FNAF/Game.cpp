@@ -221,11 +221,11 @@ void Game::GUI()
 {
 	UI::Start(BackEnd::GetWindowWidth(), BackEnd::GetWindowHeight());
 
-	ImGui::Text("Place your different tabs below.");
+	//ImGui::Text("Place your different tabs below.");
 
 	if (ImGui::BeginTabBar(""))
 	{
-		BackEnd::GUI(m_register, m_activeScene);
+		//BackEnd::GUI(m_register, m_activeScene);
 
 		ImGui::Checkbox("Collision", &collision);
 		ImGui::Checkbox("Acceleration", &accelerate);
